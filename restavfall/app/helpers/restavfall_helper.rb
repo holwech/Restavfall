@@ -1,0 +1,2 @@
+module RestavfallHelper
+end
