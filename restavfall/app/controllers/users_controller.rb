@@ -10,8 +10,12 @@ class UsersController < ApplicationController
   def login
   	auth = request.env["omniauth.auth"]
     token = auth['credentials']['token']
-    @user = Koala::Facebook::GraphAPI.new(token)
+    @user = Koala::Facebook::API.new(token)
     @profile_image = @user.get_picture('me')
+    @name = @user.get_object('me')['name']
+
+    
+    @test = @user.get_connections('me','friends').first['name']
   end
 
 
