@@ -15,7 +15,7 @@ class UsersController < ApplicationController
     @name = @user.get_object('me')['name']
 
     
-    @test = @user.get_connections('me','friends').first['name']
+    @friends = @user.get_connections('me','friends')
   end
 
 

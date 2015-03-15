@@ -2,5 +2,14 @@
 <%= image_tag @profile_image %>
 <%= @name %>
 <br><br>
-Venner:<br>
-<%= @test %>
+<h1>Venner</h1>
+<table>
+	<tr>
+		<th>Name</th>
+	</tr>
+	<% @friends.each do |f| %>
+		<tr>
+			<td><a href="http://facebook.com/<%= f["id"] %>"><%= f["name"] %></a></td>
+		</tr>
+	<% end %>
+</table>
