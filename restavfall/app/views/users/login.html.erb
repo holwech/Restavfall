@@ -3,13 +3,7 @@
 <%= @name %>
 <br><br>
 <h1>Venner</h1>
-<table>
-	<tr>
-		<th>Name</th>
-	</tr>
-	<% @friends.each do |f| %>
-		<tr>
-			<td><a href="http://facebook.com/<%= f["id"] %>"><%= f["name"] %></a></td>
-		</tr>
-	<% end %>
-</table>
+<% @friends.each do |friend| %>
+    <%= friend['name'] %>: <%= friend['value'] %>
+    <br>
+<%end%>

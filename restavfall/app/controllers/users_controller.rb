@@ -14,8 +14,9 @@ class UsersController < ApplicationController
     @profile_image = @user.get_picture('me')
     @name = @user.get_object('me')['name']
 
-    
-    @friends = @user.get_connections('me','friends')
+    ff = FriendFinder.new(@user)
+    ff.run_analysis
+    @friends = ff.get_friends
   end
 
 

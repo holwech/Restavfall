@@ -11,7 +11,8 @@ class FriendFinder
         friend_values = self.friends.sort_by{|id, value|  value}.reverse.first(50)
         friend_data = self.graph.batch{|batch_api| 
             friend_values.each{|f| 
-                batch_api.get_object("#{f[0]}?metadata=1", {fields: ['name', 'metadata{type}']})}}
+                batch_api.get_object("#{f[0]}?metadata=1", 
+                         {fields:['name', 'metadata{type}']})}}
         friend_data.each_with_index{|d, i| 
             d['value'] = friend_values[i][1] }
         puts "Friends returned"
