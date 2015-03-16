@@ -5,7 +5,7 @@ class UsersController < ApplicationController
   	session['oauth'] = @oauth
 
   	redirect_to @oauth.url_for_oauth_code(:permissions => 
-                  ['user_friends', 'user_photos', 'read_stream', 'publish_action'])
+                  ['user_friends', 'user_photos', 'read_stream'])
   end
 
   def login
