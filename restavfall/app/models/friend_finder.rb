@@ -12,7 +12,7 @@ class FriendFinder
         friend_data = self.graph.batch{|batch_api| 
             friend_values.each{|f| 
                 batch_api.get_object("#{f[0]}?metadata=1", 
-                         {fields:['name', 'metadata{type}']})}}
+                                     {fields:['name', 'metadata{type}']})}}
         friend_data.each_with_index{|d, i| 
             d['value'] = friend_values[i][1] }
         puts "Friends returned"
@@ -38,18 +38,33 @@ class FriendFinder
     end
 
     def get_album_photos
+        all_photos = []
         albums = self.graph.get_connections('me', 'albums', {fields: 'id'})
-        album_photos = self.graph.batch{|batch_api| 
-            albums.each{|album| 
-                batch_api.get_connections(album['id'], 'photos', 
-                                      {fields: ['id', 'likes', 'comments', 'tags']})}}.flatten
-        return album_photos
+
+        begin
+            album_photos = self.graph.batch{|batch_api| 
+                albums.each{|album| 
+                    batch_api.get_connections(album['id'], 'photos', 
+                          {fields: ['id', 'likes', 'comments', 'tags']})}}.flatten
+            all_photos += album_photos
+            albums = albums.next_page
+        end while not albums.nil?
+
+        return all_photos
     end
 
     def get_tagged_photos
-        tagged_photos = self.graph.get_connections('me', 'photos',
-                                                      {fields: ['from', 'id', 'likes', 'comments', 'tags']})
-        return tagged_photos
+        all_photos = []
+
+        photos = self.graph.get_connections('me', 'photos',
+                    {fields: ['from', 'id', 'likes', 'comments', 'tags']})
+
+        begin
+            all_photos += photos
+            photos = photos.next_page
+        end while not photos.nil?
+
+        return all_photos
     end
 
     def analyse_photo_tags(photo)
@@ -82,5 +97,9 @@ class FriendFinder
         if photo.has_key?("from")
             self.friends[photo['from']['id']] += 3
         end
+    end
+
+    def get_posts
+        feed = self.graph.get_connections('me', 'feed')
     end
 end
