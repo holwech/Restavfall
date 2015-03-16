@@ -4,7 +4,8 @@ class UsersController < ApplicationController
   	@oauth =   Koala::Facebook::OAuth.new(FACEBOOK_CONFIG["app_id"], FACEBOOK_CONFIG["secret"], "https://#{request.host}:#{request.port}/auth/facebook/callback")
   	session['oauth'] = @oauth
 
-  	redirect_to @oauth.url_for_oauth_code(:permissions => ['user_friends', 'user_photos'])
+  	redirect_to @oauth.url_for_oauth_code(:permissions => 
+                  ['user_friends', 'user_photos', 'read_stream', 'publish_action'])
   end
 
   def login
@@ -17,7 +18,8 @@ class UsersController < ApplicationController
 
     ff = FriendFinder.new(@user)
     ff.run_analysis
-    @friends = ff.get_friends
+    @friends = ff.get_friend_data
+    @friend = ff.get_one_friend
   end
 
 
