@@ -7,55 +7,48 @@ class FriendFinder
     end
 
     def get_friends
+        puts "Getting friends"
         friend_values = self.friends.sort_by{|id, value|  value}.reverse.first(50)
-        puts "Starting getting friends"
         friend_data = self.graph.batch{|batch_api| 
             friend_values.each{|f| 
-                batch_api.get_object(f[0])}}
+                batch_api.get_object("#{f[0]}?metadata=1", {fields: ['name', 'metadata{type}']})}}
         friend_data.each_with_index{|d, i| 
             d['value'] = friend_values[i][1] }
-        puts "Done getting friends"
-        return friend_data
+        puts "Friends returned"
+        return friend_data.select{|friend| friend['metadata']['type'] == 'user'}
     end
 
     def run_analysis
+        puts "FriendFinder started"
         analyse_photos
+        puts "FriendFinder done"
     end
 
     def analyse_photos
         ap_photos = get_album_photos
         tp_photos = get_tagged_photos
         photos = (ap_photos + tp_photos).uniq{|photo| photo['id']}
-        puts "Photos done"
         photos.each do |photo|
-            #puts "New photo"
             analyse_photo_tags(photo)
             analyse_photo_likes(photo)
             analyse_photo_comments(photo)
+            add_photo_owner(photo)
         end
     end
 
     def get_album_photos
-        photos = []
         albums = self.graph.get_connections('me', 'albums', {fields: 'id'})
-        albums.each do |album|
-            album_photos = self.graph.get_connections(album['id'], 'photos',
-                                                      {fields: ['id', 'likes', 'comments', 'tags']})
-            album_photos.each do |photo|
-                photos << photo
-            end
-        end
-        return photos
+        album_photos = self.graph.batch{|batch_api| 
+            albums.each{|album| 
+                batch_api.get_connections(album['id'], 'photos', 
+                                      {fields: ['id', 'likes', 'comments', 'tags']})}}.flatten
+        return album_photos
     end
 
     def get_tagged_photos
-        photos = []
         tagged_photos = self.graph.get_connections('me', 'photos',
-                                                      {fields: ['id', 'likes', 'comments', 'tags']})
-        tagged_photos.each do |photo|
-            photos << photo
-        end
-        return photos
+                                                      {fields: ['from', 'id', 'likes', 'comments', 'tags']})
+        return tagged_photos
     end
 
     def analyse_photo_tags(photo)
@@ -63,7 +56,6 @@ class FriendFinder
             photo['tags']['data'].each do |tag|
                 if tag.has_key?("id")
                     self.friends[tag['id']] += 1
-                    #puts "#{tag['name']} tagged"
                 end
             end
         end
@@ -73,7 +65,6 @@ class FriendFinder
         if photo.has_key?("likes")
             photo['likes']['data'].each do |like|
                 self.friends[like['id']] += 1
-                    #puts "#{like['name']} liked"
             end
         end
     end
@@ -82,8 +73,13 @@ class FriendFinder
         if photo.has_key?("comments")
             photo['comments']['data'].each do |comment|
                 self.friends[comment['from']['id']] += 1
-                #puts "#{comment['from']['name']} commented"
             end
+        end
+    end
+
+    def add_photo_owner(photo)
+        if photo.has_key?("from")
+            self.friends[photo['from']['id']] += 3
         end
     end
 end
