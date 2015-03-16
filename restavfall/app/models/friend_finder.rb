@@ -7,13 +7,15 @@ class FriendFinder
     end
 
     def get_friends
-        full_friends = []
-        self.friends.each do |id, count|
-            friend = self.graph.get_object(id)
-            full_friends << {"data" => friend['name'], "value" => count}
-        end
-        full_friends.sort!{|a,b| a['value'] <=> b['value'] }
-        return full_friends
+        friend_values = self.friends.sort_by{|id, value|  value}.reverse.first(50)
+        puts "Starting getting friends"
+        friend_data = self.graph.batch{|batch_api| 
+            friend_values.each{|f| 
+                batch_api.get_object(f[0])}}
+        friend_data.each_with_index{|d, i| 
+            d['value'] = friend_values[i][1] }
+        puts "Done getting friends"
+        return friend_data
     end
 
     def run_analysis
@@ -21,11 +23,11 @@ class FriendFinder
     end
 
     def analyse_photos
-        ap_ids = get_album_photo_ids
-        tp_ids = get_tagged_photo_ids
-        ids = (ap_ids + tp_ids).uniq
-        ids.each do |id|
-            photo = self.graph.get_object(id)
+        ap_photos = get_album_photos
+        tp_photos = get_tagged_photos
+        photos = (ap_photos + tp_photos).uniq{|photo| photo['id']}
+        puts "Photos done"
+        photos.each do |photo|
             #puts "New photo"
             analyse_photo_tags(photo)
             analyse_photo_likes(photo)
@@ -33,25 +35,27 @@ class FriendFinder
         end
     end
 
-    def get_album_photo_ids
-        photo_ids = []
-        albums = self.graph.get_connections('me', 'albums')
+    def get_album_photos
+        photos = []
+        albums = self.graph.get_connections('me', 'albums', {fields: 'id'})
         albums.each do |album|
-            album_photos = self.graph.get_connections(album['id'], 'photos')
+            album_photos = self.graph.get_connections(album['id'], 'photos',
+                                                      {fields: ['id', 'likes', 'comments', 'tags']})
             album_photos.each do |photo|
-                photo_ids << photo['id']
+                photos << photo
             end
         end
-        return photo_ids
+        return photos
     end
 
-    def get_tagged_photo_ids
-        photo_ids = []
-        tagged_photos = self.graph.get_connections('me', 'photos')
+    def get_tagged_photos
+        photos = []
+        tagged_photos = self.graph.get_connections('me', 'photos',
+                                                      {fields: ['id', 'likes', 'comments', 'tags']})
         tagged_photos.each do |photo|
-            photo_ids << photo['id']
+            photos << photo
         end
-        return photo_ids
+        return photos
     end
 
     def analyse_photo_tags(photo)
