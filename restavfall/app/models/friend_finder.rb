@@ -1,5 +1,5 @@
 class FriendFinder
-    attr_accessor :friends, :graph, :friend_data
+    attr_accessor :friends, :graph, :friend_data, :indent
 
     COMMENT = 1
     LIKE = 1
@@ -13,10 +13,23 @@ class FriendFinder
     EVENT_UNDER_10 = 3
     EVENT_UNDER_5 = 4
 
+    CUTOFF_DATE = '1-January-2013'
+
+    def time(name, &block) #For debug only
+        t = Time.now
+        self.indent += 1
+        result = block.call
+        self.indent -= 1
+        indentstr = "  "*self.indent
+        puts "#{indentstr}#{name} completed in #{(Time.now - t)} seconds"
+        result
+    end
+
     def initialize(graph)
         self.friends = Hash.new{0}
         self.graph = graph
         self.friend_data = []
+        self.indent = 0
     end
 
     def get_one_friend
@@ -36,7 +49,6 @@ class FriendFinder
     end
 
     def make_friend_data
-        puts "Getting friends"
         my_id = @graph.get_object('me', {fields: 'id'})['id']
         friend_values = self.friends.except(my_id).sort_by{|id, value|  value}.reverse.first(50)
         self.friend_data = self.graph.batch{|batch_api| 
@@ -45,29 +57,30 @@ class FriendFinder
                                      {fields:['name', 'metadata{type}']})}}
         self.friend_data.each_with_index{|d, i| 
             d['value'] = friend_values[i][1] }
-        puts "Friends gotten"
         self.friend_data = self.friend_data.select{|friend| friend['metadata']['type'] == 'user'}
     end
 
     def run_analysis
-        puts "FriendFinder started"
-        analyse_posts
-        analyse_photos
-        analyse_events
-        make_friend_data
-        puts "FriendFinder done"
+        time("Run_analysis") {
+            time("analyse posts"){analyse_posts}
+            time("analyse_photos"){analyse_photos}
+            time("analyse_events"){analyse_events}
+            time("make_friend_data"){make_friend_data}
+        }
     end
 
     def analyse_photos
-        ap_photos = get_album_photos
-        tp_photos = get_tagged_photos
-        photos = (ap_photos + tp_photos).uniq{|photo| photo['id']}
-        photos.each do |photo|
-            analyse_photo_tags(photo)
-            analyse_photo_likes(photo)
-            analyse_photo_comments(photo)
-            add_photo_owner(photo)
-        end
+        ap_photos = time("get album photos") {get_album_photos}
+        tp_photos = time("get tagged photos") {get_tagged_photos}
+        time("add photo points") {
+            photos = (ap_photos + tp_photos).uniq{|photo| photo['id']}
+            photos.each do |photo|
+                analyse_photo_tags(photo)
+                analyse_photo_likes(photo)
+                analyse_photo_comments(photo)
+                add_photo_owner(photo)
+            end
+        }
     end
 
     def get_album_photos
@@ -77,8 +90,11 @@ class FriendFinder
         begin
             album_photos = self.graph.batch{|batch_api| 
                 albums.each{|album| 
-                    batch_api.get_connections(album['id'], 'photos', 
-                                              {fields: ['id', 'likes', 'comments', 'tags']})}}.flatten
+                    batch_api.get_connections(album['id'], 
+                          "photos?since=#{CUTOFF_DATE}", 
+                          {fields: ['id', 'likes', 'comments', 'tags']})
+                }
+            }.flatten
             all_photos += album_photos
             albums = albums.next_page
         end while not albums.nil?
@@ -89,8 +105,8 @@ class FriendFinder
     def get_tagged_photos
         all_photos = []
 
-        photos = self.graph.get_connections('me', 'photos',
-                                            {fields: ['from', 'id', 'likes', 'comments', 'tags']})
+        photos = self.graph.get_connections('me', "photos?since=#{CUTOFF_DATE}",
+                    {fields: ['from', 'id', 'likes', 'comments', 'tags']})
 
         begin
             all_photos += photos
@@ -134,42 +150,49 @@ class FriendFinder
 
     def analyse_posts
         accepted_types = ['wall_post', 'shared_story', 'mobile_status_update']
-        feed = self.graph.get_connections('me', 'feed?filter=app_2915120374', {fields: ['from', 'comments', 'likes', 'with_tags', 'message_tags', 'status_type']})
+        feed = time("get posts") {
+            self.graph.get_connections('me', 
+                  "feed?filter=app_2915120374&since=#{CUTOFF_DATE}", 
+                  {fields: ['from', 'comments', 'likes', 'with_tags', 
+                            'message_tags', 'status_type']})
+        }
 
-        begin
-            feed.select{|f| accepted_types.include? f['status_type']}.each do |f|
-                self.friends[f['from']['id']] += WALL_POSTER;
+        time("add post points") {
+            begin
+                feed.select{|f| accepted_types.include? f['status_type']}.each do |f|
+                    self.friends[f['from']['id']] += WALL_POSTER;
 
-                unless f['likes'].nil?
-                    f['likes']['data'].each do |like|
-                        self.friends[like['id']] += LIKE
+                    unless f['likes'].nil?
+                        f['likes']['data'].each do |like|
+                            self.friends[like['id']] += LIKE
+                        end
+                    end
+
+                    unless f['comments'].nil?
+                        f['comments']['data'].each do |comment|
+                            self.friends[comment['from']['id']] += COMMENT
+                        end
+                    end
+
+                    unless f['with_tags'].nil?
+                        f['with_tags'].each do |_, v|
+                            v.each{|tag| self.friends[tag['id']] += WALL_TAG}
+                        end
+                    end
+                    unless f['message_tags'].nil?
+                        f['message_tags'].each do |_, v|
+                            v.each{|tag| self.friends[tag['id']] += WALL_TAG}
+                        end
                     end
                 end
-
-                unless f['comments'].nil?
-                    f['comments']['data'].each do |comment|
-                        self.friends[comment['from']['id']] += COMMENT
-                    end
-                end
-
-                unless f['with_tags'].nil?
-                    f['with_tags'].each do |_, v|
-                        v.each{|tag| self.friends[tag['id']] += WALL_TAG}
-                    end
-                end
-                unless f['message_tags'].nil?
-                    f['message_tags'].each do |_, v|
-                        v.each{|tag| self.friends[tag['id']] += WALL_TAG}
-                    end
-                end
-            end
-            feed = feed.next_page
-        end while not feed.nil?
+                feed = feed.next_page
+            end while not feed.nil?
+        }
     end
 
     def analyse_events
-        events = get_events
-        attendees = get_event_attendees(events)
+        events = time("get events") {get_events}
+        attendees = time("get event attendees") {get_event_attendees(events)}
 
         attendees.each do |event|
             if event['count'] > 40
@@ -209,7 +232,7 @@ class FriendFinder
     def get_events
         event_ids = []
         events = self.graph.get_connections(
-            'me', 'events/attending?since=1-January-2010',
+            'me', "events/attending?since=#{CUTOFF_DATE}",
             {fields: ['id', 'attending_count']})
 
         begin
