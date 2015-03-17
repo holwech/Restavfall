@@ -13,7 +13,8 @@ class FriendFinder
     EVENT_UNDER_10 = 3
     EVENT_UNDER_5 = 4
 
-    CUTOFF_DATE = '1-January-2013'
+    CUTOFF_DATE = '1-January-2011'
+    MAX_POST_PAGES = 4
 
     def time(name, &block) #For debug only
         t = Time.now
@@ -158,6 +159,7 @@ class FriendFinder
         }
 
         time("add post points") {
+            i = 0
             begin
                 feed.select{|f| accepted_types.include? f['status_type']}.each do |f|
                     self.friends[f['from']['id']] += WALL_POSTER;
@@ -184,8 +186,13 @@ class FriendFinder
                             v.each{|tag| self.friends[tag['id']] += WALL_TAG}
                         end
                     end
+
                 end
-                feed = feed.next_page
+                i += 1;
+                if i == MAX_POST_PAGES
+                    break
+                end
+                feed = time("new page") {feed.next_page}
             end while not feed.nil?
         }
     end
