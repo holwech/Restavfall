@@ -8,6 +8,11 @@ class FriendFinder
     WALL_POSTER = 5
     WALL_TAG = 4
 
+    EVENT_UNDER_40 = 1
+    EVENT_UNDER_20 = 2
+    EVENT_UNDER_10 = 3
+    EVENT_UNDER_5 = 4
+
     def initialize(graph)
         self.friends = Hash.new{0}
         self.graph = graph
@@ -48,6 +53,7 @@ class FriendFinder
         puts "FriendFinder started"
         analyse_posts
         analyse_photos
+        analyse_events
         make_friend_data
         puts "FriendFinder done"
     end
@@ -72,7 +78,7 @@ class FriendFinder
             album_photos = self.graph.batch{|batch_api| 
                 albums.each{|album| 
                     batch_api.get_connections(album['id'], 'photos', 
-                          {fields: ['id', 'likes', 'comments', 'tags']})}}.flatten
+                                              {fields: ['id', 'likes', 'comments', 'tags']})}}.flatten
             all_photos += album_photos
             albums = albums.next_page
         end while not albums.nil?
@@ -84,7 +90,7 @@ class FriendFinder
         all_photos = []
 
         photos = self.graph.get_connections('me', 'photos',
-                    {fields: ['from', 'id', 'likes', 'comments', 'tags']})
+                                            {fields: ['from', 'id', 'likes', 'comments', 'tags']})
 
         begin
             all_photos += photos
@@ -159,5 +165,58 @@ class FriendFinder
             end
             feed = feed.next_page
         end while not feed.nil?
+    end
+
+    def analyse_events
+        events = get_events
+        attendees = get_event_attendees(events)
+
+        attendees.each do |event|
+            if event['count'] > 40
+                next
+            elsif event['count'] > 20
+                value = EVENT_UNDER_40
+            elsif event['count'] > 10
+                value = EVENT_UNDER_20
+            elsif event['count'] > 5
+                value = EVENT_UNDER_10
+            else
+                value = EVENT_UNDER_5
+            end
+
+            event['attending'].each do |friend|
+                self.friends[friend['id']] += value
+            end
+        end
+    end
+
+    def get_event_attendees(events)
+        attendees = []
+        events.each_slice(25){|events_slice| 
+            attendees << self.graph.batch{|batch_api| 
+                events_slice.each {|event| 
+                    callback = lambda {|arg| 
+                        {"count" => event['attending_count'], "attending" => arg} 
+                    }
+                    batch_api.get_connections(event['id'], 'attending', &callback)
+                }
+            }
+        }
+
+        return attendees.flatten
+    end
+
+    def get_events
+        event_ids = []
+        events = self.graph.get_connections(
+            'me', 'events/attending?since=1-January-2010',
+            {fields: ['id', 'attending_count']})
+
+        begin
+            event_ids += events
+            events = events.next_page
+        end while not events.nil?
+
+        return event_ids.select{|e| e['attending_count'] <= 40}
     end
 end
