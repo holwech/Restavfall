@@ -22,6 +22,8 @@ class UsersController < ApplicationController
     ff.run_analysis
     @friends = ff.get_friend_data
     @friend = ff.get_one_friend
+
+    session[:friendlist] = @friends
   end
 
 
