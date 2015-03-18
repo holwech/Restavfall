@@ -24,6 +24,7 @@ class UsersController < ApplicationController
     @friend = ff.get_one_friend
 
     session[:friendlist] = @friends
+    session[:nextFriend] = 0
   end
 
 

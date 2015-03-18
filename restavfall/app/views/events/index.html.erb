@@ -1,8 +1,12 @@
-<p>God dag!</p>
+<h1>God dag!</h1>
 <%= image_tag @profile_image %>
 
-<h1>Venner</h1>
-<% @friends.each do |friend| %>
-    <%= friend['name'] %>: <%= friend['value'] %>
-    <br>
-<%end%>
+
+
+<h1>Skal på event med</h1>
+<%= @friend_data['name'] %>
+<%= image_tag @profile_image_friend %>
+
+<br><br><br>
+
+<%= @friends =>
