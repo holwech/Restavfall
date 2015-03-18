@@ -1,12 +1,15 @@
 <h1>God dag!</h1>
 <%= image_tag @profile_image %>
 
-
-
 <h1>Skal på event med</h1>
 <%= @friend_data['name'] %>
 <%= image_tag @profile_image_friend %>
 
+<h1>Dere skal på</h1>
+<%= @event.name %>
+<br><br>
+<h1><%= link_to "Gi meg noen andre!", 'events/newfriend' %></h1>
+<h1><%= link_to "Gi meg en annen event!", 'events/newevent' %></h1>
 <br><br><br>
 
-<%= @friends =>
+<%= @friends %>

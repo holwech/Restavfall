@@ -4,6 +4,5 @@ Rails.application.routes.draw do
   root to: 'users#index', via: [:get, :post]
   get 'auth/facebook', as: "auth_provider"
   get 'auth/facebook/callback', to: 'users#login'
-  get 'events', to: 'events#index'
-  get 'events/show', to: 'events#show'
+  resources :events
 end
