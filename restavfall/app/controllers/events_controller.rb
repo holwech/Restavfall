@@ -15,15 +15,24 @@ class EventsController < ApplicationController
   end
 
   def newfriend
-  	session[:nextFriend] += 1;
-    if session[:nextFriend] == 51
-    	session[:nextFriend] = 0
-    end
+
     redirect_to '/events'
   end
 
   def newevent
   	offset = rand(Event.count)
-  	redirect_to '/events'
+
+  end
+
+  def show
+  	if params['id'] == 'newfriend'
+	  	  	session[:nextFriend] += 1;
+	    if session[:nextFriend] == 51
+	    	session[:nextFriend] = 0
+	    end
+	elsif 
+		offset = rand(Event.count)
+	end
+	redirect_to '/events'
   end
 end
