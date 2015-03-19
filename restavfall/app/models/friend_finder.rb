@@ -63,7 +63,7 @@ class FriendFinder
 
     def run_analysis
         time("Run_analysis") {
-            time("analyse posts"){analyse_posts}
+            #time("analyse posts"){analyse_posts}
             time("analyse_photos"){analyse_photos}
             time("analyse_events"){analyse_events}
             time("make_friend_data"){make_friend_data}
