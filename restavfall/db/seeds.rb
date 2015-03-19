@@ -5,3 +5,7 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
+
+Event.create(name:'DDE', eventId: '404', ukaURL: 'uka.no')
+Event.create(name:'Beyonce', eventId: '1', ukaURL: 'uka.no')
+Event.create(name:'Thea S', eventId: '2', ukaURL: 'uka.no')

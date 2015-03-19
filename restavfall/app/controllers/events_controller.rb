@@ -14,19 +14,9 @@ class EventsController < ApplicationController
     @profile_image_friend = @user.get_picture(@friend_data['id'])
   end
 
-  def newfriend
-
-    redirect_to '/events'
-  end
-
-  def newevent
-  	offset = rand(Event.count)
-
-  end
-
   def show
   	if params['id'] == 'newfriend'
-	  	  	session[:nextFriend] += 1;
+	  	session[:nextFriend] += 1;
 	    if session[:nextFriend] == 51
 	    	session[:nextFriend] = 0
 	    end
