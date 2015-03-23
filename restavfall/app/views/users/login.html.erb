@@ -1,15 +1,33 @@
-
-<%= image_tag @profile_image %>
-<%= @name %>
-<br><br>
-<%= link_to "Gå til events", '/events' %>
-<br><br>
-Permissions <%= @permissions %>
-<br><br>
-Tilfeldig person: <%= @friend['name'] %>
+<script>
+var computationDone = false;
+var runAnalysis = function(stage) {
+    $.ajax({
+        type: "GET",
+        url: '/analyse/'+stage,
+    })
+    .success(function(data) {
+        console.log(data)
+        if (data['status'] == "OK") {
+            statusChanged(data['text']);
+            runAnalysis(data['next']);
+        }
+        else if (data['status'] == "Done") {
+            statusChanged("Your chosen friend is " + data['friend']['name']);
+            if (computationDone === false) {
+                computationDone = true;
+                $("#new-friend").html("Give me another friend");
+            }
+        }
+        else {
+            statusChanged("Error " + data);
+        }
+    });
+}
+var statusChanged = function(text) {
+    $("#data").html($("#data").html() + "<br>" + text);
+}
+$( document ).ready(runAnalysis('Start'));
+</script>
+<a  id="new-friend" href="#" onclick="runAnalysis('Friend');"></a>
 <br>
-<h1>Venner</h1>
-<% @friends.each do |friend| %>
-    <%= friend['name'] %>: <%= friend['value'] %>
-    <br>
-<%end%>
+<div id="data"></div>
