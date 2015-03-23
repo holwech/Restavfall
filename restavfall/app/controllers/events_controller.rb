@@ -11,6 +11,8 @@ class EventsController < ApplicationController
 		@event = Event.offset(session[:next_event]).first
 		@profile_image = @user.get_picture('me')
 		@profile_image_friend = @user.get_picture(@friend['id'])
+		@page_image = @user.get_picture(@event.fbpageID)
+		@page_data = @user.get_object(@event.fbpageID)
 	end
 
 	def show

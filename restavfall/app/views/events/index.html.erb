@@ -7,6 +7,9 @@
 
 <h1>Dere skal på</h1>
 <%= @event.name %>
+<%= image_tag @page_image %>
+<br>
+<%= @page_data['about'] %>
 <br><br>
 <h1><%= link_to "Gi meg noen andre!", 'events/newfriend' %></h1>
 <h1><%= link_to "Gi meg en annen event!", 'events/newevent' %></h1>
