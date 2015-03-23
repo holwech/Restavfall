@@ -2,7 +2,7 @@
 <%= image_tag @profile_image %>
 
 <h1>Skal på event med</h1>
-<%= @friend_data['name'] %>
+<%= @friend['name'] %>
 <%= image_tag @profile_image_friend %>
 
 <h1>Dere skal på</h1>
@@ -10,6 +10,10 @@
 <br><br>
 <h1><%= link_to "Gi meg noen andre!", 'events/newfriend' %></h1>
 <h1><%= link_to "Gi meg en annen event!", 'events/newevent' %></h1>
-<br><br><br>
+<br><br>
 
-<%= @friends %>
+<h1>Venner</h1>
+<% @friends.each do |friend| %>
+    <%= friend['name'] %>: <%= friend['value'] %>
+    <br>
+<%end%>

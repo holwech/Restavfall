@@ -23,8 +23,8 @@ class UsersController < ApplicationController
     @friends = ff.get_friend_data
     @friend = ff.get_one_friend
 
-    session[:friendlist] = @friends
-    session[:nextFriend] = 0
+    session[:friend_list] = @friends
+    session[:new_visit] = 1
   end
 
 
