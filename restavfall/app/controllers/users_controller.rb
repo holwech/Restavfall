@@ -1,18 +1,15 @@
 class UsersController < ApplicationController
 
   def index
-  	oauth =   Koala::Facebook::OAuth.new(FACEBOOK_CONFIG["app_id"], FACEBOOK_CONFIG["secret"], "https://#{request.host}:#{request.port}/auth/facebook/callback")
-  	session['oauth'] = @oauth
-
-  	redirect_to oauth.url_for_oauth_code(:permissions => 
-              ['user_friends', 'user_photos', 'user_events',
-               'read_stream', 'publish_actions'])
+        oauth =   Koala::Facebook::OAuth.new(FACEBOOK_CONFIG["app_id"], FACEBOOK_CONFIG["secret"], "https://#{request.host}:#{request.port}/auth/facebook/callback")
+        redirect_to oauth.url_for_oauth_code(:permissions => 
+                  ['user_friends', 'user_photos', 'user_events',
+                   'read_stream', 'publish_actions'])
   end
 
   def login
-  	auth = request.env["omniauth.auth"]
-    session = {}
-    session[:token] = auth['credentials']['token']
+        auth = request.env["omniauth.auth"]
+        session[:token] = auth['credentials']['token']
   end
 
   def analyse
