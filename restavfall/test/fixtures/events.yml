@@ -1,11 +1,19 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
+  id: 1
   name: MyString
-  eventId: MyString
-  ukaURL: MyString
+  url: MyString
+  time: 2015-04-13 16:05:24
+  fbpageID: MyString
+  keywords: MyString
+  relatedPages: MyString
 
 two:
+  id: 1
   name: MyString
-  eventId: MyString
-  ukaURL: MyString
+  url: MyString
+  time: 2015-04-13 16:05:24
+  fbpageID: MyString
+  keywords: MyString
+  relatedPages: MyString

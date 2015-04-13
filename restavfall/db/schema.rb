@@ -11,15 +11,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150322121634) do
+ActiveRecord::Schema.define(version: 20150413140524) do
 
   create_table "events", force: :cascade do |t|
     t.string   "name"
-    t.string   "eventID"
     t.string   "url"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "time"
     t.string   "fbpageID"
+    t.string   "keywords"
+    t.string   "relatedPages"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
   end
 
   create_table "sessions", force: :cascade do |t|

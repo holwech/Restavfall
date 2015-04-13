@@ -1,5 +1,4 @@
-class UsersController < ApplicationController
-
+class HomeController < ApplicationController
   def index
         oauth =   Koala::Facebook::OAuth.new(FACEBOOK_CONFIG["app_id"], FACEBOOK_CONFIG["secret"], "https://#{request.host}:#{request.port}/auth/facebook/callback")
         redirect_to oauth.url_for_oauth_code(:permissions => 
