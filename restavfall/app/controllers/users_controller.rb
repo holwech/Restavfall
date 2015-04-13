@@ -36,12 +36,18 @@ class UsersController < ApplicationController
           output = {"status": "OK", "next": "Friends", "text": "Gathering the candidates"}
       when "Friends"
           friend_data = FriendFinder.make_friend_data(graph, session[:fs])
-          output = {"status": "OK", "next": "Friend", "friends": friend_data,
+          output = {"status": "OK", "next": "FirstLoad", "friends": friend_data,
                     "text": "Finding your ideal UKE-friend!"}
           session[:fd] = friend_data
+      when "FirstLoad"
+          friend = FriendFinder.get_one_friend(session[:fd])
+          output = {"status": "OK", "next": "Event", "text": "Your chosen friend is " + friend['name']}
       when "Friend"
           friend = FriendFinder.get_one_friend(session[:fd])
           output = {"status": "Done", "friend": friend}
+      when "Event"
+          event = Event.offset(rand(Event.count)).first
+          output = {"status": "Done", "event": event}
       else
           output = {"status": "Error"}
       end

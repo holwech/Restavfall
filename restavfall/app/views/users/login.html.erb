@@ -12,10 +12,16 @@ var runAnalysis = function(stage) {
             runAnalysis(data['next']);
         }
         else if (data['status'] == "Done") {
-            statusChanged("Your chosen friend is " + data['friend']['name']);
+            if(data['friend']) {
+                statusChanged("Your chosen friend is " + data['friend']['name']);
+            }
+            if(data['event']) {
+                statusChanged("You are going to " + data['event']['name']);
+            }
             if (computationDone === false) {
                 computationDone = true;
                 $("#new-friend").html("Give me another friend");
+                $("#new-event").html("Give me another event");
             }
         }
         else {
@@ -29,5 +35,6 @@ var statusChanged = function(text) {
 $( document ).ready(runAnalysis('Start'));
 </script>
 <a  id="new-friend" href="#" onclick="runAnalysis('Friend');"></a>
+<a  id="new-event" href="#" onclick="runAnalysis('Event');"></a>
 <br>
 <div id="data"></div>
