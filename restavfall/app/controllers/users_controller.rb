@@ -55,4 +55,18 @@ class UsersController < ApplicationController
       session[:fs].default_proc = nil
       render json: output
   end
+
+  def uno
+
+    uself = params[:uself]
+    ufriend = params[:ufriend]
+    @ev = Event.find(params[:ev])
+
+    graph = Koala::Facebook::API.new(session[:token])
+    @selfprofile = graph.get_object(uself)
+    #@friendprofile = graph.get_object(ufriend)
+    @selfimage = graph.get_picture(uself)
+    @friendimage = graph.get_picture(ufriend)
+
+  end
 end
