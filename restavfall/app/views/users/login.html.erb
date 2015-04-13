@@ -47,7 +47,11 @@ var statusChanged = function(data) {
     } else if (id == 'friend') {
         $("#" + id).html(data['friend']['name'] + "<br>");
     } else if (id == 'event') {
-        $("#" + id).html(data['event']['name'] + "<br>");
+        $("#eventLink").html(data['event']['name'] + "<br>");
+        $("#eventLink").attr("href", "http://www.facebook.com/" + data['event']['eventID']);
+        $("#eventBuy").attr("href", data['event']['url']).html("Kjøp billett på UKA.no!");
+    } else {
+        $("#" + data).html("Error " + data + "<br>");
     }
 }
 
@@ -58,12 +62,12 @@ var statusChanged = function(data) {
 <a  id="start-test" href="#" onclick="runAnalysis('Start');$('#start-test').html('');">Start test</a>
 <br>
 <div id="data"></div>
-
-<a id="sendShare" href=""></a>
-<br>
-<a id="postShare" href=""></a>
-
-<div id="friend"></div>
-<div id="event"></div>
-
+<div id="friend">
+    <img id="profile">
+</div>
+<div id="event">
+    <a id="eventLink"></a>
+    <br>
+    <a id="eventBuy"></a>
+</div>
 <a id="sendShare" href=""></a>
