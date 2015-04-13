@@ -11,7 +11,7 @@ class FriendFinder
     EVENT_UNDER_10 = 3
     EVENT_UNDER_5 = 4
 
-    CUTOFF_DATE = '1-January-2011'
+    CUTOFF_DATE = '1-January-2012'
     MAX_POST_PAGES = 4
 
     @indent = 0

@@ -17,10 +17,9 @@ var runAnalysis = function(stage) {
             if (computationDone === false) {
                 computationDone = true;
                 $("#new-friend").html("Give me another friend");
+                $("#new-event").html("Give me another event");
                 $("#sendShare").html("Del dette!");
                 $('#sendShare').attr('href', 'https://www.facebook.com/dialog/send?app_id=649498578495089&link=https://www.uka.no/' + data['friend']['id'] + '/' + '&redirect_uri=https://locahost:3001/');
-
-                $("#new-event").html("Give me another event");
             }
         }
         else {
@@ -35,7 +34,11 @@ var statusChanged = function(data) {
     } else if (id == 'friend') {
         $("#" + id).html(data['friend']['name'] + "<br>");
     } else if (id == 'event') {
-        $("#" + id).html(data['event']['name'] + "<br>");
+        $("#eventLink").html(data['event']['name'] + "<br>");
+        $("#eventLink").attr("href", "http://www.facebook.com/" + data['event']['eventID']);
+        $("#eventBuy").attr("href", data['event']['url']).html("Kjøp billett på UKA.no!");
+    } else {
+        $("#" + data).html("Error " + data + "<br>");
     }
 }
 
@@ -45,9 +48,12 @@ var statusChanged = function(data) {
 <a  id="start-test" href="#" onclick="runAnalysis('Start');$('#start-test').html('');">Start test</a>
 <br>
 <div id="data"></div>
-
-<div id="friend"></div>
-<div id="event"></div>
-=======
-
+<div id="friend">
+    <img id="profile">
+</div>
+<div id="event">
+    <a id="eventLink"></a>
+    <br>
+    <a id="eventBuy"></a>
+</div>
 <a id="sendShare" href=""></a>
