@@ -9,16 +9,11 @@ var runAnalysis = function(stage) {
     .success(function(data) {
         console.log(data)
         if (data['status'] == "OK") {
-            statusChanged(data['text']);
+            statusChanged(data);
             runAnalysis(data['next']);
         }
         else if (data['status'] == "Done") {
-            if(data['friend']) {
-                statusChanged("Your chosen friend is " + data['friend']['name']);
-            }
-            if(data['event']) {
-                statusChanged("You are going to " + data['event']['name']);
-            }
+            statusChanged(data);
             if (computationDone === false) {
                 computationDone = true;
                 $("#new-friend").html("Give me another friend");
@@ -45,9 +40,17 @@ var runAnalysis = function(stage) {
         }
     });
 }
-var statusChanged = function(text) {
-    $("#data").html($("#data").html() + "<br>" + text);
+var statusChanged = function(data) {
+    id = data['id']
+    if (id == 'data') {
+        $("#" + id).html($("#" + id).html() + "<br>" + data['text']);
+    } else if (id == 'friend') {
+        $("#" + id).html(data['friend']['name'] + "<br>");
+    } else if (id == 'event') {
+        $("#" + id).html(data['event']['name'] + "<br>");
+    }
 }
+
 </script>
 <a  id="new-friend" href="#" onclick="runAnalysis('Friend');"></a>
 <a  id="new-event" href="#" onclick="runAnalysis('Event');"></a>
@@ -59,3 +62,8 @@ var statusChanged = function(text) {
 <a id="sendShare" href=""></a>
 <br>
 <a id="postShare" href=""></a>
+
+<div id="friend"></div>
+<div id="event"></div>
+
+<a id="sendShare" href=""></a>
