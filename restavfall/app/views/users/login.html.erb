@@ -1,4 +1,5 @@
 <script>
+
 var computationDone = false;
 var runAnalysis = function(stage) {
     $.ajax({
@@ -16,6 +17,9 @@ var runAnalysis = function(stage) {
             if (computationDone === false) {
                 computationDone = true;
                 $("#new-friend").html("Give me another friend");
+                $("#sendShare").html("Del dette!");
+                $('#sendShare').attr('href', 'https://www.facebook.com/dialog/send?app_id=649498578495089&link=https://www.uka.no/' + data['friend']['id'] + '/' + '&redirect_uri=https://locahost:3001/');
+
                 $("#new-event").html("Give me another event");
             }
         }
@@ -34,12 +38,21 @@ var statusChanged = function(data) {
         $("#" + id).html(data['event']['name'] + "<br>");
     }
 }
+<<<<<<< HEAD
 
 $( document ).ready(runAnalysis('Start'));
+=======
+>>>>>>> 9f8584371c72dae5bc46e39f86f3fe7adbb76fb0
 </script>
 <a  id="new-friend" href="#" onclick="runAnalysis('Friend');"></a>
 <a  id="new-event" href="#" onclick="runAnalysis('Event');"></a>
+<a  id="start-test" href="#" onclick="runAnalysis('Start');$('#start-test').html('');">Start test</a>
 <br>
 <div id="data"></div>
+<<<<<<< HEAD
 <div id="friend"></div>
 <div id="event"></div>
+=======
+
+<a id="sendShare" href=""></a>
+>>>>>>> 9f8584371c72dae5bc46e39f86f3fe7adbb76fb0
