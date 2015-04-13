@@ -32,9 +32,9 @@ var runAnalysis = function(stage) {
 var statusChanged = function(text) {
     $("#data").html($("#data").html() + "<br>" + text);
 }
-$( document ).ready(runAnalysis('Start'));
 </script>
 <a  id="new-friend" href="#" onclick="runAnalysis('Friend');"></a>
 <a  id="new-event" href="#" onclick="runAnalysis('Event');"></a>
+<a  id="start-test" href="#" onclick="runAnalysis('Start');$('#start-test').html('');">Start test</a>
 <br>
 <div id="data"></div>
