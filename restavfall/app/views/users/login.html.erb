@@ -9,23 +9,30 @@ var runAnalysis = function(stage) {
     .success(function(data) {
         console.log(data)
         if (data['status'] == "OK") {
-            statusChanged(data['text']);
+            statusChanged(data);
             runAnalysis(data['next']);
         }
         else if (data['status'] == "Done") {
-            if(data['friend']) {
-                statusChanged("Your chosen friend is " + data['friend']['name']);
-            }
-            if(data['event']) {
-                statusChanged("You are going to " + data['event']['name']);
-            }
+            statusChanged(data);
             if (computationDone === false) {
                 computationDone = true;
                 $("#new-friend").html("Give me another friend");
-                $("#sendShare").html("Del dette!");
-                $('#sendShare').attr('href', 'https://www.facebook.com/dialog/send?app_id=649498578495089&link=https://www.uka.no/' + data['friend']['id'] + '/' + '&redirect_uri=https://locahost:3001/');
-
                 $("#new-event").html("Give me another event");
+
+                var app_id = 'app_id=649498578495089';
+                var redirect = '&redirect_uri=https://apps.facebook.com/prosjektrestavfall/';
+                var display = '&display=page';
+                var link = 'https://facebook.com/'+data['event']['eventID']
+
+                $("#postShare").html("Del dette!");
+                $('#postShare').attr('href', 
+                        'https://www.facebook.com/dialog/share?'+app_id+display+redirect+'&href='+link);
+
+                link = 'https://uka.no';
+
+                $("#sendShare").html("Send dette!");
+                $('#sendShare').attr('href', 'https://www.facebook.com/dialog/send?'+app_id+display+redirect+'&link='+link);
+
             }
         }
         else {
@@ -33,14 +40,34 @@ var runAnalysis = function(stage) {
         }
     });
 }
-var statusChanged = function(text) {
-    $("#data").html($("#data").html() + "<br>" + text);
+var statusChanged = function(data) {
+    id = data['id']
+    if (id == 'data') {
+        $("#" + id).html($("#" + id).html() + "<br>" + data['text']);
+    } else if (id == 'friend') {
+        $("#" + id).html(data['friend']['name'] + "<br>");
+    } else if (id == 'event') {
+        $("#eventLink").html(data['event']['name'] + "<br>");
+        $("#eventLink").attr("href", "http://www.facebook.com/" + data['event']['eventID']);
+        $("#eventBuy").attr("href", data['event']['url']).html("Kjøp billett på UKA.no!");
+    } else {
+        $("#" + data).html("Error " + data + "<br>");
+    }
 }
+
 </script>
 <a  id="new-friend" href="#" onclick="runAnalysis('Friend');"></a>
 <a  id="new-event" href="#" onclick="runAnalysis('Event');"></a>
+<br>
 <a  id="start-test" href="#" onclick="runAnalysis('Start');$('#start-test').html('');">Start test</a>
 <br>
 <div id="data"></div>
-
+<div id="friend">
+    <img id="profile">
+</div>
+<div id="event">
+    <a id="eventLink"></a>
+    <br>
+    <a id="eventBuy"></a>
+</div>
 <a id="sendShare" href=""></a>

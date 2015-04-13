@@ -24,30 +24,30 @@ class UsersController < ApplicationController
         
       case stage
       when "Start"
-          output = {"status": "OK", "next": "Posts", "text": "Analysing your posts"}
+          output = {"status": "OK", "next": "Posts", "text": "Analysing your posts", "id": "data"}
       when "Posts"
           FriendFinder.analyse_posts(graph, session[:fs])
-          output = {"status": "OK", "next": "Photos", "text": "Analysing your photos"}
+          output = {"status": "OK", "next": "Photos", "text": "Analysing your photos", "id": "data"}
       when "Photos"
           FriendFinder.analyse_photos(graph, session[:fs])
-          output = {"status": "OK", "next": "Events", "text": "Analysing your events"}
+          output = {"status": "OK", "next": "Events", "text": "Analysing your events", "id": "data"}
       when "Events"
           FriendFinder.analyse_events(graph, session[:fs])
-          output = {"status": "OK", "next": "Friends", "text": "Gathering the candidates"}
+          output = {"status": "OK", "next": "Friends", "text": "Gathering the candidates", "id": "data"}
       when "Friends"
           friend_data = FriendFinder.make_friend_data(graph, session[:fs])
           output = {"status": "OK", "next": "FirstLoad", "friends": friend_data,
-                    "text": "Finding your ideal UKE-friend!"}
+                    "text": "Finding your ideal UKE-friend!", "id": "data"}
           session[:fd] = friend_data
       when "FirstLoad"
           friend = FriendFinder.get_one_friend(session[:fd])
-          output = {"status": "OK", "next": "Event", "text": "Your chosen friend is " + friend['name']}
+          output = {"status": "OK", "next": "Event", "friend": friend, "id": "friend"}
       when "Friend"
           friend = FriendFinder.get_one_friend(session[:fd])
-          output = {"status": "Done", "friend": friend}
+          output = {"status": "Done", "friend": friend, "id": "friend"}
       when "Event"
           event = Event.offset(rand(Event.count)).first
-          output = {"status": "Done", "event": event}
+          output = {"status": "Done", "event": event, "id": "event"}
       else
           output = {"status": "Error"}
       end
