@@ -22,10 +22,22 @@ var runAnalysis = function(stage) {
             if (computationDone === false) {
                 computationDone = true;
                 $("#new-friend").html("Give me another friend");
-                $("#sendShare").html("Del dette!");
-                $('#sendShare').attr('href', 'https://www.facebook.com/dialog/send?app_id=649498578495089&link=https://www.uka.no/' + data['friend']['id'] + '/' + '&redirect_uri=https://locahost:3001/');
-
                 $("#new-event").html("Give me another event");
+
+                var app_id = 'app_id=649498578495089';
+                var redirect = '&redirect_uri=https://apps.facebook.com/prosjektrestavfall/';
+                var display = '&display=page';
+                var link = 'https://facebook.com/'+data['event']['eventID']
+
+                $("#postShare").html("Del dette!");
+                $('#postShare').attr('href', 
+                        'https://www.facebook.com/dialog/share?'+app_id+display+redirect+'&href='+link);
+
+                link = 'https://uka.no';
+
+                $("#sendShare").html("Send dette!");
+                $('#sendShare').attr('href', 'https://www.facebook.com/dialog/send?'+app_id+display+redirect+'&link='+link);
+
             }
         }
         else {
@@ -39,8 +51,11 @@ var statusChanged = function(text) {
 </script>
 <a  id="new-friend" href="#" onclick="runAnalysis('Friend');"></a>
 <a  id="new-event" href="#" onclick="runAnalysis('Event');"></a>
+<br>
 <a  id="start-test" href="#" onclick="runAnalysis('Start');$('#start-test').html('');">Start test</a>
 <br>
 <div id="data"></div>
 
 <a id="sendShare" href=""></a>
+<br>
+<a id="postShare" href=""></a>
