@@ -74,4 +74,7 @@ class HomeController < ApplicationController
     @friendimage = graph.get_picture(ufriend)
 
   end
+
+  def close
+  end
 end
