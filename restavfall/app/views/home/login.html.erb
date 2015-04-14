@@ -41,32 +41,50 @@ var runAnalysis = function(stage) {
 var statusChanged = function(data) {
     id = data['id']
     if (id == 'data') {
-        $("#" + id).html($("#" + id).html() + "<br>" + data['text']);
+        $("#data").html($("#" + id).html() + "<br>" + data['text']);
     } else if (id == 'friend') {
-        $("#" + id).html(data['friend']['name'] + "<br>");
+        $("#friend-profile").attr("src", data['friend']['pic']);
+        $("#friend-name").html(data['friend']['name']);
+        $("#friend-id").html("ID: " + data['friend']['id']);
     } else if (id == 'event') {
-        $("#eventLink").html(data['event']['name'] + "<br>");
-        $("#eventLink").attr("href", "http://www.facebook.com/" + data['event']['eventID']);
-        $("#eventBuy").attr("href", data['event']['url']).html("Kjøp billett på UKA.no!");
+        $("#eventLink").html(data['event']['name']);
+        $("#eventLink").attr("href","http://www.facebook.com/"+data['event']['eventID']);
+        $("#eventBuy").attr("href", data['event']['url'])
+        $("#eventBuy").html("Kjøp billett på UKA.no!");
     } else {
         $("#" + data).html("Error " + data + "<br>");
     }
 }
 
 </script>
-<a  id="new-friend" href="#" onclick="runAnalysis('Friend');"></a>
-<a  id="new-event" href="#" onclick="runAnalysis('Event');"></a>
-<br>
 <a  id="start-test" href="#" onclick="runAnalysis('Start');$('#start-test').html('');">Start test</a>
 <br>
-<div id="data"></div>
-<div id="friend">
-    <img id="profile">
+<div id="me">
+    <%= image_tag @user[:pic] %>
+    <br>
+    <%= @user[:name] %>
+    <br>
+    ID: <%= @user[:id] %>
 </div>
+<br>
+<a  id="new-friend" href="#" onclick="runAnalysis('Friend');"></a>
+<br>
+<a  id="new-event" href="#" onclick="runAnalysis('Event');"></a>
+<br>
+<a id="sendShare"></a>
+<br>
+<a id="postShare"></a>
+<br>
+<div id="data"></div>
+<br>
+<div id="friend">
+    <img id="friend-profile">
+    <div id="friend-name"></div>
+    <div id="friend-id"></div>
+</div>
+<br>
 <div id="event">
     <a id="eventLink"></a>
     <br>
     <a id="eventBuy"></a>
 </div>
-<a id="sendShare"></a>
-<a id="postShare"></a>
