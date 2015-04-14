@@ -23,7 +23,7 @@ var runAnalysis = function(stage) {
                 var app_id = 'app_id=649498578495089';
                 var redirect = '&redirect_uri=https://apps.facebook.com/prosjektrestavfall/';
                 var disp = '&display=popup';
-                var link = "https://apps.facebook.com/prosjektrestavfall/10152607059212447/10154345683960422/1"
+                var link = "https://apps.facebook.com/prosjektrestavfall/uno/10152607059212447/10154345683960422/1"
 
                 var shareLink = 'https://www.facebook.com/dialog/share?'+app_id+'&display='+disp+redirect+'&href='+link;
                 $("#postShare").html("Del dette!");
@@ -66,7 +66,7 @@ function addToLink(part){
 }
 
 window.onload = function(){
-    var selfid = $('#self-id').html();
+    var selfid = "<%= @user[:id] %>"
     addToLink(selfid);
 }
 
