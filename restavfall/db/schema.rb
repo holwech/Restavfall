@@ -18,10 +18,9 @@ ActiveRecord::Schema.define(version: 20150413140524) do
     t.string   "url"
     t.datetime "time"
     t.string   "fbpageID"
-    t.string   "keywords"
-    t.string   "relatedPages"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.string   "fbeventID"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "sessions", force: :cascade do |t|
