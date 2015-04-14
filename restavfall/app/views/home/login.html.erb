@@ -1,6 +1,7 @@
 <script>
 
 var computationDone = false;
+var sharingLink = 'https://localhost:3001/uno';
 var runAnalysis = function(stage) {
     $.ajax({
         type: "GET",
@@ -46,15 +47,30 @@ var statusChanged = function(data) {
         $("#friend-profile").attr("src", data['friend']['pic']);
         $("#friend-name").html(data['friend']['name']);
         $("#friend-id").html("ID: " + data['friend']['id']);
+        addToLink(data['friend']['id']);
     } else if (id == 'event') {
         $("#eventLink").html(data['event']['name']);
         $("#eventLink").attr("href","http://www.facebook.com/"+data['event']['eventID']);
         $("#eventBuy").attr("href", data['event']['url'])
         $("#eventBuy").html("Kjøp billett på UKA.no!");
+        addToLink(data['event']['id']);
+        $("#linkShare").html(sharingLink);
     } else {
         $("#" + data).html("Error " + data + "<br>");
     }
 }
+
+function addToLink(part){
+    sharingLink += '/' + part;
+    console.log(sharingLink);
+}
+
+window.onload = function(){
+    var selfid = $('#self-id').html();
+    addToLink(selfid);
+}
+
+
 
 </script>
 <a  id="start-test" href="#" onclick="runAnalysis('Start');$('#start-test').html('');">Start test</a>
@@ -64,7 +80,7 @@ var statusChanged = function(data) {
     <br>
     <%= @user[:name] %>
     <br>
-    ID: <%= @user[:id] %>
+    ID: <span id="self-id"><%= @user[:id] %></span>
 </div>
 <br>
 <a  id="new-friend" href="#" onclick="runAnalysis('Friend');"></a>
@@ -87,4 +103,6 @@ var statusChanged = function(data) {
     <a id="eventLink"></a>
     <br>
     <a id="eventBuy"></a>
+    <br>
+    <span id="linkShare"></span>
 </div>
