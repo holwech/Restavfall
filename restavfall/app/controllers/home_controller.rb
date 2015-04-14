@@ -77,6 +77,7 @@ class HomeController < ApplicationController
     #@friendprofile = graph.get_object(ufriend)
     @selfimage = graph.get_picture(uself)
     @friendimage = graph.get_picture(ufriend)
+    @eventtime = @ev['time'].strftime('%d. %B');
 
   end
 
