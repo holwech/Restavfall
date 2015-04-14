@@ -1,7 +1,8 @@
 <script>
 
-var computationDone = false;
-var sharingLink = 'https://localhost:3001/uno';
+var userId = "<%= @user[:id] %>";
+var currentEvent = "";
+var currentFriend = "";
 var runAnalysis = function(stage) {
     $.ajax({
         type: "GET",
@@ -10,64 +11,80 @@ var runAnalysis = function(stage) {
     .success(function(data) {
         console.log(data);
         if (data['status'] == "OK") {
-            statusChanged(data);
+            $("#data").append("<br>" + data['text']);
             runAnalysis(data['next']);
         }
         else if (data['status'] == "Done") {
-            statusChanged(data);
-            if (computationDone === false) {
-                computationDone = true;
-                $("#new-friend").html("Give me another friend");
-                $("#new-event").html("Give me another event");
+            $("#new-friend").html("Give me another friend");
+            $("#new-event").html("Give me another event");
 
-                var app_id = 'app_id=649498578495089';
-                var redirect = '&redirect_uri=https://apps.facebook.com/prosjektrestavfall/';
-                var disp = '&display=popup';
-                var link = "https://apps.facebook.com/prosjektrestavfall/uno/10152607059212447/10154345683960422/1"
-
-                var shareLink = 'https://www.facebook.com/dialog/share?'+app_id+'&display='+disp+redirect+'&href='+link;
-                $("#postShare").html("Del dette!");
-                $('#postShare').attr('onclick', "window.open('"+shareLink+"', 'fbshare', 'width=640,height=320');");
-
-                var sendLink = 'https://www.facebook.com/dialog/send?'+app_id+'&display='+disp+redirect+'&link='+link;
-                $("#sendShare").html("Send dette!");
-                $('#sendShare').attr('onclick', "window.open('"+sendLink+"', 'fbshare', 'width=640,height=320');");
-            }
-        }
-        else {
-            statusChanged("Error " + data);
+            currentEvent = data['event'];
+            currentFriend = data['friend'];
+            setFriend();
+            setEvent();
+            setLink();
         }
     });
 }
-var statusChanged = function(data) {
-    id = data['id']
-    if (id == 'data') {
-        $("#data").html($("#" + id).html() + "<br>" + data['text']);
-    } else if (id == 'friend') {
-        $("#friend-profile").attr("src", data['friend']['pic']);
-        $("#friend-name").html(data['friend']['name']);
-        $("#friend-id").html("ID: " + data['friend']['id']);
-        addToLink(data['friend']['id']);
-    } else if (id == 'event') {
-        $("#event-link").html(data['event']['name']);
-        $("#event-link").attr("href","http://www.facebook.com/"+data['event']['eventID']);
-        $("#event-buy").attr("href", data['event']['url'])
-        $("#event-buy").html("Kjøp billett på UKA.no!");
-        addToLink(data['event']['id']);
-        $("#link-share").html(sharingLink);
-    } else {
-        $("#" + data).html("Error " + data + "<br>");
-    }
+var newFriend = function() {
+    $.ajax({
+        type: "GET",
+        url: '/analyse/Friend',
+    })
+    .success(function(data) {
+        console.log(data);
+        if (data['status'] == "Done") {
+           currentFriend = data['friend']; 
+            setFriend();
+            setLink();
+        }
+    });
+}
+var newEvent = function() {
+    $.ajax({
+        type: "GET",
+        url: '/analyse/Event',
+    })
+    .success(function(data) {
+        console.log(data);
+        if (data['status'] == "Done") {
+           currentEvent = data['event']; 
+            setEvent();
+            setLink();
+        }
+    });
 }
 
-function addToLink(part){
-    sharingLink += '/' + part;
-    console.log(sharingLink);
+
+var setFriend = function() {
+    $("#friend-profile").attr("src", currentFriend['pic']);
+    $("#friend-name").html(currentFriend['name']);
+    $("#friend-id").html("ID: " + currentFriend['id']);
 }
 
-window.onload = function(){
-    var selfid = "<%= @user[:id] %>"
-    addToLink(selfid);
+var setEvent = function() {
+    $("#event-link").html(currentEvent['name']);
+    $("#event-link").attr("href","http://www.facebook.com/"+currentEvent['eventID']);
+    $("#event-buy").attr("href", currentEvent['url'])
+    $("#event-buy").html("Kjøp billett på UKA.no!");
+}
+
+var setLink = function() {
+    var app_id = 'app_id=649498578495089';
+    var redirect = '&redirect_uri=https://localhost:3001/close';
+    var disp = '&display=popup';
+    var link = "https://apps.facebook.com/prosjektrestavfall/uno/"+
+                userId + "/" +
+                currentFriend['id'] + "/" +
+                currentEvent['id'] + "/";
+
+    var shareLink = 'https://www.facebook.com/dialog/share?'+app_id+'&display='+disp+redirect+'&href='+link;
+    $("#postShare").html("Del dette!");
+    $('#postShare').attr('onclick', "window.open('"+shareLink+"', 'fbshare', 'width=640,height=320');");
+
+    var sendLink = 'https://www.facebook.com/dialog/send?'+app_id+'&display='+disp+redirect+'&link='+link;
+    $("#sendShare").html("Send dette!");
+    $('#sendShare').attr('onclick', "window.open('"+sendLink+"', 'fbshare', 'width=640,height=320');");
 }
 
 

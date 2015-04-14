@@ -27,32 +27,33 @@ class HomeController < ApplicationController
         
       case stage
       when "Start"
-          output = {"status": "OK", "next": "Posts", "text": "Analysing your posts", "id": "data"}
+          output = {"status": "OK", "next": "Posts", "text": "Analysing your posts"}
       when "Posts"
           FriendFinder.analyse_posts(graph, session[:fs])
-          output = {"status": "OK", "next": "Photos", "text": "Analysing your photos", "id": "data"}
+          output = {"status": "OK", "next": "Photos", "text": "Analysing your photos"}
       when "Photos"
           FriendFinder.analyse_photos(graph, session[:fs])
-          output = {"status": "OK", "next": "Events", "text": "Analysing your events", "id": "data"}
+          output = {"status": "OK", "next": "Events", "text": "Analysing your events"}
       when "Events"
           FriendFinder.analyse_events(graph, session[:fs])
-          output = {"status": "OK", "next": "Friends", "text": "Gathering the candidates", "id": "data"}
+          output = {"status": "OK", "next": "Friends", "text": "Gathering the candidates"}
       when "Friends"
           friend_data = FriendFinder.make_friend_data(graph, session[:fs])
-          output = {"status": "OK", "next": "FirstLoad", "friends": friend_data,
-                    "text": "Finding your ideal UKE-friend!", "id": "data"}
+          output = {"status": "OK", "next": "FriendEvent", "friends": friend_data,
+                    "text": "Finding your ideal UKE-friend!"}
           session[:fd] = friend_data
-      when "FirstLoad"
+      when "FriendEvent"
           friend = FriendFinder.get_one_friend(session[:fd])
           friend['pic'] = graph.get_picture(friend['id']);
-          output = {"status": "OK", "next": "Event", "friend": friend, "id": "friend"}
+          event = Event.offset(rand(Event.count)).first
+          output = {"status": "Done",  "friend": friend, "event": event}
       when "Friend"
           friend = FriendFinder.get_one_friend(session[:fd])
           friend['pic'] = graph.get_picture(friend['id']);
-          output = {"status": "Done", "friend": friend, "id": "friend"}
+          output = {"status": "Done", "friend": friend}
       when "Event"
           event = Event.offset(rand(Event.count)).first
-          output = {"status": "Done", "event": event, "id": "event"}
+          output = {"status": "Done", "event": event}
       else
           output = {"status": "Error"}
       end
@@ -73,5 +74,8 @@ class HomeController < ApplicationController
     @selfimage = graph.get_picture(uself)
     @friendimage = graph.get_picture(ufriend)
 
+  end
+
+  def close
   end
 end
