@@ -44,7 +44,7 @@ class HomeController < ApplicationController
           session[:fd] = friend_data
       when "FriendEvent"
           setEvent()
-          event = Event.offset(session[:nextEvent]).first
+          event = Event.offset(session[:eventCount].at(session[:nextEvent])).first
           increaseEventCount()
 
           friend = FriendFinder.get_one_friend(session[:fd])
@@ -55,7 +55,7 @@ class HomeController < ApplicationController
           friend['pic'] = graph.get_picture(friend['id']);
           output = {"status": "Done", "friend": friend}
       when "Event"
-          event = Event.offset(session[:nextEvent]).first
+          event = Event.offset(session[:eventCount].at(session[:nextEvent])).first
           output = {"status": "Done", "event": event}
           increaseEventCount()
       else
@@ -87,20 +87,19 @@ class HomeController < ApplicationController
 private
 
   def setEvent
-    arr = Array(0..(Event.count - 1))
-    arr.shuffle
+    arr = Array(0..(Event.count - 1)).shuffle
     session[:eventCount] = arr
     session[:nextEvent] = 0
   end
 
   def increaseEventCount
     puts Event.count
-    if (session[:nextEvent] >= (Event.count - 1))
+    if (session[:nextEvent] >= (session[:eventCount].count - 1))
       session[:nextEvent] = 0
+      session[:eventCount] = session[:eventCount].shuffle
     else 
       session[:nextEvent] += 1
     end
-    puts session[:nextEvent]
   end
 
 end
