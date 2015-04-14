@@ -1,29 +1,37 @@
+body {
+	overflow: hidden;
+}
+
 #data {
-	background: #4DB5FF;
 	float: left;
 }
 
-#friend {
-	clear: left;
+
+
+#result {
+	display: none;
+	clear: both;
 	float: left;
+}
+
+#friend, #me, #event {
+	float: left;
+}
+
+#me {
+	background: #52C2FF;
+}
+
+#friend {
 	background: #FF9CE0;
 	padding: 20px;
 }
 
-#me {
-	float: left;
-}
-
-
 #event {
-	float: left;
-	background: #B49CFF;
-	clear: right;
-	padding: 20px;
+	float: center;
+	clear: both;
 }
 
-
-#sendShare {
-	float: left;
-	clear: both;	
+#send-share, post-share {
+	float: left;	
 }

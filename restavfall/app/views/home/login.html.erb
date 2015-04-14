@@ -20,6 +20,7 @@ var runAnalysis = function(stage) {
 
             currentEvent = data['event'];
             currentFriend = data['friend'];
+            toggleVisibility();
             setFriend();
             setEvent();
             setLink();
@@ -59,12 +60,13 @@ var newEvent = function() {
 var setFriend = function() {
     $("#friend-profile").attr("src", currentFriend['pic']);
     $("#friend-name").html(currentFriend['name']);
+    $("#Sfriend-name").attr("href", "http://www.facebook.com/" + currentFriend['id'])
     $("#friend-id").html("ID: " + currentFriend['id']);
 }
 
 var setEvent = function() {
     $("#event-link").html(currentEvent['name']);
-    $("#event-link").attr("href","http://www.facebook.com/"+currentEvent['eventID']);
+    $("#event-link").attr("href","http://www.facebook.com/" + currentEvent['eventID']);
     $("#event-buy").attr("href", currentEvent['url'])
     $("#event-buy").html("Kjøp billett på UKA.no!");
 }
@@ -87,34 +89,46 @@ var setLink = function() {
     $('#send-share').attr('onclick', "window.open('"+sendLink+"', 'fbshare', 'width=640,height=320');");
 }
 
-
+var toggleVisibility = function() {
+    $("#result").toggle();
+    $("#data").toggle();
+}
 
 </script>
-<a  id="start-test" href="#" onclick="runAnalysis('Start');$('#start-test').html('');">Start test</a><br><br>
-
-<a  id="new-friend" href="#" onclick="newFriend();"></a><br>
-<a  id="new-event" href="#" onclick="newEvent();"></a><br>
-<a id="send-share"></a><br>
-<a id="post-share"></a><br>
+<button type="button" id="start-test" class="btn btn-default" onclick="runAnalysis('Start');$('#start-test').toggle();">Start test</button>
 
 <div id="data">
-    
-</div><br>
-
-<div id="friend">
-    <img id="friend-profile">
-    <a id="friend-name"></a>
-    <div id="friend-id"></div>
+        
 </div>
 
-<div id="me">
-    <%= image_tag @user[:pic] %> <br>
-    <a href=<%= "http://www.facebook.com/" + @user[:id] %> ><%= @user[:name] %></a> <br>
-    ID: <span id="self-id"><%= @user[:id] %></span>
+<div id="result">
+    <div>
+        <a  id="new-friend" href="#" onclick="newFriend();"></a>
+        <a  id="new-event" href="#" onclick="newEvent();"></a>
+    </div>
+    <div id="friend">
+        <img id="friend-profile">
+        <a id="friend-name"></a>
+        <div id="friend-id"></div>
+    </div>
+
+    <div id="me">
+        <%= image_tag @user[:pic] %> <br>
+        <a href=<%= "http://www.facebook.com/" + @user[:id] %> ><%= @user[:name] %></a> <br>
+        ID: <span id="self-id"><%= @user[:id] %></span>
+    </div>
+
+    <div id="event">
+        <a id="event-link"></a> <br>
+        <a id="event-buy"></a> <br>
+        <span id="link-share"></span>
+    </div>
+    <button type="button" class="btn btn-primary"><a id="send-share"></a></button>
+    <button type="button" class="btn btn-primary"><a id="post-share"></a></button>
 </div>
 
-<div id="event">
-    <a id="event-link"></a> <br>
-    <a id="event-buy"></a> <br>
-    <span id="link-share"></span>
-</div>
+
+
+
+
+
