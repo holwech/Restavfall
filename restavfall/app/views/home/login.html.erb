@@ -49,12 +49,12 @@ var statusChanged = function(data) {
         $("#friend-id").html("ID: " + data['friend']['id']);
         addToLink(data['friend']['id']);
     } else if (id == 'event') {
-        $("#eventLink").html(data['event']['name']);
-        $("#eventLink").attr("href","http://www.facebook.com/"+data['event']['eventID']);
-        $("#eventBuy").attr("href", data['event']['url'])
-        $("#eventBuy").html("Kjøp billett på UKA.no!");
+        $("#event-link").html(data['event']['name']);
+        $("#event-link").attr("href","http://www.facebook.com/"+data['event']['eventID']);
+        $("#event-buy").attr("href", data['event']['url'])
+        $("#event-buy").html("Kjøp billett på UKA.no!");
         addToLink(data['event']['id']);
-        $("#linkShare").html(sharingLink);
+        $("#link-share").html(sharingLink);
     } else {
         $("#" + data).html("Error " + data + "<br>");
     }
@@ -73,36 +73,31 @@ window.onload = function(){
 
 
 </script>
-<a  id="start-test" href="#" onclick="runAnalysis('Start');$('#start-test').html('');">Start test</a>
-<br>
-<div id="me">
-    <%= image_tag @user[:pic] %>
-    <br>
-    <%= @user[:name] %>
-    <br>
-    ID: <span id="self-id"><%= @user[:id] %></span>
-</div>
-<br>
-<a  id="new-friend" href="#" onclick="runAnalysis('Friend');"></a>
-<br>
-<a  id="new-event" href="#" onclick="runAnalysis('Event');"></a>
-<br>
-<a id="sendShare"></a>
-<br>
-<a id="postShare"></a>
-<br>
-<div id="data"></div>
-<br>
+<a  id="start-test" href="#" onclick="runAnalysis('Start');$('#start-test').html('');">Start test</a><br><br>
+
+<a  id="new-friend" href="#" onclick="runAnalysis('Friend');"></a><br>
+<a  id="new-event" href="#" onclick="runAnalysis('Event');"></a><br>
+<a id="sendShare"></a><br>
+<a id="postShare"></a><br>
+
+<div id="data">
+    
+</div><br>
+
 <div id="friend">
     <img id="friend-profile">
-    <div id="friend-name"></div>
+    <a id="friend-name"></a>
     <div id="friend-id"></div>
 </div>
-<br>
+
+<div id="me">
+    <%= image_tag @user[:pic] %> <br>
+    <a href=<%= "http://www.facebook.com/" + @user[:id] %> ><%= @user[:name] %></a> <br>
+    ID: <span id="self-id"><%= @user[:id] %></span>
+</div>
+
 <div id="event">
-    <a id="eventLink"></a>
-    <br>
-    <a id="eventBuy"></a>
-    <br>
-    <span id="linkShare"></span>
+    <a id="event-link"></a> <br>
+    <a id="event-buy"></a> <br>
+    <span id="link-share"></span>
 </div>
