@@ -7,7 +7,7 @@ var runAnalysis = function(stage) {
         url: '/analyse/'+stage,
     })
     .success(function(data) {
-        console.log(data)
+        console.log(data);
         if (data['status'] == "OK") {
             statusChanged(data);
             runAnalysis(data['next']);
@@ -21,18 +21,16 @@ var runAnalysis = function(stage) {
 
                 var app_id = 'app_id=649498578495089';
                 var redirect = '&redirect_uri=https://apps.facebook.com/prosjektrestavfall/';
-                var display = '&display=page';
-                var link = 'https://facebook.com/'+data['event']['eventID']
+                var disp = '&display=popup';
+                var link = "https://apps.facebook.com/prosjektrestavfall/10152607059212447/10154345683960422/1"
 
+                var shareLink = 'https://www.facebook.com/dialog/share?'+app_id+'&display='+disp+redirect+'&href='+link;
                 $("#postShare").html("Del dette!");
-                $('#postShare').attr('href', 
-                        'https://www.facebook.com/dialog/share?'+app_id+display+redirect+'&href='+link);
+                $('#postShare').attr('onclick', "window.open('"+shareLink+"', 'fbshare', 'width=640,height=320');");
 
-                link = 'https://uka.no';
-
+                var sendLink = 'https://www.facebook.com/dialog/send?'+app_id+'&display='+disp+redirect+'&link='+link;
                 $("#sendShare").html("Send dette!");
-                $('#sendShare').attr('href', 'https://www.facebook.com/dialog/send?'+app_id+display+redirect+'&link='+link);
-
+                $('#sendShare').attr('onclick', "window.open('"+sendLink+"', 'fbshare', 'width=640,height=320');");
             }
         }
         else {
@@ -43,31 +41,50 @@ var runAnalysis = function(stage) {
 var statusChanged = function(data) {
     id = data['id']
     if (id == 'data') {
-        $("#" + id).html($("#" + id).html() + "<br>" + data['text']);
+        $("#data").html($("#" + id).html() + "<br>" + data['text']);
     } else if (id == 'friend') {
-        $("#" + id).html(data['friend']['name'] + "<br>");
+        $("#friend-profile").attr("src", data['friend']['pic']);
+        $("#friend-name").html(data['friend']['name']);
+        $("#friend-id").html("ID: " + data['friend']['id']);
     } else if (id == 'event') {
-        $("#eventLink").html(data['event']['name'] + "<br>");
-        $("#eventLink").attr("href", "http://www.facebook.com/" + data['event']['eventID']);
-        $("#eventBuy").attr("href", data['event']['url']).html("Kjøp billett på UKA.no!");
+        $("#eventLink").html(data['event']['name']);
+        $("#eventLink").attr("href","http://www.facebook.com/"+data['event']['eventID']);
+        $("#eventBuy").attr("href", data['event']['url'])
+        $("#eventBuy").html("Kjøp billett på UKA.no!");
     } else {
         $("#" + data).html("Error " + data + "<br>");
     }
 }
 
 </script>
-<a  id="new-friend" href="#" onclick="runAnalysis('Friend');"></a>
-<a  id="new-event" href="#" onclick="runAnalysis('Event');"></a>
-<br>
 <a  id="start-test" href="#" onclick="runAnalysis('Start');$('#start-test').html('');">Start test</a>
 <br>
-<div id="data"></div>
-<div id="friend">
-    <img id="profile">
+<div id="me">
+    <%= image_tag @user[:pic] %>
+    <br>
+    <%= @user[:name] %>
+    <br>
+    ID: <%= @user[:id] %>
 </div>
+<br>
+<a  id="new-friend" href="#" onclick="runAnalysis('Friend');"></a>
+<br>
+<a  id="new-event" href="#" onclick="runAnalysis('Event');"></a>
+<br>
+<a id="sendShare"></a>
+<br>
+<a id="postShare"></a>
+<br>
+<div id="data"></div>
+<br>
+<div id="friend">
+    <img id="friend-profile">
+    <div id="friend-name"></div>
+    <div id="friend-id"></div>
+</div>
+<br>
 <div id="event">
     <a id="eventLink"></a>
     <br>
     <a id="eventBuy"></a>
 </div>
-<a id="sendShare" href=""></a>

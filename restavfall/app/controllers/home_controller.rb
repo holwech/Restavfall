@@ -9,6 +9,10 @@ class HomeController < ApplicationController
   def login
         auth = request.env["omniauth.auth"]
         session[:token] = auth['credentials']['token']
+        graph = Koala::Facebook::API.new(session[:token])
+        me = graph.get_object('me');
+        me_pic = graph.get_picture('me');
+        @user = {:pic => me_pic, :id => me['id'], :name => me['name']};
   end
 
   def analyse
@@ -40,9 +44,11 @@ class HomeController < ApplicationController
           session[:fd] = friend_data
       when "FirstLoad"
           friend = FriendFinder.get_one_friend(session[:fd])
+          friend['pic'] = graph.get_picture(friend['id']);
           output = {"status": "OK", "next": "Event", "friend": friend, "id": "friend"}
       when "Friend"
           friend = FriendFinder.get_one_friend(session[:fd])
+          friend['pic'] = graph.get_picture(friend['id']);
           output = {"status": "Done", "friend": friend, "id": "friend"}
       when "Event"
           event = Event.offset(rand(Event.count)).first
