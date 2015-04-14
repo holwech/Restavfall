@@ -43,17 +43,21 @@ class HomeController < ApplicationController
                     "text": "Finding your ideal UKE-friend!"}
           session[:fd] = friend_data
       when "FriendEvent"
+          setEvent()
+          event = Event.offset(session[:nextEvent]).first
+          increaseEventCount()
+
           friend = FriendFinder.get_one_friend(session[:fd])
           friend['pic'] = graph.get_picture(friend['id']);
-          event = Event.offset(rand(Event.count)).first
           output = {"status": "Done",  "friend": friend, "event": event}
       when "Friend"
           friend = FriendFinder.get_one_friend(session[:fd])
           friend['pic'] = graph.get_picture(friend['id']);
           output = {"status": "Done", "friend": friend}
       when "Event"
-          event = Event.offset(rand(Event.count)).first
+          event = Event.offset(session[:nextEvent]).first
           output = {"status": "Done", "event": event}
+          increaseEventCount()
       else
           output = {"status": "Error"}
       end
@@ -78,4 +82,22 @@ class HomeController < ApplicationController
 
   def close
   end
+
+  def setEvent
+    arr = Array(0..(Event.count - 1))
+    arr.shuffle
+    session[:eventCount] = arr
+    session[:nextEvent] = 0
+  end
+
+  def increaseEventCount
+    puts Event.count
+    if (session[:nextEvent] >= (Event.count - 1))
+      session[:nextEvent] = 0
+    else 
+      session[:nextEvent] += 1
+    end
+    puts session[:nextEvent]
+  end
+
 end
