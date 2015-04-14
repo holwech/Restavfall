@@ -84,6 +84,8 @@ class HomeController < ApplicationController
   def close
   end
 
+private
+
   def setEvent
     arr = Array(0..(Event.count - 1))
     arr.shuffle
