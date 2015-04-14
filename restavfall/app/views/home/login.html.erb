@@ -7,7 +7,7 @@ var runAnalysis = function(stage) {
         url: '/analyse/'+stage,
     })
     .success(function(data) {
-        console.log(data)
+        console.log(data);
         if (data['status'] == "OK") {
             statusChanged(data);
             runAnalysis(data['next']);
@@ -21,18 +21,16 @@ var runAnalysis = function(stage) {
 
                 var app_id = 'app_id=649498578495089';
                 var redirect = '&redirect_uri=https://apps.facebook.com/prosjektrestavfall/';
-                var display = '&display=page';
-                var link = 'https://facebook.com/'+data['event']['eventID']
+                var disp = '&display=popup';
+                var link = "https://apps.facebook.com/prosjektrestavfall/10152607059212447/10154345683960422/1"
 
+                var shareLink = 'https://www.facebook.com/dialog/share?'+app_id+'&display='+disp+redirect+'&href='+link;
                 $("#postShare").html("Del dette!");
-                $('#postShare').attr('href', 
-                        'https://www.facebook.com/dialog/share?'+app_id+display+redirect+'&href='+link);
+                $('#postShare').attr('onclick', "window.open('"+shareLink+"', 'fbshare', 'width=640,height=320');");
 
-                link = 'https://uka.no';
-
+                var sendLink = 'https://www.facebook.com/dialog/send?'+app_id+'&display='+disp+redirect+'&link='+link;
                 $("#sendShare").html("Send dette!");
-                $('#sendShare').attr('href', 'https://www.facebook.com/dialog/send?'+app_id+display+redirect+'&link='+link);
-
+                $('#sendShare').attr('onclick', "window.open('"+sendLink+"', 'fbshare', 'width=640,height=320');");
             }
         }
         else {
@@ -70,4 +68,5 @@ var statusChanged = function(data) {
     <br>
     <a id="eventBuy"></a>
 </div>
-<a id="sendShare" href=""></a>
+<a id="sendShare"></a>
+<a id="postShare"></a>
