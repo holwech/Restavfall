@@ -1,6 +1,11 @@
 <p id="notice"><%= notice %></p>
 
 <p>
+  <strong>Id:</strong>
+  <%= @event.id %>
+</p>
+
+<p>
   <strong>Name:</strong>
   <%= @event.name %>
 </p>
@@ -23,6 +28,11 @@
 <p>
   <strong>Fbeventid:</strong>
   <%= @event.fbeventID %>
+</p>
+
+<p>
+  <strong>Img:</strong>
+  <%= @event.img %>
 </p>
 
 <%= link_to 'Edit', edit_event_path(@event) %> |

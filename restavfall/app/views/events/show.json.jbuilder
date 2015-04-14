@@ -1,1 +1,1 @@
-json.extract! @event, :id, :name, :url, :time, :fbpageID, :fbeventID, :created_at, :updated_at
+json.extract! @event, :id, :id, :name, :url, :time, :fbpageID, :fbeventID, :img, :created_at, :updated_at
