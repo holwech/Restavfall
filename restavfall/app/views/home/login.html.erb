@@ -79,6 +79,7 @@ var setLink = function() {
                 userId + "/" +
                 currentFriend['id'] + "/" +
                 currentEvent['id'] + "/";
+    $('#link-share').html(link);
 
     var shareLink = 'https://www.facebook.com/dialog/share?'+app_id+'&display='+disp+redirect+'&href='+link;
     $("#post-share").html("Del dette!");
