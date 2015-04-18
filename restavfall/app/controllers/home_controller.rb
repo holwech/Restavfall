@@ -63,6 +63,7 @@ class HomeController < ApplicationController
         when "FriendEvent"
             session[:eventIDs] = Event.pluck(:id).shuffle!
             event = Event.find(session[:eventIDs].first)
+            event['img'] = ActionController::Base.helpers.asset_path(event['img']);
             session[:eventIDs].rotate!
             session[:event] = event
 
@@ -75,6 +76,7 @@ class HomeController < ApplicationController
             output = {"status": "Done", "friend": friend}
         when "Event"
             event = Event.find(session[:eventIDs].first)
+            event['img'] = ActionController::Base.helpers.asset_path(event['img']);
             session[:eventIDs].rotate!
             session[:event] = event
             output = {"status": "Done", "event": event}

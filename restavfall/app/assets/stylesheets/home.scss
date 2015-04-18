@@ -1,3 +1,48 @@
 // Place all the styles related to the home controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+* {
+     box-sizing: border-box;   
+}
+
+#container {
+	overflow: hidden;
+    width: 100%;
+}
+
+#results {
+	width: 100%;
+    display: none;
+}
+
+
+#me {
+	background: #52C2FF;
+	width: 50%;
+    float: right;
+    clear: right;
+    padding: 20px;
+}
+
+#friend {
+	background: #FF9CE0;
+	width: 50%;
+    float: left;
+    padding: 20px;
+}
+
+#event {
+    clear: both;
+	background: #BABABA;
+	width: 100%;
+    padding: 0px;
+}
+
+#event-img {
+    width: 100%;
+    margin: 0px;
+}
+
+#buttons {
+    clear: both;
+}
