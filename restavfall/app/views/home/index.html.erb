@@ -1,1 +1,140 @@
-<%= link_to "Facebook Login", '/auth/facebook' %>
+<script>
+
+var userId = "<%= @user[:id] %>";
+var currentEvent = "";
+var currentFriend = "";
+var runAnalysis = function(stage) {
+    $.ajax({
+        type: "GET",
+        url: '/analyse/'+stage,
+    })
+    .success(function(data) {
+        console.log(data);
+        if (data['status'] == "OK") {
+            $("#data").append(data['text'] + "<br>");
+            runAnalysis(data['next']);
+        }
+        else if (data['status'] == "Done") {
+            $("#new-friend").html("Give me another friend");
+            $("#new-event").html("Give me another event");
+
+            currentEvent = data['event'];
+            currentFriend = data['friend'];
+            toggleVisibility();
+            setFriend();
+            setEvent();
+            setLink();
+        }
+    });
+}
+var newFriend = function() {
+    $.ajax({
+        type: "GET",
+        url: '/analyse/Friend',
+    })
+    .success(function(data) {
+        console.log(data);
+        if (data['status'] == "Done") {
+           currentFriend = data['friend']; 
+            setFriend();
+            setLink();
+        }
+    });
+}
+var newEvent = function() {
+    $.ajax({
+        type: "GET",
+        url: '/analyse/Event',
+    })
+    .success(function(data) {
+        console.log(data);
+        if (data['status'] == "Done") {
+           currentEvent = data['event']; 
+            setEvent();
+            setLink();
+        }
+    });
+}
+
+
+var setFriend = function() {
+    $("#friend-profile").attr("src", currentFriend['pic']);
+    $("#friend-name").html(currentFriend['name']);
+    $("#friend-name").attr("href", "http://www.facebook.com/" + currentFriend['id'])
+    $("#friend-id").html("ID: " + currentFriend['id']);
+}
+
+var setEvent = function() {
+    $("#event-link").html(currentEvent['name']);
+    $("#event-link").attr("href","http://www.facebook.com/" + currentEvent['eventID']);
+    $("#event-buy").attr("href", currentEvent['url'])
+    $("#event-buy").html("Kjøp billett på UKA.no!");
+}
+
+var setLink = function() {
+    var app_id = 'app_id=649498578495089';
+    var redirect = '&redirect_uri=https://localhost:3001/close';
+    var disp = '&display=popup';
+    var link = "https://apps.facebook.com/prosjektrestavfall/uno/"+
+                userId + "/" +
+                currentFriend['id'] + "/" +
+                currentEvent['id'] + "/";
+    $('#link-share').html(link);
+
+    var shareLink = 'https://www.facebook.com/dialog/share?'+app_id+'&display='+disp+redirect+'&href='+link;
+    $("#post-share").html("Del dette!");
+    $('#post-share').attr('onclick', "window.open('"+shareLink+"', 'fbshare', 'width=640,height=320');");
+
+    var sendLink = 'https://www.facebook.com/dialog/send?'+app_id+'&display='+disp+redirect+'&link='+link;
+    $("#send-share").html("Send dette!");
+    $('#send-share').attr('onclick', "window.open('"+sendLink+"', 'fbshare', 'width=640,height=320');");
+}
+
+var toggleVisibility = function() {
+    $("#result-page").toggle();
+    $("#data").toggle();
+}
+
+</script>
+<button type="button" id="start-test" class="btn btn-default" onclick="runAnalysis('Start');$('#start-test').toggle();">Start test</button>
+
+<div id="data">
+        
+</div>
+
+<div id="result-page">
+    <div id="select">
+        <button type="button" class="btn btn-info" id="new-friend" href="#" onclick="newFriend();">button</button>
+        <button type="button" class="btn btn-info" id="new-event" href="#" onclick="newEvent();">button</button>
+    </div>
+
+    <div id="result">
+        <div id="friend">
+            <img id="friend-profile">
+            <a id="friend-name"></a>
+            <div id="friend-id"></div>
+        </div>
+        <div id="me">
+            <%= image_tag @user[:pic] %> <br>
+            <a href=<%= "http://www.facebook.com/" + @user[:id] %> ><%= @user[:name] %></a> <br>
+            ID: <span id="self-id"><%= @user[:id] %></span>
+        </div>
+
+        <div id="event">
+            <a id="event-link"></a> <br><br>
+            <a id="event-buy"></a> <br>
+            <span id="link-share"></span>
+        </div>
+    </div>
+
+    <div id="share">
+        <a id="send-share"></a>
+        <a id="post-share"></a>
+    </div>
+</div>
+
+
+
+
+
+
