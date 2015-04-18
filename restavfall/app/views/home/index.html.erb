@@ -61,14 +61,12 @@ var setFriend = function() {
     $("#friend-profile").attr("src", currentFriend['pic']);
     $("#friend-name").html(currentFriend['name']);
     $("#friend-name").attr("href", "http://www.facebook.com/" + currentFriend['id'])
-    $("#friend-id").html("ID: " + currentFriend['id']);
 }
 
 var setEvent = function() {
     $("#event-link").html(currentEvent['name']);
     $("#event-link").attr("href","http://www.facebook.com/" + currentEvent['eventID']);
     $("#event-buy").attr("href", currentEvent['url'])
-    $("#event-buy").html("Kjøp billett på UKA.no!");
 }
 
 var setLink = function() {
@@ -95,6 +93,17 @@ var toggleVisibility = function() {
     $("#data").toggle();
 }
 
+<% if @event and @friend %>
+$( document ).ready(function() {
+    currentEvent = <%= @event.to_json.html_safe %>
+    currentFriend = <%= @friend.to_json.html_safe %>
+    setEvent();
+    setLink();
+    setFriend();
+    toggleVisibility();
+    $('#start-test').toggle()
+});
+<% end %>
 </script>
 <button type="button" id="start-test" class="btn btn-default" onclick="runAnalysis('Start');$('#start-test').toggle();">Start test</button>
 
@@ -103,38 +112,34 @@ var toggleVisibility = function() {
 </div>
 
 <div id="result-page">
-    <div id="select">
-        <button type="button" class="btn btn-info" id="new-friend" href="#" onclick="newFriend();">button</button>
-        <button type="button" class="btn btn-info" id="new-event" href="#" onclick="newEvent();">button</button>
+    <div id="event">
+        <a id="event-link"></a> <br><br>
+        <a id="event-buy"></a> <br>
+        <span id="link-share"></span>
     </div>
 
     <div id="result">
         <div id="friend">
-            <img id="friend-profile">
+            <img id="friend-profile"><br>
             <a id="friend-name"></a>
-            <div id="friend-id"></div>
         </div>
+
         <div id="me">
             <%= image_tag @user[:pic] %> <br>
             <a href=<%= "http://www.facebook.com/" + @user[:id] %> ><%= @user[:name] %></a> <br>
-            ID: <span id="self-id"><%= @user[:id] %></span>
-        </div>
-
-        <div id="event">
-            <a id="event-link"></a> <br><br>
-            <a id="event-buy"></a> <br>
-            <span id="link-share"></span>
         </div>
     </div>
+
+    <div id="select">
+        <button type="button" class="btn btn-info" id="new-friend" href="#" onclick="newFriend();">Another friend</button>
+        <button type="button" class="btn btn-info" id="new-event" href="#" onclick="newEvent();">Another event</button>
+    </div>
+
 
     <div id="share">
         <a id="send-share"></a>
         <a id="post-share"></a>
     </div>
+
+    <button type="button" id="start-test" class="btn btn-default" onclick="runAnalysis('Start');$('#data').html('');toggleVisibility();">Retake test</button>
 </div>
-
-
-
-
-
-

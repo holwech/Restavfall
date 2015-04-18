@@ -13,6 +13,10 @@ class HomeController < ApplicationController
         if not session.has_key?('token')
             auth = request.env["omniauth.auth"]
             session[:token] = auth['credentials']['token']
+            graph = Koala::Facebook::API.new(session[:token])
+            me = graph.get_object('me');
+            me_pic = graph.get_picture('me');
+            session[:user] = {:pic => me_pic, :id => me['id'], :name => me['name']};
         end
         redirect_to '/index' and return
     end
@@ -22,11 +26,9 @@ class HomeController < ApplicationController
             puts "ERROR"
             return
         end
-        graph = Koala::Facebook::API.new(session[:token])
-        me = graph.get_object('me');
-        me_pic = graph.get_picture('me');
-        @user = {:pic => me_pic, :id => me['id'], :name => me['name']};
-        @session = session
+        @user = session[:user]
+        @event = session[:event]
+        @friend = session[:friend]
     end
 
     def analyse
@@ -42,6 +44,8 @@ class HomeController < ApplicationController
         case stage
         when "Start"
             output = {"status": "OK", "next": "Posts", "text": "Analysing your posts"}
+            session[:friend] = nil
+            session[:event] = nil
         when "Posts"
             FriendFinder.analyse_posts(graph, session[:fs])
             output = {"status": "OK", "next": "Photos", "text": "Analysing your photos"}
@@ -57,21 +61,23 @@ class HomeController < ApplicationController
                       "text": "Finding your ideal UKE-friend!"}
             session[:fd] = friend_data
         when "FriendEvent"
-            setEvent()
-            event = Event.offset(session[:eventCount].at(session[:nextEvent])).first
-            increaseEventCount()
+            session[:eventIDs] = Event.pluck(:id).shuffle!
+            event = Event.find(session[:eventIDs].first)
+            session[:eventIDs].rotate!
+            session[:event] = event
 
-            friend = FriendFinder.get_one_friend(session[:fd])
-            friend['pic'] = graph.get_picture(friend['id']);
+            friend = FriendFinder.get_one_friend(graph, session[:fd])
+            session[:friend] = friend
             output = {"status": "Done",  "friend": friend, "event": event}
         when "Friend"
-            friend = FriendFinder.get_one_friend(session[:fd])
-            friend['pic'] = graph.get_picture(friend['id']);
+            friend = FriendFinder.get_one_friend(graph, session[:fd])
+            session[:friend] = friend
             output = {"status": "Done", "friend": friend}
         when "Event"
-            event = Event.offset(session[:eventCount].at(session[:nextEvent])).first
+            event = Event.find(session[:eventIDs].first)
+            session[:eventIDs].rotate!
+            session[:event] = event
             output = {"status": "Done", "event": event}
-            increaseEventCount()
         else
             output = {"status": "Error"}
         end
@@ -81,14 +87,12 @@ class HomeController < ApplicationController
     end
 
     def uno
-
         uself = params[:uself]
         ufriend = params[:ufriend]
         @ev = Event.find(params[:ev])
 
         graph = Koala::Facebook::API.new(session[:token])
         @selfprofile = graph.get_object(uself)
-        #@friendprofile = graph.get_object(ufriend)
         @selfimage = graph.get_picture(uself)
         @friendimage = graph.get_picture(ufriend)
         @eventtime = @ev['time'].strftime('%d. %B');
@@ -97,22 +101,4 @@ class HomeController < ApplicationController
 
     def close
     end
-
-    private
-
-    def setEvent
-        arr = Array(0..(Event.count - 1)).shuffle
-        session[:eventCount] = arr
-        session[:nextEvent] = 0
-    end
-
-    def increaseEventCount
-        if (session[:nextEvent] >= (session[:eventCount].count - 1))
-            session[:nextEvent] = 0
-            session[:eventCount] = session[:eventCount].shuffle
-        else 
-            session[:nextEvent] += 1
-        end
-    end
-
 end

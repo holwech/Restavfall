@@ -26,7 +26,7 @@ class FriendFinder
         result
     end
 
-    def self.get_one_friend(friend_data)
+    def self.get_one_friend(graph, friend_data)
         remaining_friends = friend_data.select{|f| not f.has_key?('chosen')}
         if remaining_friends.length == 0
             friend_data.each{|f| f.except!('chosen') }
@@ -43,6 +43,7 @@ class FriendFinder
             counter += friend['value']
             if counter > trigger
                 friend['chosen'] = true;
+                friend['pic'] = graph.get_picture(friend['id']);
                 return friend
             end
         end
