@@ -74,11 +74,16 @@ var setLink = function() {
                 currentEvent['id'] + "/";
     $('#link-share').attr("href", link);
 
-    var shareLink = 'https://www.facebook.com/dialog/share?'+app_id+'&display='+disp+redirect+'&href='+link;
+    var shareLink = 'https://www.facebook.com/dialog/share?'+app_id+disp+redirect+'&href='+link;
     $('#post-share').attr('onclick', "window.open('"+shareLink+"', 'fbshare', 'width=640,height=320');");
 
-    var sendLink = 'https://www.facebook.com/dialog/send?'+app_id+'&display='+disp+redirect+'&link='+link;
+    var sendLink = 'https://www.facebook.com/dialog/send?'+app_id+disp+redirect+'&link='+link;
     $('#send-share').attr('onclick', "window.open('"+sendLink+"', 'fbshare', 'width=640,height=320');");
+
+    var action = "&action_type=prosjektrestavfall:take";
+    var props = "&action_properties={\"object\": \"https://apps.facebook.com/prosjektrestavfall/uno/10155341007575422/10205438497338611/5/\"}";
+    var storyLink = 'https://www.facebook.com/dialog/share_open_graph?'+app_id+disp+redirect+action+props;
+    $('#story-share').attr('onclick', "window.open('"+storyLink+"', 'fbshare', 'width=640,height=320');");
 }
 
 var toggleVisibility = function() {
