@@ -1,8 +1,6 @@
 class HomeController < ApplicationController
     def redirect
-        if session.has_key?('token')
-            redirect_to '/index' and return
-        end
+        reset_session
         oauth =   Koala::Facebook::OAuth.new(FACEBOOK_CONFIG["app_id"], FACEBOOK_CONFIG["secret"], "https://#{request.host}:#{request.port}/auth/facebook/callback")
         redirect_to oauth.url_for_oauth_code(:permissions => 
                                              ['user_friends', 'user_photos', 'user_events',
@@ -10,14 +8,12 @@ class HomeController < ApplicationController
     end
 
     def login
-        if not session.has_key?('token')
-            auth = request.env["omniauth.auth"]
-            session[:token] = auth['credentials']['token']
-            graph = Koala::Facebook::API.new(session[:token])
-            me = graph.get_object('me');
-            me_pic = graph.get_picture('me');
-            session[:user] = {:pic => me_pic, :id => me['id'], :name => me['name']};
-        end
+        auth = request.env["omniauth.auth"]
+        session[:token] = auth['credentials']['token']
+        graph = Koala::Facebook::API.new(session[:token])
+        me = graph.get_object('me');
+        me_pic = graph.get_picture('me');
+        session[:user] = {:pic => me_pic, :id => me['id'], :name => me['name']};
         redirect_to '/index' and return
     end
 
