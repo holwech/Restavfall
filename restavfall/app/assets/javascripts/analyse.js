@@ -59,8 +59,8 @@ var setFriend = function() {
 }
 
 var setEvent = function() {
-    $("#event-link").attr("href","http://www.facebook.com/" + currentEvent['eventID']);
     $("#event-img").attr("src", currentEvent['img']);
+    $("#event-link").attr("href","http://www.facebook.com/" + currentEvent['fbeventID']);
     $("#link-share").html(currentEvent['name']);
 }
 
