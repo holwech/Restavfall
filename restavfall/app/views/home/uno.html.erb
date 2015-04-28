@@ -7,18 +7,26 @@
     <meta property="og:type" content="prosjektrestavfall:uketest" />
 <% end %>
 
-<h2><%= @selfName %>
- tok restavfall, og fikk dette resultatet!
-</h2>
-<h3>
-Dere skal dra på <%= @ev.name %> sammen den <%= @eventtime %>!
-</h3>
+<% if @r %>
+    <script type="text/javascript">
+        window.top.location = 'https://apps.facebook.com/prosjektrestavfall/uno/'+'<%= @rid %>';
+    </script>
+    Redirecting to facebook...
+<% else %>
+    <h2><%= @selfName %>
+     tok restavfall, og fikk dette resultatet!
+    </h2>
+    <h3>
+    Dere skal dra på <%= @ev.name %> sammen den <%= @eventtime %>!
+    </h3>
 
-<%= image_tag @ev.img %>
-<%= image_tag @selfImage %><br>
-<%= image_tag @friendImage %><br>
-<%= link_to("Delta på facebook!",'http://www.facebook.com/' + @ev.fbeventID) %><br>
-<%= link_to("Kjøp billetter!", @ev.url) %>
-<%= link_to("Ta testen du og!", 'https://apps.facebook.com/prosjektrestavfall') %>
+    <%= image_tag @ev.img %>
+    <%= image_tag @selfImage %><br>
+    <%= image_tag @friendImage %><br>
+    <%= link_to("Delta på facebook!",'http://www.facebook.com/' + @ev.fbeventID) %>
+    <br>
+    <%= link_to("Kjøp billetter!", @ev.url) %>
+    <%=link_to("Ta testen du og!",'https://apps.facebook.com/prosjektrestavfall') %>
 
-<!-- https://localhost:3001/uno/10152607059212447/10154345683960422/1 -->
+    <!-- https://localhost:3001/uno/10152607059212447/10154345683960422/1 -->
+<% end %>
