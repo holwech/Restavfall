@@ -54,8 +54,8 @@ var setLink = function() {
     var app_id = 'app_id=649498578495089';
     var redirect = '&redirect_uri=https://localhost:3001/close';
     var disp = '&display=popup';
-    var link = "https://apps.facebook.com/prosjektrestavfall/uno/"+
-                currentLink;
+    var link = "https://niivx.uka.no:3001/uno/"+
+                currentLink + "/r";
 
     $('#link-share').attr("href", link);
 
@@ -66,7 +66,7 @@ var setLink = function() {
     $('#send-share').attr('onclick', "window.open('"+sendLink+"', 'fbshare', 'width=640,height=320');");
 
     var action = "&action_type=prosjektrestavfall:take";
-    var props = "&action_properties={\"object\": \"https://apps.facebook.com/prosjektrestavfall/uno/10155341007575422/10205438497338611/5/\"}";
+    var props = "&action_properties={\"object\": \""+link+"\"}";
     var storyLink = 'https://www.facebook.com/dialog/share_open_graph?'+app_id+disp+redirect+action+props;
     $('#story-share').attr('onclick', "window.open('"+storyLink+"', 'fbshare', 'width=640,height=320');");
 }

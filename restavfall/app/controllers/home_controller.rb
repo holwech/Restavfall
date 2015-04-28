@@ -70,6 +70,10 @@ class HomeController < ApplicationController
     end
 
     def uno
+        if not params[:redir].nil?
+            redirect_to "https://apps.facebook.com/prosjektrestavfall/uno/" + params[:rid] and return
+        end
+
         result = Result.find(params[:rid])
         @ev = Event.find(result.eventId)
 
