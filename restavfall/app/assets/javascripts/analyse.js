@@ -10,11 +10,9 @@ var runAnalysis = function(stage) {
             runAnalysis(data['next']);
         }
         else if (data['status'] == "Done") {
-            $("#new-friend").html("Give me another friend");
-            $("#new-event").html("Give me another event");
-
             currentEvent = data['event'];
             currentFriend = data['friend'];
+           currentLink = data['link'];
             toggleVisibility();
             setFriend();
             setEvent();
@@ -22,35 +20,23 @@ var runAnalysis = function(stage) {
         }
     });
 }
-var newFriend = function() {
+var newFriendEvent = function() {
     $.ajax({
         type: "GET",
-        url: '/analyse/Friend',
+        url: '/analyse/FriendEvent',
     })
     .success(function(data) {
         console.log(data);
         if (data['status'] == "Done") {
            currentFriend = data['friend']; 
+           currentEvent = data['event']; 
+           currentLink = data['link'];
+            setEvent();
             setFriend();
             setLink();
         }
     });
 }
-var newEvent = function() {
-    $.ajax({
-        type: "GET",
-        url: '/analyse/Event',
-    })
-    .success(function(data) {
-        console.log(data);
-        if (data['status'] == "Done") {
-           currentEvent = data['event']; 
-            setEvent();
-            setLink();
-        }
-    });
-}
-
 
 var setFriend = function() {
     $("#friend-profile").attr("src", currentFriend['pic']);
@@ -68,10 +54,9 @@ var setLink = function() {
     var app_id = 'app_id=649498578495089';
     var redirect = '&redirect_uri=https://localhost:3001/close';
     var disp = '&display=popup';
-    var link = "https://apps.facebook.com/prosjektrestavfall/uno/"+
-                userId + "/" +
-                currentFriend['id'] + "/" +
-                currentEvent['id'] + "/";
+    var link = "https://niivx.uka.no:3001/uno/"+
+                currentLink;
+
     $('#link-share').attr("href", link);
 
     var shareLink = 'https://www.facebook.com/dialog/share?'+app_id+disp+redirect+'&href='+link;

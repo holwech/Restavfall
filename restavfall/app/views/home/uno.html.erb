@@ -2,12 +2,12 @@
     <meta property="og:url"                content="apps.facebook.com/prosjektrestavfall" />
     <meta property="fb:app_id"             content="649498578495089" />
     <meta property="og:title"              content="Restavfall" />
-    <meta property="og:description"        content="Finn lykken under uka!" />
+    <meta property="og:description"        content="<%= @selfName %> og <%= @friendName %> vil finne lykken under uka! Vær med på <%= @ev.name %> du også!" />
     <meta property="og:image"              content="<%= @ev.img %>" />
     <meta property="og:type" content="prosjektrestavfall:uketest" />
 </head>
 
-<h2><%= @selfprofile['first_name'] %>
+<h2><%= @selfName %>
  tok restavfall, og fikk dette resultatet!
 </h2>
 <h3>
@@ -15,8 +15,8 @@ Dere skal dra på <%= @ev.name %> sammen den <%= @eventtime %>!
 </h3>
 
 <%= image_tag @ev.img %>
-<%= image_tag @selfimage %><br>
-<%= image_tag @friendimage %><br>
+<%= image_tag @selfImage %><br>
+<%= image_tag @friendImage %><br>
 <%= link_to("Delta på facebook!",'http://www.facebook.com/' + @ev.fbeventID) %><br>
 <%= link_to("Kjøp billetter!", @ev.url) %>
 <%= link_to("Ta testen du og!", 'https://apps.facebook.com/prosjektrestavfall') %>

@@ -15,6 +15,7 @@
     $( document ).ready(function() {
         currentEvent = <%= @event.to_json.html_safe %>
         currentFriend = <%= @friend.to_json.html_safe %>
+        currentLink = <%= @link.to_json.html_safe %>
         setEvent();
         setLink();
         setFriend();
@@ -47,8 +48,7 @@
         </div>
 
         <div id="buttons">
-            <button type="button"  id="new-friend"  onclick="newFriend();">Another friend</button>
-            <button type="button"  id="new-event"  onclick="newEvent();">Another event</button>
+            <button type="button"  id="new-friend"  onclick="newFriendEvent();">Again!</button>
 
             <button id="send-share">Send</button>
             <button id="post-share">Del</button>

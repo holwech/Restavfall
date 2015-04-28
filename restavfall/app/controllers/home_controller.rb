@@ -25,6 +25,7 @@ class HomeController < ApplicationController
         @user = session[:user]
         @event = session[:event]
         @friend = session[:friend]
+        @link = session[:link]
     end
 
     def analyse
@@ -36,6 +37,7 @@ class HomeController < ApplicationController
 
         graph = Koala::Facebook::API.new(session[:token])
         session[:fs].default_proc = proc{ |hash, key| hash[key] = 0 }
+        session[:eventIDs] = Event.pluck(:id).shuffle!
 
         case stage
         when "Start"
@@ -57,25 +59,8 @@ class HomeController < ApplicationController
                       "text": "Finding your ideal UKE-friend!"}
             session[:fd] = friend_data
         when "FriendEvent"
-            session[:eventIDs] = Event.pluck(:id).shuffle!
-            event = Event.find(session[:eventIDs].first)
-            event['img'] = ActionController::Base.helpers.asset_path(event['img']);
-            session[:eventIDs].rotate!
-            session[:event] = event
-
-            friend = FriendFinder.get_one_friend(graph, session[:fd])
-            session[:friend] = friend
-            output = {"status": "Done",  "friend": friend, "event": event}
-        when "Friend"
-            friend = FriendFinder.get_one_friend(graph, session[:fd])
-            session[:friend] = friend
-            output = {"status": "Done", "friend": friend}
-        when "Event"
-            event = Event.find(session[:eventIDs].first)
-            event['img'] = ActionController::Base.helpers.asset_path(event['img']);
-            session[:eventIDs].rotate!
-            session[:event] = event
-            output = {"status": "Done", "event": event}
+            getFriendAndEvent(graph)
+            output = {"status": "Done",  "friend": session[:friend], "event": session[:event], "link": session[:link]}
         else
             output = {"status": "Error"}
         end
@@ -85,18 +70,39 @@ class HomeController < ApplicationController
     end
 
     def uno
-        uself = params[:uself]
-        ufriend = params[:ufriend]
-        @ev = Event.find(params[:ev])
+        result = Result.find(params[:rid])
+        @ev = Event.find(result.eventId)
 
-        graph = Koala::Facebook::API.new(session[:token])
-        @selfprofile = graph.get_object(uself)
-        @selfimage = graph.get_picture(uself)
-        @friendimage = graph.get_picture(ufriend)
+        @selfName = result.userName
+        @selfImage = result.userImg
+        @friendName = result.friendName
+        @friendImage = result.friendImg
         @eventtime = @ev['time'].strftime('%d. %B');
-
     end
 
     def close
+    end
+
+    def getFriendAndEvent(graph)
+        friend = FriendFinder.get_one_friend(graph, session[:fd])
+
+        event = Event.find(session[:eventIDs].first)
+        event['img'] = ActionController::Base.helpers.asset_path(event['img']);
+        session[:eventIDs].rotate!
+
+        session[:friend] = friend
+        session[:event] = event
+        session[:link] = saveResult
+    end
+
+    def saveResult
+        res = Result.new
+        res.userName = session[:user][:name]
+        res.userImg = session[:user][:pic]
+        res.friendName = session[:friend]['name']
+        res.friendImg = session[:friend]['pic']
+        res.eventId = session[:event][:id]
+        res.save!
+        return res.id
     end
 end

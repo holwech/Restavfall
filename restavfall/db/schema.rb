@@ -11,27 +11,37 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150414123529) do
+ActiveRecord::Schema.define(version: 20150428194047) do
 
   create_table "events", force: :cascade do |t|
-    t.string   "name"
-    t.string   "url"
+    t.string   "name",       limit: 255
+    t.string   "url",        limit: 255
     t.datetime "time"
-    t.string   "fbpageID"
-    t.string   "fbeventID"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string   "img"
+    t.string   "fbpageID",   limit: 255
+    t.string   "fbeventID",  limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.string   "img",        limit: 255
+  end
+
+  create_table "results", force: :cascade do |t|
+    t.string   "userName",   limit: 255
+    t.string   "userImg",    limit: 255
+    t.string   "friendName", limit: 255
+    t.string   "friendImg",  limit: 255
+    t.integer  "eventId",    limit: 4
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
   end
 
   create_table "sessions", force: :cascade do |t|
-    t.string   "session_id", null: false
-    t.text     "data"
+    t.string   "session_id", limit: 255,   null: false
+    t.text     "data",       limit: 65535
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", unique: true
-  add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at"
+  add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", unique: true, using: :btree
+  add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
 
 end

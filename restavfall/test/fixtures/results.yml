@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  userName: MyString
+  userImg: MyString
+  friendName: MyString
+  friendImg: MyString
+  eventId: 1
+
+two:
+  userName: MyString
+  userImg: MyString
+  friendName: MyString
+  friendImg: MyString
+  eventId: 1
