@@ -54,7 +54,7 @@ var setLink = function() {
     var app_id = 'app_id=649498578495089';
     var redirect = '&redirect_uri=https://localhost:3001/close';
     var disp = '&display=popup';
-    var link = "https://niivx.uka.no:3001/uno/"+
+    var link = "https://apps.facebook.com/prosjektrestavfall/uno/"+
                 currentLink;
 
     $('#link-share').attr("href", link);
