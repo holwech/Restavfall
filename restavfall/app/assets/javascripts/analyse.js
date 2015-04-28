@@ -10,13 +10,7 @@ var runAnalysis = function(stage) {
             runAnalysis(data['next']);
         }
         else if (data['status'] == "Done") {
-            currentEvent = data['event'];
-            currentFriend = data['friend'];
-           currentLink = data['link'];
-            toggleVisibility();
-            setFriend();
-            setEvent();
-            setLink();
+            updateData(data);
         }
     });
 }
@@ -28,14 +22,18 @@ var newFriendEvent = function() {
     .success(function(data) {
         console.log(data);
         if (data['status'] == "Done") {
-           currentFriend = data['friend']; 
-           currentEvent = data['event']; 
-           currentLink = data['link'];
-            setEvent();
-            setFriend();
-            setLink();
+            updateData(data);
         }
     });
+}
+
+var updateData = function(data) {
+    currentFriend = data['friend']; 
+    currentEvent = data['event']; 
+    currentLink = data['link'];
+    setEvent();
+    setFriend();
+    setLink();
 }
 
 var setFriend = function() {
@@ -64,11 +62,6 @@ var setLink = function() {
 
     var sendLink = 'https://www.facebook.com/dialog/send?'+app_id+disp+redirect+'&link='+link;
     $('#send-share').attr('onclick', "window.open('"+sendLink+"', 'fbshare', 'width=640,height=320');");
-
-    var action = "&action_type=prosjektrestavfall:take";
-    var props = "&action_properties={\"object\": \""+link+"\"}";
-    var storyLink = 'https://www.facebook.com/dialog/share_open_graph?'+app_id+disp+redirect+action+props;
-    $('#story-share').attr('onclick', "window.open('"+storyLink+"', 'fbshare', 'width=640,height=320');");
 }
 
 var toggleVisibility = function() {
