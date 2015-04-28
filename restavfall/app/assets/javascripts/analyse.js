@@ -10,6 +10,7 @@ var runAnalysis = function(stage) {
             runAnalysis(data['next']);
         }
         else if (data['status'] == "Done") {
+	    toggleVisibility();
             updateData(data);
         }
     });
