@@ -1,8 +1,5 @@
 source 'https://rubygems.org'
 
-gem 'eventmachine'
-gem 'em-resolv-replace', :require => false
-
 gem 'yaml_db'
 gem 'mysql2'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
