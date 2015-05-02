@@ -171,7 +171,7 @@ class FriendFinder
                 end
 
             end
-            feed = feed.next_page
+            feed = ApplicationHelper.time("Next feed page") {feed.next_page}
         }.call{not feed.nil?}
     end
 
