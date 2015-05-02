@@ -1,4 +1,11 @@
 class HomeController < ApplicationController
+    def time(name, &block) #For debug only
+        t = Time.now
+        result = block.call
+        puts "#{name} completed in #{(Time.now - t)} seconds"
+        result
+    end
+
     def redirect
         reset_session
         oauth =   Koala::Facebook::OAuth.new(FACEBOOK_CONFIG["app_id"], FACEBOOK_CONFIG["secret"], "https://#{request.host}:#{request.port}/auth/facebook/callback")
@@ -8,12 +15,10 @@ class HomeController < ApplicationController
     end
 
     def login
-        auth = request.env["omniauth.auth"]
-        session[:token] = auth['credentials']['token']
-        graph = Koala::Facebook::API.new(session[:token])
-        me = graph.get_object('me');
-        me_pic = graph.get_picture('me');
-        session[:user] = {:pic => me_pic, :id => me['id'], :name => me['name']};
+        time("login") {
+            auth = request.env["omniauth.auth"]
+            session[:token] = auth['credentials']['token']
+        }
         redirect_to '/index' and return
     end
 
@@ -37,13 +42,18 @@ class HomeController < ApplicationController
 
         graph = Koala::Facebook::API.new(session[:token])
         session[:fs].default_proc = proc{ |hash, key| hash[key] = 0 }
-        session[:eventIDs] = Event.pluck(:id).shuffle!
 
         case stage
         when "Start"
-            output = {"status": "OK", "next": "Posts", "text": "Analysing your posts"}
+            me = graph.get_object('me?fields=id,name,picture');
+            session[:eventIDs] = Event.pluck(:id).shuffle!
             session[:friend] = nil
             session[:event] = nil
+            session[:user] = {:pic => me['picture']['data']['url'], 
+                              :id => me['id'], :name => me['name']};
+            output = {"status": "OK", 
+                      "next": "Posts", 
+                      "text": "Analysing your posts"}
         when "Posts"
             FriendFinder.analyse_posts(graph, session[:fs])
             output = {"status": "OK", "next": "Photos", "text": "Analysing your photos"}
@@ -54,13 +64,19 @@ class HomeController < ApplicationController
             FriendFinder.analyse_events(graph, session[:fs])
             output = {"status": "OK", "next": "Friends", "text": "Gathering the candidates"}
         when "Friends"
-            friend_data = FriendFinder.make_friend_data(graph, session[:fs])
+            friend_data = FriendFinder.make_friend_data(graph, 
+                                                        session[:fs], 
+                                                        session[:user][:id])
             output = {"status": "OK", "next": "FriendEvent", "friends": friend_data,
                       "text": "Finding your ideal UKE-friend!"}
             session[:fd] = friend_data
         when "FriendEvent"
             getFriendAndEvent(graph)
-            output = {"status": "Done",  "friend": session[:friend], "event": session[:event], "link": session[:link]}
+            output = {"status": "Done",  
+                      "user": session[:user], 
+                      "friend": session[:friend], 
+                      "event": session[:event], 
+                      "link": session[:link]}
         else
             output = {"status": "Error"}
         end

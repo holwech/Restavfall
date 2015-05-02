@@ -11,6 +11,7 @@ var runAnalysis = function(stage) {
         }
         else if (data['status'] == "Done") {
             updateData(data);
+            toggleVisibility();
         }
     });
 }
@@ -28,12 +29,20 @@ var newFriendEvent = function() {
 }
 
 var updateData = function(data) {
+    user = data['user'];
     currentFriend = data['friend']; 
     currentEvent = data['event']; 
     currentLink = data['link'];
+    setUser();
     setEvent();
     setFriend();
     setLink();
+}
+
+var setUser = function() {
+    $("#me-profile").attr("src", user['pic']);
+    $("#me-name").html(user['name']);
+    $("#me-name").attr("href", "http://www.facebook.com/" + user['id'])
 }
 
 var setFriend = function() {

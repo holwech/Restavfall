@@ -10,18 +10,18 @@
 <% javascript_include_tag 'analyse.js' %>
 
 <script>
-    var userId = "<%= @user[:id] %>";
-    <% if @event and @friend %>
+    <% if @user and @event and @friend %>
     $( document ).ready(function() {
+        user = <%= @user.to_json.html_safe %>
         currentEvent = <%= @event.to_json.html_safe %>
         currentFriend = <%= @friend.to_json.html_safe %>
         currentLink = <%= @link.to_json.html_safe %>
         setEvent();
         setLink();
         setFriend();
+        setUser();
         toggleVisibility();
         $('#start-test').toggle()
-        console.log("Using old data");
     });
     <% end %>
 </script>
@@ -43,8 +43,8 @@
             <a id="friend-name"></a>
         </div>
         <div id="me">
-            <%= image_tag @user[:pic] %> <br>
-            <a href=<%= "http://www.facebook.com/" + @user[:id] %> ><%= @user[:name] %></a>
+            <img id="me-profile"><br>
+            <a id="me-name"> </a>
         </div>
 
         <div id="buttons">

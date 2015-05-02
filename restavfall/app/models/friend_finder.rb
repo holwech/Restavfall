@@ -1,4 +1,8 @@
 class FriendFinder
+    include ApplicationHelper
+
+    TIME_LIMIT = 3
+
     COMMENT = 1
     LIKE = 1
     PHOTO_TAG = 2
@@ -11,29 +15,20 @@ class FriendFinder
     EVENT_UNDER_10 = 3
     EVENT_UNDER_5 = 4
 
-    CUTOFF_DATE = '1-January-2012'
-    MAX_POST_PAGES = 4
-
-    @indent = 0
-
-    def self.time(name, &block) #For debug only
-        t = Time.now
-        @indent += 1
-        result = block.call
-        @indent -= 1
-        indentstr = "  "*@indent
-        puts "#{indentstr}#{name} completed in #{(Time.now - t)} seconds"
-        result
-    end
+    CUTOFF_DATE = '1-January-2010'
 
     def self.get_one_friend(graph, friend_data)
+        # get list of friends not already chosen
         remaining_friends = friend_data.select{|f| not f.has_key?('chosen')}
+
+        # If all friends have been chosen, reset list
         if remaining_friends.length == 0
             friend_data.each{|f| f.except!('chosen') }
             remaining_friends = friend_data
         end
 
-       sum = remaining_friends.map{|e| e['value']}.reduce(:+)
+        # Get sum of friend values
+        sum = remaining_friends.map{|e| e['value']}.reduce(:+)
         trigger = Kernel::rand * sum
         counter = 0
         friend_data.each do |friend|
@@ -49,10 +44,7 @@ class FriendFinder
         end
     end
 
-    def self.make_friend_data(graph,  friend_scores)
-        # get id of current user
-        my_id = graph.get_object('me', {fields: 'id'})['id']
-
+    def self.make_friend_data(graph,  friend_scores, my_id)
         # Use only 50 first friends, and sort by descending value
         friends = friend_scores.
                                 except(my_id).
@@ -86,10 +78,26 @@ class FriendFinder
         tp_photos = FriendFinder.get_tagged_photos(graph)
         photos = (ap_photos + tp_photos).uniq{|photo| photo['id']}
         photos.each do |photo|
-            FriendFinder.analyse_photo_tags(photo, friend_scores)
-            FriendFinder.analyse_photo_likes(photo, friend_scores)
-            FriendFinder.analyse_photo_comments(photo, friend_scores)
-            FriendFinder.add_photo_owner(photo, friend_scores)
+            if photo.has_key?("tags")
+                photo['tags']['data'].each do |tag|
+                    if tag.has_key?("id")
+                        friend_scores[tag['id']] += PHOTO_TAG
+                    end
+                end
+            end
+            if photo.has_key?("likes")
+                photo['likes']['data'].each do |like|
+                    friend_scores[like['id']] += LIKE
+                end
+            end
+            if photo.has_key?("comments")
+                photo['comments']['data'].each do |comment|
+                    friend_scores[comment['from']['id']] += COMMENT
+                end
+            end
+            if photo.has_key?("from")
+                friend_scores[photo['from']['id']] += PHOTO_POSTER
+            end
         end
     end
 
@@ -98,7 +106,7 @@ class FriendFinder
 
         albums = graph.get_connections('me', 'albums', {fields: 'id'})
 
-        begin
+        ApplicationHelper.timeout(TIME_LIMIT) {
             album_photos = graph.batch{|batch_api| 
                 albums.each{|album| 
                     batch_api.get_connections(album['id'], 
@@ -108,7 +116,7 @@ class FriendFinder
             }.flatten
             all_photos += album_photos
             albums = albums.next_page
-        end while not albums.nil?
+        }.call{not albums.nil?}
 
         return all_photos
     end
@@ -119,57 +127,23 @@ class FriendFinder
         photos = graph.get_connections('me', "photos?since=#{CUTOFF_DATE}",
                     {fields: ['from', 'id', 'likes', 'comments', 'tags']})
 
-        begin
+        ApplicationHelper.timeout(TIME_LIMIT) {
             all_photos += photos
             photos = photos.next_page
-        end while not photos.nil?
+        }.call{not photos.nil?}
 
         return all_photos
     end
 
-    def self.analyse_photo_tags(photo, friend_scores)
-        if photo.has_key?("tags")
-            photo['tags']['data'].each do |tag|
-                if tag.has_key?("id")
-                    friend_scores[tag['id']] += PHOTO_TAG
-                end
-            end
-        end
-    end
-
-    def self.analyse_photo_likes(photo, friend_scores)
-        if photo.has_key?("likes")
-            photo['likes']['data'].each do |like|
-                friend_scores[like['id']] += LIKE
-            end
-        end
-    end
-
-    def self.analyse_photo_comments(photo, friend_scores)
-        if photo.has_key?("comments")
-            photo['comments']['data'].each do |comment|
-                friend_scores[comment['from']['id']] += COMMENT
-            end
-        end
-    end
-
-    def self.add_photo_owner(photo, friend_scores)
-        if photo.has_key?("from")
-            friend_scores[photo['from']['id']] += PHOTO_POSTER
-        end
-    end
 
     def self.analyse_posts(graph, friend_scores)
         accepted_types = ['wall_post', 'shared_story', 'mobile_status_update']
-        feed = time("get posts") {
-            graph.get_connections('me', 
+        feed = graph.get_connections('me', 
                   "feed?filter=app_2915120374&since=#{CUTOFF_DATE}", 
                   {fields: ['from', 'comments', 'likes', 'with_tags', 
                             'message_tags', 'status_type']})
-        }
 
-        i = 0
-        begin
+        ApplicationHelper.timeout(TIME_LIMIT) {
             feed.select{|f| accepted_types.include? f['status_type']}.each do |f|
                 friend_scores[f['from']['id']] += WALL_POSTER;
 
@@ -197,12 +171,8 @@ class FriendFinder
                 end
 
             end
-            i += 1;
-            if i == MAX_POST_PAGES
-                break
-            end
-            feed = time("new page") {feed.next_page}
-        end while not feed.nil?
+            feed = feed.next_page
+        }.call{not feed.nil?}
     end
 
     def self.analyse_events(graph, friend_scores)
@@ -230,7 +200,7 @@ class FriendFinder
 
     def self.get_event_attendees(events, graph)
         attendees = []
-        events.each_slice(25){|events_slice| 
+        events.select{|e| e['attending_count'] < 40}.each_slice(25){|events_slice| 
             attendees << graph.batch{|batch_api| 
                 events_slice.each {|event| 
                     callback = lambda {|arg| 
@@ -250,10 +220,10 @@ class FriendFinder
             'me', "events/attending?since=#{CUTOFF_DATE}",
             {fields: ['id', 'attending_count']})
 
-        begin
+        ApplicationHelper.timeout(TIME_LIMIT) {
             event_ids += events
             events = events.next_page
-        end while not events.nil?
+        }.call{not events.nil?}
 
         return event_ids.select{|e| e['attending_count'] <= 40}
     end
