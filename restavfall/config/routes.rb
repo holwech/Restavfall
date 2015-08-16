@@ -9,4 +9,5 @@ Rails.application.routes.draw do
   root to: 'home#redirect', via: [:get, :post]
   get 'auth/facebook', as: "auth_provider"
   get 'auth/facebook/callback', to: 'home#login'
+  post 'auth/facebook/callback', to: 'home#login'
 end
