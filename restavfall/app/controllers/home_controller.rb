@@ -19,7 +19,7 @@ class HomeController < ApplicationController
 
         oauth =   Koala::Facebook::OAuth.new(FACEBOOK_CONFIG["app_id"], FACEBOOK_CONFIG["secret"], 
 		  "https://#{return_host}/auth/facebook/callback")
-        redirect_to oauth.url_for_oauth_code(:permissions => 
+        @url = oauth.url_for_oauth_code(:permissions => 
                                              ['user_friends', 'user_photos', 'user_events',
                                               'read_stream', 'publish_actions'])
     end
