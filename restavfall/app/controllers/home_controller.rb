@@ -14,14 +14,14 @@ class HomeController < ApplicationController
         end
     end
 
+    @@permissions = ['user_friends', 'user_photos', 'user_events', 'read_stream'];
+
     def redirect
         reset_session
 
         oauth =   Koala::Facebook::OAuth.new(FACEBOOK_CONFIG["app_id"], FACEBOOK_CONFIG["secret"], 
 		  "https://#{return_host}/auth/facebook/callback")
-        @url = oauth.url_for_oauth_code(:permissions => 
-                                             ['user_friends', 'user_photos', 'user_events',
-                                              'read_stream', 'publish_actions'])
+        @url = oauth.url_for_oauth_code(:permissions => @@permissions)
     end
 
     def login
@@ -40,18 +40,20 @@ class HomeController < ApplicationController
         end
 
         graph = Koala::Facebook::API.new(session[:token])
-        permissions = graph.get_connections('me','permissions')
-        num_granted_permissions = permissions.delete_if{|p| p["status"] != "granted"}.length
+        granted_permissions = graph.get_connections('me','permissions')
+                              .delete_if{|p| p["status"] != "granted"}
+                              .map{|p| p["permission"]}
 
-        if num_granted_permissions < 6
+        missing_permissions = @@permissions - granted_permissions;
+
+        if missing_permissions.length > 0
             oauth =   Koala::Facebook::OAuth.new(
                 FACEBOOK_CONFIG["app_id"], FACEBOOK_CONFIG["secret"], 
                 "https://#{return_host}/auth/facebook/callback")
             @url = oauth.url_for_oauth_code(
                     :auth_type => "rerequest",
-                    :permissions => 
-                     ['user_friends', 'user_photos', 'user_events',
-                      'read_stream', 'publish_actions'])
+                    :permissions => @@permissions)
+            @missing = missing_permissions
             render 'missing_permissions' and return
         end
 
