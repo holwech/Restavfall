@@ -6,12 +6,19 @@ class HomeController < ApplicationController
         result
     end
 
+    def return_host
+        if Rails.env.production?
+            request.host
+        else
+            "#{request.host}:#{request.port}"
+        end
+    end
+
     def redirect
         reset_session
-	puts request.env
-	puts request.port
+
         oauth =   Koala::Facebook::OAuth.new(FACEBOOK_CONFIG["app_id"], FACEBOOK_CONFIG["secret"], 
-		  "https://#{request.host}/auth/facebook/callback")
+		  "https://#{return_host}/auth/facebook/callback")
         redirect_to oauth.url_for_oauth_code(:permissions => 
                                              ['user_friends', 'user_photos', 'user_events',
                                               'read_stream', 'publish_actions'])
@@ -20,7 +27,7 @@ class HomeController < ApplicationController
     def login
         time("login") {
             oauth =   Koala::Facebook::OAuth.new(FACEBOOK_CONFIG["app_id"], FACEBOOK_CONFIG["secret"], 
-		  "https://#{request.host}/auth/facebook/callback")
+		  "https://#{return_host}/auth/facebook/callback")
             session[:token] = oauth.get_access_token(params[:code])
         }
         redirect_to '/index' and return
