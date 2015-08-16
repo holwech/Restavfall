@@ -27,7 +27,7 @@ class HomeController < ApplicationController
     def login
         time("login") {
             oauth =   Koala::Facebook::OAuth.new(FACEBOOK_CONFIG["app_id"], FACEBOOK_CONFIG["secret"], 
-		  "https://#{return_host}/auth/facebook/callback")
+		    "https://#{return_host}/auth/facebook/callback")
             session[:token] = oauth.get_access_token(params[:code])
         }
         redirect_to '/index' and return
@@ -38,6 +38,23 @@ class HomeController < ApplicationController
             puts "ERROR"
             return
         end
+
+        graph = Koala::Facebook::API.new(session[:token])
+        permissions = graph.get_connections('me','permissions')
+        num_granted_permissions = permissions.delete_if{|p| p["status"] != "granted"}.length
+
+        if num_granted_permissions < 6
+            oauth =   Koala::Facebook::OAuth.new(
+                FACEBOOK_CONFIG["app_id"], FACEBOOK_CONFIG["secret"], 
+                "https://#{return_host}/auth/facebook/callback")
+            @url = oauth.url_for_oauth_code(
+                    :auth_type => "rerequest",
+                    :permissions => 
+                     ['user_friends', 'user_photos', 'user_events',
+                      'read_stream', 'publish_actions'])
+            render 'missing_permissions' and return
+        end
+
         @user = session[:user]
         @event = session[:event]
         @friend = session[:friend]
