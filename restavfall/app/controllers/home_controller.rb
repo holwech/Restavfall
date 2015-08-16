@@ -8,7 +8,7 @@ class HomeController < ApplicationController
 
     def return_host
         if Rails.env.production?
-            request.host
+            "apps.facebook.com/prosjektrestavfall"
         else
             "#{request.host}:#{request.port}"
         end
