@@ -7,39 +7,45 @@ class HomeController < ApplicationController
     end
 
     def return_host
-        if Rails.env.production?
-            "apps.facebook.com/prosjektrestavfall"
-        else
-            "#{request.host}:#{request.port}"
-        end
+	    if Rails.env.production?
+		    if session.has_key?("page_id")
+			"https://www.facebook.com/#{session["page_id"]}?sk=app_#{FACEBOOK_CONFIG["app_id"]}"	
+		    else
+			    "https://apps.facebook.com/prosjektrestavfall"
+		    end
+	    else
+		    "#{request.host}:#{request.port}"
+	    end
     end
 
     @@permissions = ['user_friends', 'user_photos', 'user_events', 'read_stream'];
 
     def redirect
-        oauth =   Koala::Facebook::OAuth.new(FACEBOOK_CONFIG["app_id"], FACEBOOK_CONFIG["secret"], 
-		  "https://#{return_host}/auth/facebook/callback")
-
         reset_session
+        oauth =   Koala::Facebook::OAuth.new(FACEBOOK_CONFIG["app_id"], 
+					     FACEBOOK_CONFIG["secret"])
 
 	if params.has_key?("signed_request")
 		req = oauth.parse_signed_request(params[:signed_request])
+		Rails.logger.info req
+
+		# If app is on tab page
+		if req.has_key?("page")
+			session[:page_id] = req["page"]["id"]
+		end
+
+		# If user is already authenticated
 		if req.has_key?("oauth_token")
 			session[:token] = req["oauth_token"]
 			redirect_to '/index' and return
 		end
 	end
 
+	# Create oauth with return url
+	oauth =   Koala::Facebook::OAuth.new(FACEBOOK_CONFIG["app_id"], 
+			FACEBOOK_CONFIG["secret"], 
+			return_host)
         @url = oauth.url_for_oauth_code(:permissions => @@permissions)
-    end
-
-    def login
-        time("login") {
-            oauth =   Koala::Facebook::OAuth.new(FACEBOOK_CONFIG["app_id"], FACEBOOK_CONFIG["secret"], 
-		    "https://#{return_host}/auth/facebook/callback")
-            session[:token] = oauth.get_access_token(params[:code])
-        }
-        redirect_to '/index' and return
     end
 
     def index
