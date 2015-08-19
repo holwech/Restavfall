@@ -6,45 +6,34 @@ class HomeController < ApplicationController
         result
     end
 
-    def return_host
-	    if Rails.env.production?
-		    if session.has_key?("page_id")
-			"https://www.facebook.com/#{session["page_id"]}?sk=app_#{FACEBOOK_CONFIG["app_id"]}"	
-		    else
-			    "https://apps.facebook.com/prosjektrestavfall"
-		    end
-	    else
-		    "https://#{request.host}:#{request.port}"
-	    end
-    end
-
+    @@host = "https://www.facebook.com/#{FACEBOOK_CONFIG["page_id"]}"+
+             "?sk=app_#{FACEBOOK_CONFIG["app_id"]}";
     @@permissions = ['user_friends', 'user_photos', 'user_events', 'read_stream'];
 
     def redirect
         reset_session
-        oauth =   Koala::Facebook::OAuth.new(FACEBOOK_CONFIG["app_id"], 
-					     FACEBOOK_CONFIG["secret"])
 
-	if params.has_key?("signed_request")
-		req = oauth.parse_signed_request(params[:signed_request])
-		Rails.logger.info req
+        # Create oauth with return url
+        oauth = Koala::Facebook::OAuth.new(
+            FACEBOOK_CONFIG["app_id"], 
+            FACEBOOK_CONFIG["secret"], 
+            @@host)
 
-		# If app is on tab page
-		if req.has_key?("page")
-			session[:page_id] = req["page"]["id"]
-		end
+        if params.has_key?("signed_request")
+            req = oauth.parse_signed_request(params[:signed_request])
 
-		# If user is already authenticated
-		if req.has_key?("oauth_token")
-			session[:token] = req["oauth_token"]
-			redirect_to '/index' and return
-		end
-	end
+            # If app data is set, redirect to uno
+            if req.has_key?("app_data")
+                redirect_to '/uno/' + req["app_data"] and return
+            end
 
-	# Create oauth with return url
-	oauth =   Koala::Facebook::OAuth.new(FACEBOOK_CONFIG["app_id"], 
-			FACEBOOK_CONFIG["secret"], 
-			return_host)
+            # If user is already authenticated
+            if req.has_key?("oauth_token")
+                session[:token] = req["oauth_token"]
+                redirect_to '/index' and return
+            end
+        end
+
         @url = oauth.url_for_oauth_code(:permissions => @@permissions)
     end
 
@@ -56,18 +45,18 @@ class HomeController < ApplicationController
 
         graph = Koala::Facebook::API.new(session[:token])
         granted_permissions = graph.get_connections('me','permissions')
-                              .delete_if{|p| p["status"] != "granted"}
-                              .map{|p| p["permission"]}
+        .delete_if{|p| p["status"] != "granted"}
+        .map{|p| p["permission"]}
 
         missing_permissions = @@permissions - granted_permissions;
 
         if missing_permissions.length > 0
             oauth =   Koala::Facebook::OAuth.new(
                 FACEBOOK_CONFIG["app_id"], FACEBOOK_CONFIG["secret"], 
-                return_host)
+                @@host)
             @url = oauth.url_for_oauth_code(
-                    :auth_type => "rerequest",
-                    :permissions => @@permissions)
+                :auth_type => "rerequest",
+                :permissions => @@permissions)
             @missing = missing_permissions
             render 'missing_permissions' and return
         end
@@ -142,6 +131,7 @@ class HomeController < ApplicationController
         @friendName = result.friendName
         @friendImage = result.friendImg
         @eventtime = @ev['time'].strftime('%d. %B');
+        @redirecturl = @@host
     end
 
     def close
