@@ -14,7 +14,7 @@ class HomeController < ApplicationController
 			    "https://apps.facebook.com/prosjektrestavfall"
 		    end
 	    else
-		    "#{request.host}:#{request.port}"
+		    "https://#{request.host}:#{request.port}"
 	    end
     end
 
@@ -50,8 +50,8 @@ class HomeController < ApplicationController
 
     def index
         if not session.has_key?('token')
-            puts "ERROR"
-            return
+            puts "Missing token"
+            redirect_to '/' and return
         end
 
         graph = Koala::Facebook::API.new(session[:token])
@@ -64,7 +64,7 @@ class HomeController < ApplicationController
         if missing_permissions.length > 0
             oauth =   Koala::Facebook::OAuth.new(
                 FACEBOOK_CONFIG["app_id"], FACEBOOK_CONFIG["secret"], 
-                "https://#{return_host}/auth/facebook/callback")
+                return_host)
             @url = oauth.url_for_oauth_code(
                     :auth_type => "rerequest",
                     :permissions => @@permissions)
