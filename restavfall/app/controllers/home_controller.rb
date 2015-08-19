@@ -17,10 +17,19 @@ class HomeController < ApplicationController
     @@permissions = ['user_friends', 'user_photos', 'user_events', 'read_stream'];
 
     def redirect
-        reset_session
-
         oauth =   Koala::Facebook::OAuth.new(FACEBOOK_CONFIG["app_id"], FACEBOOK_CONFIG["secret"], 
 		  "https://#{return_host}/auth/facebook/callback")
+
+        reset_session
+
+	if params.has_key?("signed_request")
+		req = oauth.parse_signed_request(params[:signed_request])
+		if req.has_key?("oauth_token")
+			session[:token] = req["oauth_token"]
+			redirect_to '/index' and return
+		end
+	end
+
         @url = oauth.url_for_oauth_code(:permissions => @@permissions)
     end
 
