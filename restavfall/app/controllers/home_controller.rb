@@ -23,14 +23,19 @@ class HomeController < ApplicationController
             req = oauth.parse_signed_request(params[:signed_request])
 
             # If app data is set, redirect to uno
-            if req.has_key?("app_data")
-                redirect_to '/uno/' + req["app_data"] and return
+            if req.has_key?("app_data") and not params.has_key?("stop")
+                redirect_to(	:controller => 'home', 
+				:action => 'uno', 
+				:rid => req["app_data"],
+				:signed_request => params[:signed_request] )  and return
             end
 
             # If user is already authenticated
             if req.has_key?("oauth_token")
                 session[:token] = req["oauth_token"]
-                redirect_to '/index' and return
+                redirect_to(	:controller => 'home', 
+				:action => 'index', 
+				:signed_request => params[:signed_request] )  and return
             end
         end
 
@@ -65,6 +70,7 @@ class HomeController < ApplicationController
         @event = session[:event]
         @friend = session[:friend]
         @link = session[:link]
+	@sr = params[:signed_request]
     end
 
     def analyse
@@ -122,6 +128,7 @@ class HomeController < ApplicationController
     def uno
         @r = !params[:redir].nil?
         @rid = params[:rid]
+	@sr = params[:signed_request]
 
         result = Result.find(@rid)
         @ev = Event.find(result.eventId)
