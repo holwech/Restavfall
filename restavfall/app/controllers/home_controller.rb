@@ -137,7 +137,7 @@ class HomeController < ApplicationController
         @selfImage = result.userImg
         @friendName = result.friendName
         @friendImage = result.friendImg
-        @eventtime = @ev['time'].strftime('%d. %B');
+	@eventtime = l(@ev['time'], format: '%e. %B');
         @redirecturl = @@host
     end
 
