@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150821102754) do
+ActiveRecord::Schema.define(version: 20150824143638) do
 
   create_table "events", force: :cascade do |t|
     t.string   "name",       limit: 255
@@ -53,6 +53,14 @@ ActiveRecord::Schema.define(version: 20150821102754) do
     t.string   "slug",       limit: 255
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
+  end
+
+  create_table "uke_fb_events", force: :cascade do |t|
+    t.integer  "uke_event_id",   limit: 4
+    t.string   "fb_event_id",    limit: 255
+    t.boolean  "auto_generated", limit: 1
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
   end
 
   create_table "uke_showings", force: :cascade do |t|
