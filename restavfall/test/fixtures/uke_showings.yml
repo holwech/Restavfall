@@ -1,0 +1,35 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  event_id: 1
+  status: MyString
+  tickets_available: false
+  price: 1
+  sale_open: false
+  free: false
+  canceled: false
+  date: 2015-08-21 12:27:54
+  id: 1
+  sale_to: 2015-08-21 12:27:54
+  sale_from: 2015-08-21 12:27:54
+  title: MyString
+  url: MyString
+  sale_over: false
+  place: MyString
+
+two:
+  event_id: 1
+  status: MyString
+  tickets_available: false
+  price: 1
+  sale_open: false
+  free: false
+  canceled: false
+  date: 2015-08-21 12:27:54
+  id: 1
+  sale_to: 2015-08-21 12:27:54
+  sale_from: 2015-08-21 12:27:54
+  title: MyString
+  url: MyString
+  sale_over: false
+  place: MyString

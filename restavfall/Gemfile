@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'htmlentities'
 gem 'rails-i18n'
 gem 'yaml_db'
 gem 'mysql2'

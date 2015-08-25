@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  uke_event_id: 1
+  fb_event_id: 1
+  auto_generated: false
+
+two:
+  uke_event_id: 1
+  fb_event_id: 1
+  auto_generated: false
