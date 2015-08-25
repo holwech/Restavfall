@@ -6,7 +6,6 @@ class CreateResults < ActiveRecord::Migration
       t.string :friendName
       t.string :friendImg
       t.integer :eventId
-      t.integer :showId
 
       t.timestamps null: false
     end

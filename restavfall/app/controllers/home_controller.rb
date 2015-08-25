@@ -127,13 +127,24 @@ class HomeController < ApplicationController
         render json: output
     end
 
+    def getEventByShowingId(id)
+        UkeEvent.find_by_sql("SELECT * 
+                              FROM UkeShowings as us, UkeEvent as ue 
+                              WHERE us.id = #{id} AND us.uke_event_id = ue.id 
+                              LEFT OUTER JOIN uke_event_data as ued 
+                              ON ued.uke_event_id = ue.id")
+
+    end
+
     def uno
         @r = !params[:redir].nil?
         @rid = params[:rid]
         @sr = params[:signed_request]
 
         result = Result.find(@rid)
-        @ev = Event.find(result.eventId)
+        @ev = getEventByShowingId(result.eventId)
+        puts "Event"
+        puts @ev
 
         @selfName = result.userName
         @selfImage = result.userImg
@@ -149,7 +160,7 @@ class HomeController < ApplicationController
     def getFriendAndEvent(graph)
         friend = FriendFinder.get_one_friend(graph, session[:fd])
         id = session[:eventIDs].first
-        event = UkeEvent.find_by_sql("SELECT * FROM UkeShowings as us, UkeEvent as ue WHERE us.id = #{id} AND us.uke_event_id = ue.id LEFT OUTER JOIN uke_event_data as ued ON ued.uke_event_id = ue.id")
+        event = getEventByShowingId(id)
         puts "Event"
         puts event
         session[:eventIDs].rotate!
