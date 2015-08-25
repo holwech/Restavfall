@@ -70,7 +70,7 @@ class HomeController < ApplicationController
         @event = session[:event]
         @friend = session[:friend]
         @link = session[:link]
-	@sr = params[:signed_request]
+        @sr = params[:signed_request]
     end
 
     def analyse
@@ -86,7 +86,9 @@ class HomeController < ApplicationController
         case stage
         when "Start"
             me = graph.get_object('me?fields=id,name,picture');
-            session[:eventIDs] = Event.pluck(:id).shuffle!
+            session[:eventIDs] = UkeShowing.find_by_sql("SELECT id FROM uke_showings WHERE date > NOW() AND tickets_available = true").shuffle!
+            puts "Event ids"
+            puts session[:eventIDs]
             session[:friend] = nil
             session[:event] = nil
             session[:user] = {:pic => me['picture']['data']['url'], 
@@ -128,7 +130,7 @@ class HomeController < ApplicationController
     def uno
         @r = !params[:redir].nil?
         @rid = params[:rid]
-	@sr = params[:signed_request]
+        @sr = params[:signed_request]
 
         result = Result.find(@rid)
         @ev = Event.find(result.eventId)
@@ -137,7 +139,7 @@ class HomeController < ApplicationController
         @selfImage = result.userImg
         @friendName = result.friendName
         @friendImage = result.friendImg
-	@eventtime = l(@ev['time'], format: '%e. %B');
+        @eventtime = l(@ev['time'], format: '%e. %B');
         @redirecturl = @@host
     end
 
@@ -146,9 +148,10 @@ class HomeController < ApplicationController
 
     def getFriendAndEvent(graph)
         friend = FriendFinder.get_one_friend(graph, session[:fd])
-
-        event = Event.find(session[:eventIDs].first)
-        event['img'] = ActionController::Base.helpers.asset_path(event['img']);
+        id = session[:eventIDs].first
+        event = UkeEvent.find_by_sql("SELECT * FROM UkeShowings as us, UkeEvent as ue WHERE us.id = #{id} AND us.uke_event_id = ue.id LEFT OUTER JOIN uke_event_data as ued ON ued.uke_event_id = ue.id")
+        puts "Event"
+        puts event
         session[:eventIDs].rotate!
 
         session[:friend] = friend

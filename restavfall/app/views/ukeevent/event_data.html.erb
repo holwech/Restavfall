@@ -3,20 +3,16 @@ var save = function(id) {
     var elem = $("#"+id);
     var telem = $("#"+id+"_p");
     var newv = elem.val();
-    var oldv = elem.attr("class");
-    if (newv === oldv)
+    if (newv === "")
         return;
-    edit = oldv != "";
     $.ajax({
         type: "POST",
-        url: '/fbukeevent/',
+        url: '/ukeeventdata/',
         data: {
-            id: elem.attr("id"),
-            edit: edit,
-            fb_event_id: newv
+            id: id,
+            description: newv
         },
         success: function() {
-            elem.attr("class", newv);
             telem.text("Saved");
             setTimeout(function() {
                 telem.text("");
@@ -38,9 +34,8 @@ var save = function(id) {
 <% @events.each do |e| %>
     <%= e.title %><br>
     <input type="text" id="<%= e.id %>" 
-       class="<%= e.fb_event_id %>"
-       value="<%= e.fb_event_id %>"
-       <%= e.auto_generated ? "disabled" : "onBlur=\"save(#{e.id})\"" %>>
+       value="<%= e.description %>"
+       onBlur="save(<%=e.id%>)" >
        <div style="display:inline" id="<%= e.id %>_p"></div>
     <br>
     <br>

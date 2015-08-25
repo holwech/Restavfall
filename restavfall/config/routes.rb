@@ -11,8 +11,8 @@ Rails.application.routes.draw do
   get 'auth/facebook/callback', to: 'home#login'
   post 'auth/facebook/callback', to: 'home#login'
   get 'ukeevent', to: 'ukeevent#index'
-  get 'fbukeevent', to: 'ukeevent#fb_events'
-  post 'fbukeevent', to: 'ukeevent#save_fb_event'
+  get 'ukeeventdata', to: 'ukeevent#event_data'
+  post 'ukeeventdata', to: 'ukeevent#save_data'
   get '*path' => redirect('/')
   post '*path' => redirect('/')
 end
