@@ -86,7 +86,9 @@ class HomeController < ApplicationController
         case stage
         when "Start"
             me = graph.get_object('me?fields=id,name,picture');
-            session[:eventIDs] = UkeShowing.find_by_sql("SELECT id FROM uke_showings WHERE date > NOW() AND tickets_available = true").shuffle!
+            session[:eventIDs] = UkeShowing.find_by_sql("SELECT id FROM uke_showings")
+				.map{|e| e["id"]}
+				.shuffle!
             puts "Event ids"
             puts session[:eventIDs]
             session[:friend] = nil
@@ -128,12 +130,12 @@ class HomeController < ApplicationController
     end
 
     def getEventByShowingId(id)
-        UkeEvent.find_by_sql("SELECT * 
-                              FROM UkeShowings as us, UkeEvent as ue 
-                              WHERE us.id = #{id} AND us.uke_event_id = ue.id 
+        UkeEvent.find_by_sql("SELECT * , us.id as id
+                              FROM uke_showings as us, uke_events as ue 
                               LEFT OUTER JOIN uke_event_data as ued 
-                              ON ued.uke_event_id = ue.id")
-
+                              ON ued.uke_event_id = ue.id
+                              WHERE us.id = #{id} AND us.uke_event_id = ue.id 
+			      ").first
     end
 
     def uno
@@ -162,7 +164,7 @@ class HomeController < ApplicationController
         id = session[:eventIDs].first
         event = getEventByShowingId(id)
         puts "Event"
-        puts event
+        puts event.to_json
         session[:eventIDs].rotate!
 
         session[:friend] = friend
@@ -176,7 +178,7 @@ class HomeController < ApplicationController
         res.userImg = session[:user][:pic]
         res.friendName = session[:friend]['name']
         res.friendImg = session[:friend]['pic']
-        res.eventId = session[:event][:id]
+        res.eventId = session[:event]["id"]
         res.save!
         return res.id
     end

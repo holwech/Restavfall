@@ -52,9 +52,9 @@ var setFriend = function() {
 }
 
 var setEvent = function() {
-    $("#event-img").attr("src", currentEvent['img']);
-    $("#event-link").attr("href","http://www.facebook.com/" + currentEvent['fbeventID']);
-    $("#link-share").html(currentEvent['name']);
+    $("#event-img").attr("src", "http://www.uka.no" + currentEvent['image']);
+    $("#event-link").attr("href","http://www.uka.no" + currentEvent['url']);
+    $("#link-share").html(currentEvent['title']);
 }
 
 var setLink = function() {
