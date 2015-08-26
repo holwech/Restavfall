@@ -146,13 +146,13 @@ class HomeController < ApplicationController
         result = Result.find(@rid)
         @ev = getEventByShowingId(result.eventId)
         puts "Event"
-        puts @ev
+        puts @ev.to_json
 
         @selfName = result.userName
         @selfImage = result.userImg
         @friendName = result.friendName
         @friendImage = result.friendImg
-        @eventtime = l(@ev['time'], format: '%e. %B');
+        @eventtime = l(@ev['date'], format: '%e. %B');
         @redirecturl = @@host
     end
 
@@ -163,8 +163,6 @@ class HomeController < ApplicationController
         friend = FriendFinder.get_one_friend(graph, session[:fd])
         id = session[:eventIDs].first
         event = getEventByShowingId(id)
-        puts "Event"
-        puts event.to_json
         session[:eventIDs].rotate!
 
         session[:friend] = friend

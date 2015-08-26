@@ -1,7 +1,7 @@
 <% content_for :head do %>
     <meta property="fb:app_id"             content="649498578495089" />
     <meta property="og:title"              content="Restavfall" />
-    <meta property="og:description"        content="<%= @selfName %> og <%= @friendName %> vil finne lykken under uka! Vær med på <%= @ev.name %> du også!" />
+    <meta property="og:description"        content="<%= @selfName %> og <%= @friendName %> vil finne lykken under uka! V�r med p� <%= @etitle %> du også" />
 <% end %>
 
 <% if @r %>
@@ -10,19 +10,31 @@
             <%= (@redirecturl+"&app_data="+@rid).to_json.html_safe %>
     </script>
     Redirecting to facebook...
-<% else %>
-    <h2><%= @selfName %>
-     tok restavfall, og fikk dette resultatet!
-    </h2>
-    <h3>
-    Dere skal dra på <%= @ev.name %> sammen den <%= @eventtime %>!
-    </h3>
-
-    <%= image_tag @ev.img %>
-    <%= image_tag @selfImage %><br>
-    <%= image_tag @friendImage %><br>
-    <%= link_to("Delta på facebook!",'http://www.facebook.com/' + @ev.fbeventID) %>
-    <br>
-    <%= link_to("Kjøp billetter!", @ev.url) %>
-    <a href=<%= "/?stop=true&signed_request="+@sr %> > Ta testen du og!</a>
+ <% else %>
+	<div id="container">
+			<div id="results" style="display:inline">
+					<h2><%= @selfName %> tok restavfall, og fikk dette resultatet!</h2>
+					<h3> Dere skal dra på <%= @ev.title %> sammen den <%= @eventtime %>! </h3>
+					<div id="event">
+							<div id="event-img-div">
+									<span id="helper"></span>
+									<a id="event-link" target="_blank" href="http://www.uka.no<%= @ev.url %>">
+										<img id="event-img" src="http://www.uka.no<%= @ev.image %>">
+									</a> <br>
+							</div>
+							<a id="link-share" href="http://www.uka.no<%= @ev.url %>"><%= @ev.title %></span>
+					</div>
+					<div id="me">
+							<img id="me-profile" src="<%= @selfImage %>"><br>
+							<a id="me-name"><%= @selfName %></a>
+					</div>	
+					<div id="friend">
+							<img id="friend-profile" src="<%= @friendImage %>"><br>
+							<a id="friend-name"><%= @friendName %></a>
+					</div>
+					<%= link_to("Kjøp billetter!",'http://www.uka.no' + @ev.url) %>
+					<a href=<%= "/?stop=true&signed_request="+@sr %> > Ta testen du også!</a>
+			</div>
+	</div>
 <% end %>
+
