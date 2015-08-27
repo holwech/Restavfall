@@ -13,6 +13,6 @@ Rails.application.routes.draw do
   get 'ukeevent', to: 'ukeevent#index'
   get 'ukeeventdata', to: 'ukeevent#event_data'
   post 'ukeeventdata', to: 'ukeevent#save_data'
-  get '*path' => redirect('/')
-  post '*path' => redirect('/')
+  #get '*path' => redirect('/')
+  #post '*path' => redirect('/')
 end
