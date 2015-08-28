@@ -126,10 +126,6 @@ class HomeController < ApplicationController
         end
 
         session[:fs].default_proc = nil
-
-	Rails.logger.warn "session"
-	Rails.logger.warn session.to_json
-
         render json: output
     end
 
