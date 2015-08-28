@@ -11,7 +11,7 @@ class HomeController < ApplicationController
     @@permissions = ['user_friends', 'user_photos', 'user_events', 'read_stream'];
 
     def redirect
-        reset_session
+		Rails.cache.delete("session");
 
         # Create oauth with return url
         oauth = Koala::Facebook::OAuth.new(
@@ -32,7 +32,7 @@ class HomeController < ApplicationController
 
             # If user is already authenticated
             if req.has_key?("oauth_token")
-                session[:token] = req["oauth_token"]
+				Rails.cache.write("session", {:token => req["oauth_token"]})
                 redirect_to(	:controller => 'home', 
 				:action => 'index', 
 				:signed_request => params[:signed_request] )  and return
@@ -43,12 +43,8 @@ class HomeController < ApplicationController
     end
 
     def index
-        if not session.has_key?('token')
-            puts "Missing token"
-            redirect_to '/' and return
-        end
-
-        graph = Koala::Facebook::API.new(session[:token])
+		sess = Rails.cache.fetch("session")
+        graph = Koala::Facebook::API.new(sess[:token])
         granted_permissions = graph.get_connections('me','permissions')
         .delete_if{|p| p["status"] != "granted"}
         .map{|p| p["permission"]}
@@ -66,69 +62,67 @@ class HomeController < ApplicationController
             render 'missing_permissions' and return
         end
 
-        @user = session[:user]
-        @event = session[:event]
-        @friend = session[:friend]
-        @link = session[:link]
+        @user = sess[:user]
+        @event = sess[:event]
+        @friend = sess[:friend]
+        @link = sess[:link]
         @sr = params[:signed_request]
     end
 
     def analyse
         stage = params[:stage]
+		sess = Rails.cache.fetch("session")
 
         if stage == "Start"
-            session[:fs] = {}
+            sess[:fs] = {}
         end
 
-        graph = Koala::Facebook::API.new(session[:token])
-        session[:fs].default_proc = proc{ |hash, key| hash[key] = 0 }
+        graph = Koala::Facebook::API.new(sess[:token])
+        sess[:fs].default_proc = proc{ |hash, key| hash[key] = 0 }
 
         case stage
         when "Start"
             me = graph.get_object('me?fields=id,name,picture');
-            session[:eventIDs] = UkeShowing.find_by_sql("SELECT id FROM uke_showings")
+            sess[:eventIDs] = UkeShowing.find_by_sql("SELECT id FROM uke_showings")
 				.map{|e| e["id"]}
 				.shuffle!
-            puts "Event ids"
-            puts session[:eventIDs]
-            session[:friend] = nil
-            session[:event] = nil
-            session[:user] = {:pic => me['picture']['data']['url'], 
+            sess[:friend] = nil
+            sess[:event] = nil
+            sess[:user] = {:pic => me['picture']['data']['url'], 
                               :id => me['id'], :name => me['name']};
             output = {"status": "OK", 
                       "next": "Posts", 
                       "text": "Analysing your posts"}
         when "Posts"
-            FriendFinder.analyse_posts(graph, session[:fs])
+            FriendFinder.analyse_posts(graph, sess[:fs])
             output = {"status": "OK", "next": "Photos", "text": "Analysing your photos"}
         when "Photos"
-            FriendFinder.analyse_photos(graph, session[:fs])
+            FriendFinder.analyse_photos(graph, sess[:fs])
             output = {"status": "OK", "next": "Events", "text": "Analysing your events"}
         when "Events"
-            FriendFinder.analyse_events(graph, session[:fs])
+            FriendFinder.analyse_events(graph, sess[:fs])
             output = {"status": "OK", "next": "Friends", "text": "Gathering the candidates"}
         when "Friends"
             friend_data = FriendFinder.make_friend_data(graph, 
-                                                        session[:fs], 
-                                                        session[:user][:id])
+                                                        sess[:fs], 
+                                                        sess[:user][:id])
             output = {"status": "OK", "next": "FriendEvent", "friends": friend_data,
                       "text": "Finding your ideal UKE-friend!"}
-            session[:fd] = friend_data
+            sess[:fd] = friend_data
         when "FriendEvent"
             getFriendAndEvent(graph)
             output = {"status": "Done",  
-                      "user": session[:user], 
-                      "friend": session[:friend], 
-                      "event": session[:event], 
-                      "link": session[:link]}
+                      "user": sess[:user], 
+                      "friend": sess[:friend], 
+                      "event": sess[:event], 
+                      "link": sess[:link]}
         else
             output = {"status": "Error"}
         end
 
-        session[:fs].default_proc = nil
+        sess[:fs].default_proc = nil
 
-	Rails.logger.warn "session"
-	Rails.logger.warn session.to_json
+		Rails.cache.write("session", sess)
 
         render json: output
     end
@@ -164,24 +158,28 @@ class HomeController < ApplicationController
     end
 
     def getFriendAndEvent(graph)
-        friend = FriendFinder.get_one_friend(graph, session[:fd])
-        id = session[:eventIDs].first
+		sess = Rails.cache.fetch("session")
+        friend = FriendFinder.get_one_friend(graph, sess[:fd])
+        id = sess[:eventIDs].first
         event = getEventByShowingId(id)
-        session[:eventIDs].rotate!
+        sess[:eventIDs].rotate!
 
-        session[:friend] = friend
-        session[:event] = event
-        session[:link] = saveResult
+        sess[:friend] = friend
+        sess[:event] = event
+        sess[:link] = saveResult
+		Rails.cache.write("session", sess);
     end
 
     def saveResult
+		sess = Rails.cache.fetch("session")
         res = Result.new
-        res.userName = session[:user][:name]
-        res.userImg = session[:user][:pic]
-        res.friendName = session[:friend]['name']
-        res.friendImg = session[:friend]['pic']
-        res.eventId = session[:event]["id"]
+        res.userName = sess[:user][:name]
+        res.userImg = sess[:user][:pic]
+        res.friendName = sess[:friend]['name']
+        res.friendImg = sess[:friend]['pic']
+        res.eventId = sess[:event]["id"]
         res.save!
+		Rails.cache.write("session", sess);
         return res.id
     end
 end
