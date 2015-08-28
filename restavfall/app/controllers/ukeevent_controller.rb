@@ -1,4 +1,12 @@
 class UkeeventController < ApplicationController
+    before_filter :authenticate
+
+    def authenticate
+        authenticate_or_request_with_http_basic do |username, password|
+            username == "admin" and password = "restavfall2015"
+        end
+    end
+
     def index
         @links = ""
         if params.has_key?("update")
