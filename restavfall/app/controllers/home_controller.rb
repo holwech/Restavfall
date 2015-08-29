@@ -180,4 +180,7 @@ class HomeController < ApplicationController
         res.save!
         return res.id
     end
+
+	def policy
+	end
 end
