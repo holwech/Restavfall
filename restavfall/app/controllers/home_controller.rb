@@ -86,7 +86,7 @@ class HomeController < ApplicationController
         case stage
         when "Start"
             me = graph.get_object('me?fields=id,name,picture');
-            session[:eventIDs] = UkeShowing.find_by_sql("SELECT id FROM uke_showings")
+            session[:eventIDs] = UkeShowing.find_by_sql("SELECT us.id FROM uke_showings as us, uke_event_data as ued, uke_events as ue WHERE us.uke_event_id = ue.id AND ue.id = ued.uke_event_id")
 				.map{|e| e["id"]}
 				.shuffle!
             puts "Event ids"
@@ -165,7 +165,11 @@ class HomeController < ApplicationController
         event = getEventByShowingId(id)
         session[:eventIDs].rotate!
 
-        session[:friend] = friend
+		if friend
+			session[:friend] = friend
+		else
+			session[:friend] = session[:user]
+		end
         session[:event] = event
         session[:link] = saveResult
     end

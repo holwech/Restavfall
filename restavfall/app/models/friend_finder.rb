@@ -29,6 +29,9 @@ class FriendFinder
 
         # Get sum of friend values
         sum = remaining_friends.map{|e| e['value']}.reduce(:+)
+		if not sum
+			return nil
+		end
         trigger = Kernel::rand * sum
         counter = 0
         friend_data.each do |friend|
