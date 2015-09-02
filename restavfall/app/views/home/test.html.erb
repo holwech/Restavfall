@@ -1,44 +1,31 @@
 
 <head>
     <%= stylesheet_link_tag 'test' %>
+    <%= javascript_include_tag 'test' %>
 </head>
 
 <div id="view">
     <div id="container" class="up">
-        <h1 id="h1">Heading 1</h1>
-        <h1 id="h2">Heading 2</h1>
-        <div id="text" class="right">Tekst</div>
+        <div id="h1" class="header">Lychehjulet</div>
+        <div id="h2" class="header">Heading 2</div>
+        <div id="text_wrap">
+            <div id="text" class="right">Tekst</div>
+        </div>
+        <div id="wheel">
+            <div id="wheel_pin"><%= image_tag 'Wheel/wheel_pin.png' %></div>
+            <div id="wheel_board"><%= image_tag 'Wheel/wheel_board.png' %></div>
+            <div id="wheel_foot"><%= image_tag 'Wheel/wheel_foot.png' %></div>
+        </div>
+        <div id="button">
+            <div id="button_arrow"><%= image_tag 'Button/button_arrow.png' %></div>
+            <div id="button_click" onClick="spin();" class="blink"><%= image_tag 'Button/button_click.png' %></div>
+            <div id="button_foot"><%= image_tag 'Button/button_foot.png' %></div>
+            <div id="button_text">Spinn!</div>
+        </div>
+        <div id="rhino">
+            <div id="rhino_belly" class="breathe_start"><%= image_tag "Nesehorn/nesehorn_belly.png" %></div>
+            <div id="rhino_feet"><%= image_tag "Nesehorn/nesehorn_feet.png" %></div>
+            <div id="rhino_tail" class="wave"><%= image_tag "Nesehorn/nesehorn_hale.png" %></div>
+            <div id="rhino_head" class="dig_start"><%= image_tag "Nesehorn/nesehorn_hode.png" %></div>
     </div>
 </div>
-<button onClick="
-        var elem = $('#container');
-        var cl = elem.attr('class');
-        if (cl == 'up') elem.attr('class', 'down');
-        else elem.attr('class', 'up');
-        ">Toggle</button>
-<button onClick="
-        var elem = $('#text');
-        var cl = elem.attr('class');
-        ">Slide</button>
-<script>
-var lines = ['Tekst 1','Tekst 2', 'Tekst 3', 'Tekst 4'];
-var c = 0;
-var i = 0;
-var update = function() {
-    console.log("Running update");
-    var elem = $('#text');
-    var cl = elem.attr('class');
-    if (cl == 'right') {
-        elem.html(lines[i++ % lines.length]);
-        elem.attr('class', 'center');
-    }
-    else if (cl == 'center') {
-        if (c++ % 3 == 0)
-            elem.attr('class', 'left');
-        else
-            return;
-    }
-    else elem.attr('class', 'right');
-};
-setInterval(update, 500);
-</script>

@@ -1,12 +1,32 @@
+/* Variables */
 $width: 810px;
 $height: 1887px;
 $view_height: 800px;
 $offset1: 287px;
 $offset2: $height - $view_height;
 
+/* Fonts */
+@font-face {
+      font-family: 'Alpaca Solidify';
+      src: url('Alpaca Solidify.otf');
+      src: url('Alpaca Solidify.ttf') format('truetype');
+}
+
+@font-face {
+      font-family: 'Playfair Display';
+      src: url('PlayfairDisplay-Regular.ttf');
+}
+
+@font-face {
+      font-family: 'Raleway';
+      src: url('Raleway-Light.ttf');
+}
+
+/* View */
 body {
     width: $width;
 }
+
 #view {
     width: 100%;
     height: $view_height;
@@ -30,21 +50,33 @@ body {
     top: -$offset2;
 }
 
+/* Content */
 $header_offset: 50px;
+.header {
+    font-size: 5em;
+}
 #h1 {
+    font-family: "Playfair Display";
     position: relative;
-    top: $offset1+$header_offset;
+    top: $offset1+$header_offset+80px;
 }
 #h2 {
+    font-family: "Alpaca Solidify";
     position: relative;
     top: $offset2+$header_offset;
 }
 
+/* Loading text */
+#text_wrap {
+    position: absolute;
+    top: $offset1 + $view_height - 75px;
+    width: 100%;
+}
 #text {
     position: relative;
-    top: $offset1 + $view_height - 150px;
-    margin-left: auto;
-    margin-right: auto;
+    color: white;
+    font-size: 2em;
+    font-family: "Raleway"
 }
 .right {
     left: $width / 4;
@@ -59,4 +91,198 @@ $header_offset: 50px;
     transition: left 0.5s, opacity 0.5s;
     left: -$width / 4;
     opacity: 0;
+}
+
+/* Wheel */
+$wheel_rad: 150px;
+img {
+    width: 100%;
+}
+#wheel {
+    position: relative;
+    top: $offset1+220px;
+    margin-right: auto;
+    margin-left: auto;
+    width: $wheel_rad*2;
+    z-index: 10;
+}
+
+#wheel_board {
+    position: relative;
+    top: -20px;
+    width: 100%;
+    z-index: -1;
+}
+
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.rotate {
+    animation: spin 1s linear infinite;
+    animation-delay: 1.2s;
+}
+
+#wheel_foot {
+    position: relative;
+    top: -100px;
+    width: 50%;
+    margin-right: auto;
+    margin-left: auto;
+    z-index: -2;
+}
+#wheel_pin {
+    margin-right: auto;
+    margin-left: auto;
+    width: 5%;
+    z-index: 1;
+}
+
+/* Button */
+#button {
+    position: absolute;
+    left: $width / 4 * 3;
+    top: $offset1 + 450px;
+    width: $width/14;
+}
+
+#button_arrow {
+    position: relative;
+    top: 0px;
+    left: 60px;
+}
+
+#button_foot {
+    position: relative;
+    top: -10px;
+}
+
+#button_text {
+    position: absolute;
+    top: -30px;
+    left: 60px;
+    font-family: "Raleway";
+    font-size: 3em;
+}
+
+/* Rhino */
+#rhino {
+    position: absolute;
+    left: 80px;
+    top: $offset1 + 520px;
+    width: 200px;
+    z-index: 30;
+}
+
+#rhino_belly {
+    position: relative;
+    width: 100%;
+    z-index: 10;
+}
+
+#rhino_feet {
+    position: relative;
+    top: -50px;
+    width: 80%;
+    margin-right: auto;
+    margin-left: auto;
+    z-index: 1;
+}
+
+#rhino_tail {
+    position: absolute;
+    top: 30px;
+    left: -60px;
+}
+
+@keyframes nod {
+    50% {
+        transform: rotate(20deg);
+        transform-origin: -20% 120%;
+    }
+    85% {
+        transform: rotate(-25deg);
+        transform-origin: -20% 120%;
+    }
+    100% {
+        transform: rotate(0deg);
+        transform-origin: -20% 120%;
+    }
+}
+@keyframes dig {
+    0% {
+        transform: rotate(0deg);
+        transform-origin: -20% 120%;
+    }
+    50% {
+        transform: rotate(3deg);
+        transform-origin: -20% 120%;
+    }
+    100% {
+        transform: rotate(0deg);
+        transform-origin: -20% 120%;
+    }
+}
+@keyframes breathe {
+    0% {
+        transform: scale(1, 1);
+    }
+    50% {
+        transform: scale(1.02, 1.02);
+    }
+    100% {
+        transform: rotate(3deg);
+    }
+}
+@keyframes wave {
+    0% {
+        transform: rotate(0deg);
+        transform-origin: 100% 0%;
+    }
+    50% {
+        transform: rotate(1deg);
+        transform-origin: 100% 0%;
+    }
+    100% {
+        transform: rotate(0deg);
+        transform-origin: 100% 0%;
+    }
+}
+@keyframes blink {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+#rhino_head {
+    position: absolute;
+    top: -55px;
+    left: 110px;
+    width: 75%;
+    z-index: 11;
+}
+
+.nod {
+    animation: nod 2s, dig 2s 2s infinite;
+}
+
+.dig_start {
+    animation: dig 2s infinite;
+}
+.breathe_start {
+    animation: breathe 2s infinite;
+}
+.wave {
+    animation: wave 1s infinite;
+}
+.blink {
+    animation: blink 1s infinite;
 }

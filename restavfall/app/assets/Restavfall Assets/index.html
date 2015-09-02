@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://daneden.github.io/animate.css/animate.min.css">
+</head>
+
+<body>
+
+<style>
+  html {
+    overflow: hidden;
+  }
+
+  .canvas {
+    height: 200vh;
+  }
+
+  .part1, .part2 {
+    height: 50%;
+  }
+
+  .part1 {
+    background: red;
+  }
+
+  .part2 {
+    background: blue;
+  }
+
+</style>
+
+
+<div class="canvas">
+  <div class="part1">
+    <a href="#scrolltome">klikk meg</a>
+  </div>
+  <div id="scrolltome" class="part2">
+    <p>hei</p>
+  </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script>
+$('a[href*=#]:not([href=#])').click(function() {
+    if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') 
+        || location.hostname == this.hostname) {
+
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+           if (target.length) {
+             $('html,body').animate({
+                 scrollTop: target.offset().top
+            }, 1000);
+            return false;
+        }
+    }
+});
+</script>
+
+</body>
+
+
+</html>
