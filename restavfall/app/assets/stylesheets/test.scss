@@ -8,18 +8,18 @@ $offset2: $height - $view_height;
 /* Fonts */
 @font-face {
       font-family: 'Alpaca Solidify';
-      src: url('Alpaca Solidify.otf');
-      src: url('Alpaca Solidify.ttf') format('truetype');
+      src: font-url('Alpaca Solidify.otf');
+      src: font-url('Alpaca Solidify.ttf') format('truetype');
 }
 
 @font-face {
       font-family: 'Playfair Display';
-      src: url('PlayfairDisplay-Regular.ttf');
+      src: font-url('PlayfairDisplay-Regular.ttf');
 }
 
 @font-face {
       font-family: 'Raleway';
-      src: url('Raleway-Light.ttf');
+      src: font-url('Raleway-Light.ttf');
 }
 
 /* View */
