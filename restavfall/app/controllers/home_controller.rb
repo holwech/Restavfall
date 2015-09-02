@@ -187,4 +187,6 @@ class HomeController < ApplicationController
 
 	def policy
 	end
+	def test
+	end
 end

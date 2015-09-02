@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   get 'auth/facebook/callback', to: 'home#login'
   post 'auth/facebook/callback', to: 'home#login'
   get 'fb_policy', to: 'home#policy'
+  get 'test', to: 'home#test'
   get 'ukeevent', to: 'ukeevent#index'
   get 'ukeeventdata', to: 'ukeevent#event_data'
   post 'ukeeventdata', to: 'ukeevent#save_data'

@@ -1,0 +1,62 @@
+$width: 810px;
+$height: 1887px;
+$view_height: 800px;
+$offset1: 287px;
+$offset2: $height - $view_height;
+
+body {
+    width: $width;
+}
+#view {
+    width: 100%;
+    height: $view_height;
+    overflow: hidden;
+
+}
+
+#container {
+    width: 100%;
+    height: $height;
+    position: relative;
+    left: 0px;
+    transition: top 2s;
+    background-image: image-url("background.png");
+    text-align: center;
+}
+.up {
+    top: -$offset1;
+}
+.down {
+    top: -$offset2;
+}
+
+$header_offset: 50px;
+#h1 {
+    position: relative;
+    top: $offset1+$header_offset;
+}
+#h2 {
+    position: relative;
+    top: $offset2+$header_offset;
+}
+
+#text {
+    position: relative;
+    top: $offset1 + $view_height - 150px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.right {
+    left: $width / 4;
+    opacity: 0;
+}
+.center {
+    transition: left 0.5s, opacity 0.5s;
+    left: 0;
+    opacity: 1;
+}
+.left {
+    transition: left 0.5s, opacity 0.5s;
+    left: -$width / 4;
+    opacity: 0;
+}
