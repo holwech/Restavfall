@@ -29,7 +29,7 @@ var spin = function() {
         else elem.attr('class', 'right');
     };
     setInterval(update, 500);
-    //setTimeout(done, 5000);
+    setTimeout(done, 5000);
     $('#wheel_board').attr("class", "rotate");
     $('#rhino_head').attr("class", "nod");
     $('#button_click').attr("class", "");
