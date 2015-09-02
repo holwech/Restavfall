@@ -1,3 +1,53 @@
+/* Mixins */
+@mixin keyframes($animation-name) {
+    @-webkit-keyframes #{$animation-name} {
+        @content;
+    }
+    @-moz-keyframes #{$animation-name} {
+        @content;
+    }  
+    @-ms-keyframes #{$animation-name} {
+        @content;
+    }
+    @-o-keyframes #{$animation-name} {
+        @content;
+    }  
+    @keyframes #{$animation-name} {
+        @content;
+    }
+}
+
+@mixin animation($str) {
+    -webkit-animation: #{$str};
+    -moz-animation: #{$str};
+    -ms-animation: #{$str};
+    -o-animation: #{$str};
+    animation: #{$str};      
+}
+
+@mixin transition($args...) {
+    -webkit-transition: $args;
+    -moz-transition: $args;
+    -ms-transition: $args;
+    -o-transition: $args;
+    transition: $args;
+}
+
+@mixin transform($val) {
+    -webkit-transform: $val;
+    -moz-transform: $val;
+    -ms-transform: $val;
+    transform: $val;
+}
+
+@mixin transform-origin ($origin) {
+    -moz-transform-origin: $origin;
+    -o-transform-origin: $origin;
+    -ms-transform-origin: $origin;
+    -webkit-transform-origin: $origin;
+    transform-origin: $origin;
+}
+
 /* Variables */
 $width: 810px;
 $height: 1887px;
@@ -39,7 +89,7 @@ body {
     height: $height;
     position: relative;
     left: 0px;
-    transition: top 2s;
+    @include transition(top 2s);
     background-image: image-url("background.png");
     text-align: center;
 }
@@ -83,12 +133,12 @@ $header_offset: 50px;
     opacity: 0;
 }
 .center {
-    transition: left 0.5s, opacity 0.5s;
+    @include transition(left 0.5s, opacity 0.5s);
     left: 0;
     opacity: 1;
 }
 .left {
-    transition: left 0.5s, opacity 0.5s;
+    @include transition(left 0.5s, opacity 0.5s);
     left: -$width / 4;
     opacity: 0;
 }
@@ -114,15 +164,14 @@ img {
     z-index: -1;
 }
 
-@keyframes spin {
+@include keyframes (spin) {
     100% {
-        transform: rotate(360deg);
+        @include transform(rotate(360deg));
     }
 }
 
 .rotate {
-    animation: spin 1s linear infinite;
-    animation-delay: 1.2s;
+    @include animation('spin 1s 1.2s linear infinite');
 }
 
 #wheel_foot {
@@ -197,60 +246,60 @@ img {
     left: -60px;
 }
 
-@keyframes nod {
+@include keyframes (nod) {
     50% {
-        transform: rotate(20deg);
-        transform-origin: -20% 120%;
+        @include transform(rotate(20deg));
+        @include transform-origin(-20% 120%);
     }
     85% {
-        transform: rotate(-25deg);
-        transform-origin: -20% 120%;
+        @include transform(rotate(-25deg));
+        @include transform-origin(-20% 120%);
     }
     100% {
-        transform: rotate(0deg);
-        transform-origin: -20% 120%;
+        @include transform(rotate(0deg));
+        @include transform-origin(-20% 120%);
     }
 }
-@keyframes dig {
+@include keyframes (dig) {
     0% {
-        transform: rotate(0deg);
-        transform-origin: -20% 120%;
+        @include transform(rotate(0deg));
+        @include transform-origin(-20% 120%);
     }
     50% {
-        transform: rotate(3deg);
-        transform-origin: -20% 120%;
+        @include transform(rotate(3deg));
+        @include transform-origin(-20% 120%);
     }
     100% {
-        transform: rotate(0deg);
-        transform-origin: -20% 120%;
+        @include transform(rotate(0deg));
+        @include transform-origin(-20% 120%);
     }
 }
-@keyframes breathe {
+@include keyframes (breathe) {
     0% {
-        transform: scale(1, 1);
+        @include transform(scale(1, 1));
     }
     50% {
-        transform: scale(1.02, 1.02);
+        @include transform(scale(1.02, 1.02));
     }
     100% {
-        transform: rotate(3deg);
+        @include transform(rotate(3deg));
     }
 }
-@keyframes wave {
+@include keyframes (wave) {
     0% {
-        transform: rotate(0deg);
-        transform-origin: 100% 0%;
+        @include transform(rotate(0deg));
+        @include transform-origin(100% 0%);
     }
     50% {
-        transform: rotate(1deg);
-        transform-origin: 100% 0%;
+        @include transform(rotate(1deg));
+        @include transform-origin(100% 0%);
     }
     100% {
-        transform: rotate(0deg);
-        transform-origin: 100% 0%;
+        @include transform(rotate(0deg));
+        @include transform-origin(100% 0%);
     }
 }
-@keyframes blink {
+@include keyframes (blink) {
     0% {
         opacity: 1;
     }
@@ -271,18 +320,18 @@ img {
 }
 
 .nod {
-    animation: nod 2s, dig 2s 2s infinite;
+    @include animation('nod 2s, dig 2s 2s infinite');
 }
 
 .dig_start {
-    animation: dig 2s infinite;
+    @include animation('dig 2s infinite');
 }
 .breathe_start {
-    animation: breathe 2s infinite;
+    @include animation('breathe 2s infinite');
 }
 .wave {
-    animation: wave 1s infinite;
+    @include animation('wave 1s infinite');
 }
 .blink {
-    animation: blink 1s infinite;
+    @include animation('blink 1s infinite');
 }
