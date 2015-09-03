@@ -75,6 +75,9 @@ $offset2: $height - $view_height;
 /* View */
 body {
     width: $width;
+    color: white;
+    font-family: "Raleway";
+    font-size: 1em;
 }
 
 #view {
@@ -109,11 +112,6 @@ $header_offset: 50px;
     font-family: "Playfair Display";
     position: relative;
     top: $offset1+$header_offset+80px;
-}
-#h2 {
-    font-family: "Alpaca Solidify";
-    position: relative;
-    top: $offset2+$header_offset;
 }
 
 /* Loading text */
@@ -335,3 +333,84 @@ img {
 .blink {
     @include animation('blink 1s infinite');
 }
+
+
+/* Bottom page */
+/* temp */
+div, img {
+    border: 1px solid black;
+}
+#event-image {
+    width: 350px;
+    height: 250px;
+}
+#me-image, #friend-image {
+    width: 50px;
+    height: 50px;
+}
+
+/* For realz */
+#uka {
+    position: absolute;
+    top: $offset2 + 20px;
+    left: $width - 220px;
+    width: 200px;
+}
+#event {
+    position: absolute;
+    top: $offset2 + 100px;
+    width: 100%;
+}
+#event-title {
+    font-family: "Alpaca Solidify";
+    font-size: 3em;
+    line-height: 1em;
+}
+#profiles {
+    position: absolute;
+    top: $offset2 + 400px;
+    width: 100%;
+    border: 1px solid red;
+}
+#description-wrapper {
+    width: 100%;
+    position: absolute;
+    top: $offset2 + 530px;
+}
+#description {
+    width: 70%;
+    margin-right: auto;
+    margin-left: auto;
+    font-size: 2em;
+    line-height: 1em;
+}
+#ticket {
+    width: 230px;
+    margin-right: auto;
+    margin-left: auto;
+    font-size: 30px;
+    border: solid 2px white;
+    margin-top: 10px;
+    padding: 10px;
+}
+#button-wrapper {
+    position: absolute;
+    top: $height - 70px;
+    width: 100%;
+    height: 55px;
+}
+.button3 {
+    border: 1px solid red;
+    float: left;
+    width: 33.3%;
+    height: 100%;
+}
+.inner-button {
+    height: 100%;
+}
+.button-img {
+    height: 100%;
+    width: auto;
+}
+
+
