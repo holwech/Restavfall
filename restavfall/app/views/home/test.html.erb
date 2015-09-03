@@ -4,9 +4,19 @@
     <%= javascript_include_tag 'home' %>
 </head>
 
+<script>
+window.onload = function() {
+	console.log("Hello");
+	$("#view").css("overflow", "visible");
+	$("#view").css("height", "auto");
+};
+</script>
+
 <div id="view">
-    <div id="container" class="down">
+    <div id="container" class="up">
         <div id="h1" class="header">LYCHEHJULET</div>
+		<%= image_tag 'cloud_1.png', {:id => "cloud-1"} %>
+		<%= image_tag 'cloud_2.png', {:id => "cloud-2"} %>
         <div id="text_wrap">
             <div id="text" class="right">Tekst</div>
         </div>
@@ -31,16 +41,18 @@
             <%= image_tag "UKElogo_hvit.png" %>
         </div>
         <div id="event">
-            <img id="event-image">
+			<div id="event-image-wrapper">
+            <img id="event-image" src="https://www.uka.no/uploads/events/doduo.png">
+			</div>
             <div id="event-title">ACTION BRONSON</div>
         </div>
         <div id="profiles">
             <div id="friend">
-                <img id="friend-image">
+                <img id="friend-image" src="https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xfp1/v/t1.0-1/c13.0.50.50/p50x50/10603236_10154589353135422_6099151518257792025_n.jpg?oh=082defdcae28888dae2c2c2c9bcb0e54&oe=5679D5AC&__gda__=1450495683_f5d4ebe86a4861dc17664721cd166b7e">
                 <div id="friend-name">Friend</div>
             </div>
             <div id="me">
-                <img id="me-image">
+                <img id="me-image" src="https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xfp1/v/t1.0-1/c13.0.50.50/p50x50/10603236_10154589353135422_6099151518257792025_n.jpg?oh=082defdcae28888dae2c2c2c9bcb0e54&oe=5679D5AC&__gda__=1450495683_f5d4ebe86a4861dc17664721cd166b7e">
                 <div id="me-name">Me</div>
             </div>
         </div>

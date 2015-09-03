@@ -78,6 +78,13 @@ body {
     color: white;
     font-family: "Raleway";
     font-size: 1em;
+	margin: 0px;
+	line-height: 18px;
+}
+
+a:hover, a:visited, a:link, a:active {
+	text-decoration: none;
+	color: white;
 }
 
 #view {
@@ -104,20 +111,32 @@ body {
 }
 
 /* Content */
-$header_offset: 50px;
 .header {
     font-size: 5em;
 }
 #h1 {
     font-family: "Playfair Display";
     position: relative;
-    top: $offset1+$header_offset+80px;
+    top: $offset1+90px;
+}
+
+#cloud-1 {
+	position: absolute;
+	top: $offset1+170px;
+	left: $width * 3 / 4;
+	width: 150px;
+}
+#cloud-2 {
+	position: absolute;
+	top: $offset1+190px;
+	left: 40px;
+	width: 150px;
 }
 
 /* Loading text */
 #text_wrap {
     position: absolute;
-    top: $offset1 + $view_height - 75px;
+    top: $offset1 + $view_height - 50px;
     width: 100%;
 }
 #text {
@@ -174,8 +193,8 @@ img {
 
 #wheel_foot {
     position: relative;
-    top: -100px;
-    width: 50%;
+    top: -40px;
+    width: 40%;
     margin-right: auto;
     margin-left: auto;
     z-index: -2;
@@ -193,6 +212,12 @@ img {
     left: $width / 4 * 3;
     top: $offset1 + 450px;
     width: $width/14;
+}
+
+#button_click {
+	width: 80%;
+	margin-right: auto;
+	margin-left: auto;
 }
 
 #button_arrow {
@@ -339,37 +364,45 @@ img {
 /* temp */
 div, img {
 }
-#event-image {
-    width: 350px;
-    height: 250px;
-}
 #me-image, #friend-image {
-    width: 50px;
-    height: 50px;
+    width: 75px;
+    height: 75px;
 }
 
 /* For realz */
 #uka {
     position: absolute;
-    top: $offset2 + 20px;
-    left: $width - 220px;
+    top: $offset2 + 30px;
+    left: $width - 230px;
     width: 200px;
 }
 #event {
     position: absolute;
-    top: $offset2 + 100px;
+    top: $offset2 + 50px;
     width: 100%;
 }
 #event-title {
     font-family: "Alpaca Solidify";
     font-size: 3em;
     line-height: 1em;
-    margin-top: 10px;
+    margin-top: 0px;
+}
+#event-image-wrapper {
+	width: 100%;
+	height: 250px;
+    margin-right: auto;
+    margin-left: auto;
+}
+#event-image {
+	width: auto;
+	height: 100%;
 }
 #profiles {
     position: absolute;
-    top: $offset2 + 420px;
+    top: $offset2 + 360px;
     width: 100%;
+	font-size: 1.5em;
+	line-height: 1em;
 }
 #friend {
     width: 50%;
@@ -381,15 +414,16 @@ div, img {
 }
 #description-wrapper {
     width: 100%;
+	height: 115px;
     position: absolute;
-    top: $offset2 + 510px;
+    top: $offset2 + 480px;
 }
 #description {
-    width: 70%;
+    width: 60%;
     margin-right: auto;
     margin-left: auto;
-    font-size: 2em;
-    line-height: 1em;
+    font-size: 1.5em;
+    line-height: 1.2em;
 }
 #ticket {
     width: 230px;
@@ -397,12 +431,12 @@ div, img {
     margin-left: auto;
     font-size: 30px;
     border: solid 2px white;
-    margin-top: 10px;
+    margin-top: 30px;
     padding: 10px;
 }
 #button-wrapper {
     position: absolute;
-    top: $height - 70px;
+    top: $height - 100px;
     width: 100%;
     height: 55px;
 }
