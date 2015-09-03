@@ -33,9 +33,7 @@ var save = function(id) {
 <form>
 <% @events.each do |e| %>
     <%= e.title %><br>
-    <input type="text" id="<%= e.id %>" 
-       value="<%= e.description %>"
-       onBlur="save(<%=e.id%>)" >
+    <textarea id="<%= e.id %>" rows="4" cols="50" onBlur="save(<%=e.id%>)" ><%= e.description %></textarea>
        <div style="display:inline" id="<%= e.id %>_p"></div>
     <br>
     <br>
