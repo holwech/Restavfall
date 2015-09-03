@@ -24,7 +24,7 @@ var setFriend = function() {
 }
 
 var setEvent = function() {
-    $("#event-image").attr("src", "http://www.uka.no" + currentEvent['image']);
+    $("#event-image").attr("src", "https://www.uka.no" + currentEvent['image']);
     $("#ticket-link").attr("href","http://www.uka.no" + currentEvent['url']);
     $("#event-title").html(currentEvent['title'].toUpperCase());
 }
@@ -55,11 +55,23 @@ var runAnalysis = function(stage) {
         else if (data['status'] == "Done") {
             fillData(data);
             done(data);
+			nextData = null;
+			again(false);
         }
     });
 }
 
-var again = function() {
+function preloadImage(url)
+{
+	var img=new Image();
+	img.src=url;
+}
+
+var again = function(setData) {
+	if (setData == undefined) {
+		fillData(nextData);
+		nextData = null;
+	}
     $.ajax({
         type: "GET",
         url: '/analyse/FriendEvent',
@@ -67,7 +79,9 @@ var again = function() {
     .success(function(data) {
         console.log(data);
         if (data['status'] == "Done") {
-            fillData(data);
+            nextData = data;
+			preloadImage(data["friend"]["pic"]);
+			preloadImage("https://www.uka.no" + data["event"]["image"]);
         }
     });
 }
