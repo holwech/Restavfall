@@ -9,23 +9,6 @@
 <script> sr = "<%= @sr %>"; </script>
 <% javascript_include_tag 'analyse.js' %>
 
-<script>
-    <% if @user and @event and @friend %>
-    $( document ).ready(function() {
-        user = <%= @user.to_json.html_safe %>
-        currentEvent = <%= @event.to_json.html_safe %>
-        currentFriend = <%= @friend.to_json.html_safe %>
-        currentLink = <%= @link.to_json.html_safe %>
-        setEvent();
-        setLink();
-        setFriend();
-        setUser();
-        toggleVisibility();
-        $('#start-test').toggle()
-    });
-    <% end %>
-</script>
-
 <div id="container">
     <div id="centered">
         <button type="button" id="start-test"  onclick="runAnalysis('Start');$('#start-test').toggle();">Start test</button>

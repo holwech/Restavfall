@@ -338,7 +338,6 @@ img {
 /* Bottom page */
 /* temp */
 div, img {
-    border: 1px solid black;
 }
 #event-image {
     width: 350px;
@@ -365,17 +364,25 @@ div, img {
     font-family: "Alpaca Solidify";
     font-size: 3em;
     line-height: 1em;
+    margin-top: 10px;
 }
 #profiles {
     position: absolute;
-    top: $offset2 + 400px;
+    top: $offset2 + 420px;
     width: 100%;
-    border: 1px solid red;
+}
+#friend {
+    width: 50%;
+    float: left;
+}
+#me {
+    width: 50%;
+    float: right;
 }
 #description-wrapper {
     width: 100%;
     position: absolute;
-    top: $offset2 + 530px;
+    top: $offset2 + 510px;
 }
 #description {
     width: 70%;
@@ -400,7 +407,6 @@ div, img {
     height: 55px;
 }
 .button3 {
-    border: 1px solid red;
     float: left;
     width: 33.3%;
     height: 100%;
