@@ -1,4 +1,30 @@
 <div style="width: 500px">
-Lychetesten deletes all data after the analysis. No private information is shared with third parties and will not be
-viewed by anyone.
+</div>
+
+<head>
+    <%= stylesheet_link_tag 'home' %>
+</head>
+
+<div id="view">
+    <div id="container" class="down">
+        <div id="uka">
+            <%= image_tag "UKElogo_hvit.png" %>
+        </div>
+        <div id="event">
+			<div id="event-image-wrapper">
+				<img id="event-image">
+			</div>
+            <div id="event-title">BRUK AV DATA</div>
+        </div>
+        <div id="description-wrapper">
+            <div id="description">
+				Lychehjulet sletter alle data etter at lykken er funnet.
+				Informasjon blir ikke delt med tredjeparter eller analysert.
+				Ingenting blir publisert uten din samtykke.
+            </div>
+            <div id="ticket">
+				<%= link_to "LYCHEHJULET", "/", {target: "_top"} %>
+            </div>
+        </div>
+	</div>
 </div>
