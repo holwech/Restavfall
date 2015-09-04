@@ -1,1 +1,9 @@
-<script>top.location.href=<%= @url.to_json.html_safe %></script>
+<% content_for :head do -%>
+    <meta property="fb:app_id"             content="649498578495089" />
+    <meta property="og:title"              content="Lychehjulet" />
+    <meta property="og:description"        content="Finn lykken under uka!" />
+	<meta property="og:image"        		content="https://niivx.uka.no/<%= asset_path('UKElogo.png') %>" />
+  <% end -%>
+<body>
+	<script>top.location.href=<%= @url.to_json.html_safe %></script>
+</body>
