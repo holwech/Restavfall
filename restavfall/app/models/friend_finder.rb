@@ -41,7 +41,7 @@ class FriendFinder
             counter += friend['value']
             if counter > trigger
                 friend['chosen'] = true;
-                friend['pic'] = graph.get_picture(friend['id']);
+                friend['pic'] = graph.get_picture(friend['id'], {:width => 100, :height => 100});
                 return friend
             end
         end

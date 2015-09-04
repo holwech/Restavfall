@@ -156,9 +156,20 @@ class HomeController < ApplicationController
 		req = oauth.parse_signed_request(params[:signed_request])
 		if req.has_key?("oauth_token")
 			@token = req["oauth_token"];
+			session[:token] = @token
 		end
-		puts "Token"
-		puts @token
+		if @token != ""
+			graph = Koala::Facebook::API.new(@token)
+			granted_permissions = graph.get_connections('me','permissions')
+			.delete_if{|p| p["status"] != "granted"}
+			.map{|p| p["permission"]}
+
+			missing_permissions = @@permissions - granted_permissions;
+
+			if missing_permissions.length > 0
+				@token = ""
+			end
+		end
 
         result = Result.find(@rid)
         @ev = getEventByShowingId(result.eventId)

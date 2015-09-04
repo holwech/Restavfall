@@ -118,6 +118,7 @@ var spin = function() {
 
 var slideUp = function(token) {
 	if (token == ''){
+		top.location.href='https://www.facebook.com/prosjektrestavfall?sk=app_649498578495089';
 		return;
 	}
 
