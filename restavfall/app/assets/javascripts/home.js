@@ -115,3 +115,26 @@ var spin = function() {
     $('#button_click').attr("class", "");
 	runAnalysis("Start");
 }
+
+var slideUp = function(token) {
+	if (token == ''){
+		return;
+	}
+
+	console.log("Sliding up");
+    $('#container').attr("class", "up");
+	setTimeout(delayedSlideUp, 2000);
+    $.ajax({
+        type: "GET",
+        url: '/analyse/Token?token='+token,
+    })
+    .success(function(data) {
+        console.log("Token sent");
+    });
+}
+
+var delayedSlideUp = function() {
+	console.log("Hiding/showing elements");
+	$("#button-wrapper").css("display","inline");
+	$(".hide").css("display","none");
+}

@@ -78,6 +78,12 @@ class HomeController < ApplicationController
 
         if stage == "Start"
             session[:fs] = {}
+		elsif stage == "Token"
+			session[:token] = params[:token]
+			puts "Got token: " + session[:token]
+            output = {"status": "OK"}
+			render json: output
+			return
         end
 
         graph = Koala::Facebook::API.new(session[:token])
@@ -87,8 +93,6 @@ class HomeController < ApplicationController
         when "Start"
             me = graph.get_object('me?fields=id,name');
 			picture = graph.get_picture("me", {:width => 100, :height => 100});
-			puts "Picture"
-			puts picture
             session[:eventIDs] = UkeShowing.find_by_sql("SELECT us.id FROM uke_showings as us, uke_event_data as ued, uke_events as ue WHERE us.uke_event_id = ue.id AND ue.id = ued.uke_event_id")
 				.map{|e| e["id"]}
 				.shuffle!
@@ -140,14 +144,24 @@ class HomeController < ApplicationController
     end
 
     def uno
+		puts "In uno controller"
         @r = !params[:redir].nil?
         @rid = params[:rid]
-        @sr = params[:signed_request]
+		@sr = params[:signed_request]
+        @token = ""
+        oauth = Koala::Facebook::OAuth.new(
+            FACEBOOK_CONFIG["app_id"], 
+            FACEBOOK_CONFIG["secret"], 
+            @@host)
+		req = oauth.parse_signed_request(params[:signed_request])
+		if req.has_key?("oauth_token")
+			@token = req["oauth_token"];
+		end
+		puts "Token"
+		puts @token
 
         result = Result.find(@rid)
         @ev = getEventByShowingId(result.eventId)
-        puts "Event"
-        puts @ev.to_json
 
         @selfName = result.userName
         @selfImage = result.userImg
