@@ -85,15 +85,16 @@ class HomeController < ApplicationController
 
         case stage
         when "Start"
-            me = graph.get_object('me?fields=id,name,picture');
+            me = graph.get_object('me?fields=id,name');
+			picture = graph.get_picture("me", {:width => 100, :height => 100});
+			puts "Picture"
+			puts picture
             session[:eventIDs] = UkeShowing.find_by_sql("SELECT us.id FROM uke_showings as us, uke_event_data as ued, uke_events as ue WHERE us.uke_event_id = ue.id AND ue.id = ued.uke_event_id")
 				.map{|e| e["id"]}
 				.shuffle!
-            puts "Event ids"
-            puts session[:eventIDs]
             session[:friend] = nil
             session[:event] = nil
-            session[:user] = {:pic => me['picture']['data']['url'], 
+            session[:user] = {:pic => picture, 
                               :id => me['id'], :name => me['name']};
             output = {"status": "OK", 
                       "next": "Posts", 
