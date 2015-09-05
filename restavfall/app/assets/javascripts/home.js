@@ -1,4 +1,12 @@
-var lines = ['Genererer magi','Søker lykke', 'Ser inn i fremtiden'];
+var lines = [
+	'Genererer magi',
+	'Søker lykke',
+   	'Ser inn i fremtiden',
+	'Prøver og feile',
+	'Mater nesevisehornet',
+	'Skaper UKEmagi',
+	'Roter i arkivene'
+];
 
 var fillData = function(data) {
     user = data['user'];
@@ -112,6 +120,11 @@ var spin = function() {
     setInterval(update, 500);
     $('#wheel_board').attr("class", "rotate");
     $('#rhino_head').attr("class", "nod");
+    $('.rhino-blink').attr("class", "blink-nod");
+
+
+
+
     $('#button_click').attr("class", "");
 	runAnalysis("Start");
 }

@@ -43,7 +43,7 @@
 				<div id="rhino_feet"><%= image_tag "nesehorn_feet.png" %></div>
 				<div id="rhino_tail" class="wave"><%= image_tag "nesehorn_hale.png" %></div>
 				<div id="rhino_head"><%= image_tag "nesehorn_hode.png" %></div>
-				<div id="rhino_head" class="blink"><%= asset_path "nesehorn_blunk.png" %></div>
+				<div id="rhino_head" class="rhino-blink"><%= image_tag "nesehorn_blunk2.png" %></div>
 			</div>
 			<div id="uka">
 				<%= image_tag "UKElogo_hvit.png" %>
@@ -53,7 +53,6 @@
 					<img id="event-image" src="<%= 'https://www.uka.no'+@ev.image %>">
 				</div>
 				<div id="event-title"><%= @ev.title.upcase %></div>
-            <div id="rhino_head" class="blink"><%= image_tag "nesehorn_blunk.png" %></div>
 			</div>
 			<div id="profiles">
 				<div id="friend">
@@ -67,7 +66,7 @@
 			</div>
 			<div id="description-wrapper">
 				<div id="description">
-					<%= @ev.description %>
+					<%= @selfName %> snurret Lychehjulet, og det viste at <%= @friendName %> er den utkårede til å i med på <%= @ev.title %>
 				</div>
 				<div id="ticket">
 					<a id="ticket-link" target="_blank">KJØP BILLETT</a>

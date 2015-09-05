@@ -350,6 +350,26 @@ img {
         @include transform(rotate(20deg));
     }
 }
+@include keyframes (blink) {
+    0% {
+        opacity: 0;
+    }
+    3% {
+        opacity: 1;
+    }
+    6% {
+        opacity: 0;
+    }
+    9% {
+        opacity: 1;
+    }
+    12% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 0;
+    }
+}
 @include keyframes (cloud-motion) {
     100% {
         @include transform(translate(800px,10px));
@@ -382,7 +402,13 @@ img {
 .cloud {
 	@include animation('cloud-motion 180s');
 }
-
+.rhino-blink {
+	@include animation('blink 4s 2s infinite');
+	opacity: 0;
+}
+.blink-nod {
+    @include animation('nod 2s, dig 2s 2s infinite, blink 4s 2s infinite');
+}
 
 /* Bottom page */
 /* temp */
