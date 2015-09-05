@@ -3,8 +3,9 @@
     <%= javascript_include_tag 'home' %>
 
     <meta property="fb:app_id"             content="649498578495089" />
-    <meta property="og:title"              content="Restavfall" />
-    <meta property="og:description"        content="<%= @selfName %> og <%= @friendName %> vil finne lykken under uka! V�r med p� <%= @etitle %> du også" />
+    <meta property="og:title"              content="Lychehjulet" />
+	<meta property="og:description"        content="<%= @ev.description %>" />
+	<meta property="og:image"        		content="https://niivx.uka.no/<%= asset_path('UKElogo.png') %>" />
 <% end %>
 
 <% if @r %>
@@ -15,6 +16,7 @@
  <% else %>
     <script type="text/javascript">
 		sr = '<%= @sr %>';
+		console.log("<%= asset_path('UKElogo.png') %>");
     </script>
 	<div id="view">
 		<div id="container" class="down">
