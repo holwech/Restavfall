@@ -17,15 +17,23 @@ class FriendFinder
 
     CUTOFF_DATE = '1-January-2010'
 
-    def self.get_one_friend(graph, friend_data)
+    def self.get_one_friend(graph, friend_scores)
         # get list of friends not already chosen
-        remaining_friends = friend_data.select{|f| not f.has_key?('chosen')}
+        friend_list = []
+        friend_scores.each{|k, v|
+            friend_list << {"id": k, "value": v}
+        }
+        Rails.logger.info "Friend List"
+        Rails.logger.info friend_list
+
+        remaining_friends = friend_list.filter{|friend| friend["value"] > 0}
 
         # If all friends have been chosen, reset list
         if remaining_friends.length == 0
-            friend_data.each{|f| f.except!('chosen') }
-            remaining_friends = friend_data
+            remaining_friends = friend_data.map{|friend| friend["value"] *= -1 }
         end
+        Rails.logger.info "Remaining Friend List"
+        Rails.logger.info remaining_friends
 
         # Get sum of friend values
         sum = remaining_friends.map{|e| e['value']}.reduce(:+)
@@ -34,13 +42,13 @@ class FriendFinder
 		end
         trigger = Kernel::rand * sum
         counter = 0
-        friend_data.each do |friend|
-            if friend.has_key?('chosen')
-                next
-            end
+        remaining_friends.each do |friend|
             counter += friend['value']
             if counter > trigger
-                friend['chosen'] = true;
+                result = graph.get_object(friend["id"]+"?fields=name");
+                Rails.logger.info "Result"
+                Rails.logger.info result
+                friend['name']= result["name"];
                 friend['pic'] = graph.get_picture(friend['id'], {:width => 100, :height => 100});
                 return friend
             end
@@ -61,18 +69,15 @@ class FriendFinder
             friends.each{|f| 
                 # get friend data
                 batch_api.get_object("#{f[0]}?metadata=1", 
-                                     {fields:['name', 'metadata{type}']})
+                                     {fields:['metadata{type}']})
             }
         }
 
-        # Add friend value to friend data
+        friend_scores = Hash.new
         friend_data.each_with_index{|friend, i| 
-            friend['value'] = friends[i][1] 
-        }
-
-        # exclude friends that are pages etc.
-        friend_data = friend_data.select{|friend| 
-            friend['metadata']['type'] == 'user'
+            if friend['metadata']['type'] == 'user'
+                friend_scores[friend["id"]] = friends[i][1] 
+            end
         }
     end
 

@@ -105,20 +105,18 @@ class HomeController < ApplicationController
                       "text": "Analysing your posts"}
         when "Posts"
             FriendFinder.analyse_posts(graph, session[:fs])
-            output = {"status": "OK", "next": "Photos", "text": "Analysing your photos"}
+            output = {"status": "OK", "next": "Photos"}
         when "Photos"
             FriendFinder.analyse_photos(graph, session[:fs])
-            output = {"status": "OK", "next": "Events", "text": "Analysing your events"}
+            output = {"status": "OK", "next": "Events"}
         when "Events"
             FriendFinder.analyse_events(graph, session[:fs])
-            output = {"status": "OK", "next": "Friends", "text": "Gathering the candidates"}
+            output = {"status": "OK", "next": "Friends"}
         when "Friends"
-            friend_data = FriendFinder.make_friend_data(graph, 
+            FriendFinder.make_friend_data(graph, 
                                                         session[:fs], 
                                                         session[:user][:id])
-            output = {"status": "OK", "next": "FriendEvent", "friends": friend_data,
-                      "text": "Finding your ideal UKE-friend!"}
-            session[:fd] = friend_data
+            output = {"status": "OK", "next": "FriendEvent"}
         when "FriendEvent"
             getFriendAndEvent(graph)
             output = {"status": "Done",  
@@ -186,7 +184,7 @@ class HomeController < ApplicationController
     end
 
     def getFriendAndEvent(graph)
-        friend = FriendFinder.get_one_friend(graph, session[:fd])
+        friend = FriendFinder.get_one_friend(graph, session[:fs])
         id = session[:eventIDs].first
         event = getEventByShowingId(id)
         session[:eventIDs].rotate!
