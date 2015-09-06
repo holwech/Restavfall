@@ -113,7 +113,7 @@ class HomeController < ApplicationController
             FriendFinder.analyse_events(graph, session[:fs])
             output = {"status": "OK", "next": "Friends"}
         when "Friends"
-            session[:fs] = FriendFinder.make_friend_data(graph, 
+            FriendFinder.make_friend_data(graph, 
                                                         session[:fs], 
                                                         session[:user][:id])
             output = {"status": "OK", "next": "FriendEvent"}
@@ -127,6 +127,18 @@ class HomeController < ApplicationController
         else
             output = {"status": "Error"}
         end
+
+		# Truncate to top 100 friends
+		if session[:fs].length > 100
+			short_list = session[:fs].
+                                sort_by{|id, value|  value}.
+                                reverse.
+                                first(100)
+			session[:fs].clear
+			short_list.each{|f|
+				session[:fs][f[0]] = f[1]
+			}	
+		end
 
         session[:fs].default_proc = nil
         render json: output

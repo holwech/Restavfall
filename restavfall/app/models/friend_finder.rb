@@ -72,13 +72,12 @@ class FriendFinder
             }
         }
 
-        friend_scores = Hash.new
+        friend_scores.clear
         friend_data.each_with_index{|friend, i| 
             if friend['metadata']['type'] == 'user'
                 friend_scores[friend["id"]] = friends[i][1] 
             end
         }
-		return friend_scores
     end
 
     def self.analyse_photos(graph, friend_scores)
