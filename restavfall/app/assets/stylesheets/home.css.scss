@@ -372,7 +372,7 @@ img {
 }
 @include keyframes (cloud-motion) {
     100% {
-        @include transform(translate(800px,10px));
+        @include transform(translate(1600px,10px));
     }
 }
 #rhino_head {
@@ -400,7 +400,7 @@ img {
     @include animation('nudge 2s infinite');
 }
 .cloud {
-	@include animation('cloud-motion 180s');
+	@include animation('cloud-motion 360s');
 }
 .rhino-blink {
 	@include animation('blink 4s 2s infinite');

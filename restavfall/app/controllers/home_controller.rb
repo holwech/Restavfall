@@ -113,7 +113,7 @@ class HomeController < ApplicationController
             FriendFinder.analyse_events(graph, session[:fs])
             output = {"status": "OK", "next": "Friends"}
         when "Friends"
-            FriendFinder.make_friend_data(graph, 
+            session[:fs] = FriendFinder.make_friend_data(graph, 
                                                         session[:fs], 
                                                         session[:user][:id])
             output = {"status": "OK", "next": "FriendEvent"}
@@ -202,8 +202,8 @@ class HomeController < ApplicationController
         res = Result.new
         res.userName = session[:user][:name]
         res.userImg = session[:user][:pic]
-        res.friendName = session[:friend]['name']
-        res.friendImg = session[:friend]['pic']
+        res.friendName = session[:friend][:name]
+        res.friendImg = session[:friend][:pic]
         res.eventId = session[:event]["id"]
         res.save!
         return res.id

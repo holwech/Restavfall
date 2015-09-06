@@ -72,17 +72,19 @@ window.onload = function() {
         <div id="button-wrapper">
             <div class="button3">
                 <div class="inner-button" >
-					<%= image_tag "replay.png", {:class => "button-img", :title => "Prøv igjen"}  %> 
+					<%= image_tag "replay.png", {:class => "button-img", 
+								  :title => "Prøv igjen",
+								  :onClick => "again();"}  %> 
                 </div>
             </div>
             <div class="button3">
                 <div class="inner-button" >
-					<%= image_tag "share.png", {:class => "button-img", :title => "Del på tidslinje"} %> 
+					<%= image_tag "share.png", {:id => "share-image", :class => "button-img", :title => "Del på tidslinje"} %> 
                 </div>
             </div>
             <div class="button3">
                 <div class="inner-button" >
-					<%= image_tag "message.png", {:class => "button-img", :title => "Del i chat"}%> 
+					<%= image_tag "message.png", {:id => "send-image", :class => "button-img", :title => "Del i chat"}%> 
                 </div>
             </div>
         </div>
