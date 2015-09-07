@@ -1,5 +1,6 @@
 <% content_for :head do %>
-    <%= stylesheet_link_tag 'home' %>
+    <%= stylesheet_link_tag 'home', {:media => "(min-height: 800px)"} %>
+    <%= stylesheet_link_tag 'home_small', {:media => "(max-height: 800px)"} %>
     <%= javascript_include_tag 'home' %>
 
     <meta property="fb:app_id"             content="649498578495089" />
