@@ -26,7 +26,7 @@ class FriendFinder
         Rails.logger.info "Friend List"
         Rails.logger.info friend_list
 
-        remaining_friends = friend_list.filter{|friend| friend["value"] > 0}
+        remaining_friends = friend_list.select{|friend| friend["value"] > 0}
 
         # If all friends have been chosen, reset list
         if remaining_friends.length == 0
