@@ -52,7 +52,7 @@
 $width: 810px;
 $height: 1887px;
 $view_height: 600px;
-$offset1: 400px;
+$offset1: 450px;
 $offset2: $height - $view_height;
 
 /* Fonts */
@@ -117,24 +117,24 @@ a:hover, a:visited, a:link, a:active {
 #h1 {
     font-family: "Playfair Display";
     position: relative;
-    top: $offset1+90px;
+    top: $offset1+70px;
 }
 
 #cloud-1 {
 	position: absolute;
-	top: $offset1+170px;
+	top: $offset1+150px;
 	left: $width * 3 / 4;
 	width: 150px;
 }
 #cloud-2 {
 	position: absolute;
-	top: $offset1+190px;
+	top: $offset1+170px;
 	left: 40px;
 	width: 150px;
 }
 #cloud-3 {
 	position: absolute;
-	top: $offset1+170px;
+	top: $offset1+150px;
 	left: -300px;
 	width: 150px;
 }
@@ -173,7 +173,7 @@ img {
 }
 #wheel {
     position: relative;
-    top: $offset1+230px;
+    top: $offset1+200px;
     margin-right: auto;
     margin-left: auto;
     width: 200px;
@@ -215,8 +215,8 @@ img {
 /* Button */
 #button {
     position: absolute;
-    left: $width / 4 * 3;
-    top: $offset1 + 380px;
+    left: $width / 4 * 3 - 20px;
+    top: $offset1 + 345px;
     width: 40px;
 }
 
@@ -250,7 +250,7 @@ img {
 /* Rhino */
 #rhino {
     position: absolute;
-    left: 80px;
+    left: 170px;
     top: $offset1 + 420px;
     width: 150px;
     z-index: 30;
@@ -274,22 +274,33 @@ img {
     z-index: 1;
 }
 
+#rhino_head {
+    position: absolute;
+    top: -50px;
+    left: 70px;
+    width: 75%;
+    z-index: 11;
+}
+
 #rhino_tail {
     position: relative;
+    top: -130px;
+    left: -25px;
+    width: 40px;
 }
 
 @include keyframes (nod) {
     50% {
         @include transform(rotate(20deg));
-        @include transform-origin(-20% 120%);
+        @include transform-origin(0% 100%);
     }
     85% {
         @include transform(rotate(-25deg));
-        @include transform-origin(-20% 120%);
+        @include transform-origin(0% 100%);
     }
     100% {
         @include transform(rotate(0deg));
-        @include transform-origin(-20% 120%);
+        @include transform-origin(0% 100%);
     }
 }
 @include keyframes (dig) {
@@ -376,13 +387,6 @@ img {
         @include transform(translate(800px,10px));
     }
 }
-#rhino_head {
-    position: absolute;
-    top: -55px;
-    left: 110px;
-    width: 75%;
-    z-index: 11;
-}
 
 .nod {
     @include animation('nod 2s, dig 2s 2s infinite');
@@ -419,6 +423,15 @@ div, img {
     width: 75px;
     height: 75px;
 }
+$push: 120px;
+#me {
+    position: relative;
+    left: $push;
+}
+#friend {
+    position: relative;
+    left: -$push;
+}
 
 /* For realz */
 #uka {
@@ -429,7 +442,7 @@ div, img {
 }
 #event {
     position: absolute;
-    top: $offset2 + 50px;
+    top: $offset2 + 10px;
     width: 100%;
 }
 #event-title {
@@ -450,7 +463,7 @@ div, img {
 }
 #profiles {
     position: absolute;
-    top: $offset2 + 360px;
+    top: $offset2 + 330px;
     width: 100%;
 	font-size: 1.5em;
 	line-height: 1em;
@@ -466,7 +479,7 @@ div, img {
 #description-wrapper {
     width: 100%;
     position: absolute;
-    top: $offset2 + 480px;
+    top: $offset2 + 320px;
 }
 #description {
     width: 60%;
@@ -487,10 +500,10 @@ div, img {
 }
 #button-wrapper {
     position: absolute;
-    top: $height - 80px;
+    top: $height - 60px;
 	left: 0px;
     width: 100%;
-    height: 40px;
+    height: 35px;
 }
 .button3 {
     float: left;
