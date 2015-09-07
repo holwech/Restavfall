@@ -2,10 +2,11 @@ var lines = [
 	'Genererer magi',
 	'Søker lykke',
    	'Ser inn i fremtiden',
-	'Prøver og feile',
-	'Mater nesevisehornet',
+	'Prøver og feiler',
+	'Mater Nesevisehornet',
 	'Skaper UKEmagi',
-	'Roter i arkivene'
+	'Roter i arkivene',
+	'Undersøker kaos',
 ];
 
 var fillData = function(data) {
@@ -67,7 +68,10 @@ var runAnalysis = function(stage) {
 			nextData = null;
 			again(false);
         }
-    });
+    })
+	.error(function() {
+		error();
+	});
 }
 
 function preloadImage(url)
@@ -92,14 +96,31 @@ var again = function(setData) {
 			preloadImage(data["friend"]["pic"]);
 			preloadImage("https://www.uka.no" + data["event"]["image"]);
         }
-    });
+    })
+	.error(function() {
+		error();
+	});
+}
+
+var error = function() {
+    $('#container').attr("class", "down");
+    $('#event-title').html("OOPS");
+    $('#description').html("Dette er pinlig, noe gikk galt! Heldigvis er det allerede noen som jobber med å fikse det. Kom tilbake og prøv igjen litt senere!");
+	$('#ticket').css("display", "none");
+	$('#profiles').css("display", "none");
+	$('#event-image').css("display", "none");
+	$('#button-wrapper').css("display", "none");
 }
 
 var done = function() {
     $('#container').attr("class", "down");
 }
 
+var spinning = false;
 var spin = function() {
+	if (spinning)
+		return;
+	spinning = true;
     var c = 1;
     var i = 0;
     var update = function() {
@@ -121,10 +142,7 @@ var spin = function() {
     $('#wheel_board').attr("class", "rotate");
     $('#rhino_head').attr("class", "nod");
     $('.rhino-blink').attr("class", "blink-nod");
-
-
-
-
+	$('#button').attr("onClick", "");
     $('#button_click').attr("class", "");
 	runAnalysis("Start");
 }

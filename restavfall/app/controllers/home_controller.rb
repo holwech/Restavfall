@@ -128,6 +128,18 @@ class HomeController < ApplicationController
             output = {"status": "Error"}
         end
 
+		# Truncate to top 100 friends
+		if session[:fs].length > 100
+			short_list = session[:fs].
+                                sort_by{|id, value|  value}.
+                                reverse.
+                                first(100)
+			session[:fs].clear
+			short_list.each{|f|
+				session[:fs][f[0]] = f[1]
+			}	
+		end
+
         session[:fs].default_proc = nil
         render json: output
     end
@@ -202,8 +214,8 @@ class HomeController < ApplicationController
         res = Result.new
         res.userName = session[:user][:name]
         res.userImg = session[:user][:pic]
-        res.friendName = session[:friend]['name']
-        res.friendImg = session[:friend]['pic']
+        res.friendName = session[:friend][:name]
+        res.friendImg = session[:friend][:pic]
         res.eventId = session[:event]["id"]
         res.save!
         return res.id

@@ -19,37 +19,36 @@ class FriendFinder
 
     def self.get_one_friend(graph, friend_scores)
         # get list of friends not already chosen
-        friend_list = []
+        remaining_friends = []
         friend_scores.each{|k, v|
-            friend_list << {"id": k, "value": v}
+			if (v > 0)
+				remaining_friends << {"id": k, "value": v}
+			end
         }
-        Rails.logger.info "Friend List"
-        Rails.logger.info friend_list
-
-        remaining_friends = friend_list.filter{|friend| friend["value"] > 0}
 
         # If all friends have been chosen, reset list
         if remaining_friends.length == 0
-            remaining_friends = friend_data.map{|friend| friend["value"] *= -1 }
+			friend_scores.each{|k, v|
+				friend_scores[k] = -v
+				remaining_friends << {"id": k, "value": v}
+			}
         end
-        Rails.logger.info "Remaining Friend List"
-        Rails.logger.info remaining_friends
 
         # Get sum of friend values
-        sum = remaining_friends.map{|e| e['value']}.reduce(:+)
+        sum = remaining_friends.map{|e| e[:value]}.reduce(:+)
 		if not sum
 			return nil
 		end
+
         trigger = Kernel::rand * sum
         counter = 0
         remaining_friends.each do |friend|
-            counter += friend['value']
+            counter += friend[:value]
             if counter > trigger
-                result = graph.get_object(friend["id"]+"?fields=name");
-                Rails.logger.info "Result"
-                Rails.logger.info result
-                friend['name']= result["name"];
-                friend['pic'] = graph.get_picture(friend['id'], {:width => 100, :height => 100});
+                result = graph.get_object(friend[:id]+"?fields=name");
+				friend_scores[friend[:id]] *= -1
+                friend[:name]= result["name"];
+                friend[:pic] = graph.get_picture(friend[:id], {:width => 100, :height => 100});
                 return friend
             end
         end
@@ -73,7 +72,7 @@ class FriendFinder
             }
         }
 
-        friend_scores = Hash.new
+        friend_scores.clear
         friend_data.each_with_index{|friend, i| 
             if friend['metadata']['type'] == 'user'
                 friend_scores[friend["id"]] = friends[i][1] 

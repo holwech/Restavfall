@@ -14,7 +14,7 @@
     <div id="container" class="up">
 		<%= image_tag 'cloud_1.png', {:id => "cloud-1", :class => "cloud"} %>
 		<%= image_tag 'cloud_2.png', {:id => "cloud-2", :class => "cloud"} %>
-		<%= image_tag 'cloud_2.png', {:id => "cloud-3", :class => "cloud"} %>
+		<%= image_tag 'cloud_1.png', {:id => "cloud-3", :class => "cloud"} %>
         <div id="h1" class="header">LYCHEHJULET</div>
         <div id="text_wrap">
             <div id="text" class="right">Tekst</div>
@@ -70,17 +70,19 @@
         <div id="button-wrapper">
             <div class="button3">
                 <div class="inner-button" >
-					<%= image_tag "replay.png", {:class => "button-img", :title => "Prøv igjen"}  %> 
+					<%= image_tag "replay.png", {:class => "button-img", 
+								  :title => "Prøv igjen",
+								  :onClick => "again();"}  %> 
                 </div>
             </div>
             <div class="button3">
                 <div class="inner-button" >
-					<%= image_tag "share.png", {:class => "button-img", :title => "Del på tidslinje"} %> 
+					<%= image_tag "share.png", {:id => "share-image", :class => "button-img", :title => "Del på tidslinje"} %> 
                 </div>
             </div>
             <div class="button3">
                 <div class="inner-button" >
-					<%= image_tag "message.png", {:class => "button-img", :title => "Del i chat"}%> 
+					<%= image_tag "message.png", {:id => "send-image", :class => "button-img", :title => "Del i chat"}%> 
                 </div>
             </div>
         </div>
