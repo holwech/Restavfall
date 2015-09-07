@@ -1,5 +1,5 @@
 <script>
-var save = function(id) {
+var save = function(title, id) {
     var elem = $("#"+id);
     var telem = $("#"+id+"_p");
     var newv = elem.val();
@@ -9,7 +9,7 @@ var save = function(id) {
         type: "POST",
         url: '/ukeeventdata/',
         data: {
-            title: id,
+            title: title,
             description: newv
         },
         success: function() {
@@ -31,11 +31,13 @@ var save = function(id) {
 </script>
 
 <form>
+<% i = 0 %>
 <% @events.each do |e| %>
     <%= e.title %><br>
-    <textarea id="<%= e.title %>" rows="4" cols="50" onBlur="save(<%=e.title%>)" ><%= e.description %></textarea>
-       <div style="display:inline" id="<%= e.title %>_p"></div>
+    <textarea id="<%= i %>" rows="4" cols="50" onBlur="save('<%=e.title%>', <%=i%>)" ><%= e.description %></textarea>
+       <div style="display:inline" id="<%= i %>_p"></div>
     <br>
     <br>
+    <% i += 1 %>
 <% end %>
 </form>
