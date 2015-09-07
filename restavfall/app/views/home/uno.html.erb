@@ -78,7 +78,9 @@
 			<div id="button-wrapper" style="display:none;">
             <div class="button3">
                 <div class="inner-button" >
-					<%= image_tag "replay.png", {:class => "button-img", 
+                    <%= image_tag "replay.png", {
+                                  :id => "replay-img",  
+                                  :class => "button-img", 
 								  :title => "Prøv igjen",
 								  :onClick => "again();"}  %> 
                 </div>
