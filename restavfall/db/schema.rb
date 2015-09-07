@@ -13,17 +13,6 @@
 
 ActiveRecord::Schema.define(version: 20150824143638) do
 
-  create_table "events", force: :cascade do |t|
-    t.string   "name",       limit: 255
-    t.string   "url",        limit: 255
-    t.datetime "time"
-    t.string   "fbpageID",   limit: 255
-    t.string   "fbeventID",  limit: 255
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-    t.string   "img",        limit: 255
-  end
-
   create_table "results", force: :cascade do |t|
     t.string   "userName",   limit: 255
     t.string   "userImg",    limit: 255
@@ -45,8 +34,8 @@ ActiveRecord::Schema.define(version: 20150824143638) do
   add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
 
   create_table "uke_event_data", force: :cascade do |t|
-    t.integer "uke_event_id", limit: 4
-    t.text    "description",  limit: 65535
+    t.string "uke_event_title", limit: 255
+    t.text   "description",     limit: 65535
   end
 
   create_table "uke_events", force: :cascade do |t|

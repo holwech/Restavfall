@@ -34,11 +34,11 @@ class UkeeventController < ApplicationController
 
         end
 
-        @events = UkeEvent.find_by_sql("SELECT * FROM uke_showings AS S, uke_events AS E LEFT OUTER JOIN uke_event_data AS F ON E.id = F.uke_event_id WHERE S.uke_event_id = E.id");
+        @events = UkeEvent.find_by_sql("SELECT * FROM uke_showings AS S, uke_events AS E LEFT OUTER JOIN uke_event_data AS F ON E.title = F.uke_event_title WHERE S.uke_event_id = E.id");
     end
 
     def event_data
-        @events = UkeEvent.find_by_sql("SELECT ue.id, ue.title, ufe.description FROM uke_events as ue LEFT JOIN uke_event_data as ufe ON ue.id = ufe.uke_event_id ORDER BY ue.id")
+        @events = UkeEvent.find_by_sql("SELECT DISTINCT ue.title, ufe.description FROM uke_events as ue LEFT JOIN uke_event_data as ufe ON ue.title = ufe.uke_event_title ORDER BY ue.title")
         @events.each{|e|
             puts e.to_json
         }
@@ -46,11 +46,11 @@ class UkeeventController < ApplicationController
 
     def save_data
         if not params["description"] == ""
-            id = params["id"]
+            title = params["title"]
 
-            UkeEventData.destroy_all({:uke_event_id => id})
+            UkeEventData.destroy_all({:uke_event_title => title})
 
-            UkeEventData.new({:uke_event_id => id,
+            UkeEventData.new({:uke_event_title => title,
                             :description => params["description"]}).save()
         end
 

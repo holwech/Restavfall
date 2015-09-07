@@ -93,7 +93,7 @@ class HomeController < ApplicationController
         when "Start"
             me = graph.get_object('me?fields=id,name');
 			picture = graph.get_picture("me", {:width => 100, :height => 100});
-            session[:eventIDs] = UkeShowing.find_by_sql("SELECT us.id FROM uke_showings as us, uke_event_data as ued, uke_events as ue WHERE us.uke_event_id = ue.id AND ue.id = ued.uke_event_id")
+            session[:eventIDs] = UkeShowing.find_by_sql("SELECT us.id FROM uke_showings as us, uke_event_data as ued, uke_events as ue WHERE us.uke_event_id = ue.id AND ue.title = ued.uke_event_title")
 				.map{|e| e["id"]}
 				.shuffle!
             session[:friend] = nil
@@ -136,7 +136,7 @@ class HomeController < ApplicationController
         UkeEvent.find_by_sql("SELECT * , us.id as id
                               FROM uke_showings as us, uke_events as ue 
                               LEFT OUTER JOIN uke_event_data as ued 
-                              ON ued.uke_event_id = ue.id
+                              ON ued.uke_event_title = ue.title
                               WHERE us.id = #{id} AND us.uke_event_id = ue.id 
 			      ").first
     end

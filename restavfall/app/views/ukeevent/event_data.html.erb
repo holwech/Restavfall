@@ -9,7 +9,7 @@ var save = function(id) {
         type: "POST",
         url: '/ukeeventdata/',
         data: {
-            id: id,
+            title: id,
             description: newv
         },
         success: function() {
@@ -33,8 +33,8 @@ var save = function(id) {
 <form>
 <% @events.each do |e| %>
     <%= e.title %><br>
-    <textarea id="<%= e.id %>" rows="4" cols="50" onBlur="save(<%=e.id%>)" ><%= e.description %></textarea>
-       <div style="display:inline" id="<%= e.id %>_p"></div>
+    <textarea id="<%= e.title %>" rows="4" cols="50" onBlur="save(<%=e.title%>)" ><%= e.description %></textarea>
+       <div style="display:inline" id="<%= e.title %>_p"></div>
     <br>
     <br>
 <% end %>
