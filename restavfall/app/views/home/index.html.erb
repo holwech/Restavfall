@@ -1,5 +1,6 @@
 <head>
-    <%= stylesheet_link_tag 'home' %>
+    <%= stylesheet_link_tag 'home', {:media => "(min-height: 800px)"} %>
+    <%= stylesheet_link_tag 'home_small', {:media => "(max-height: 800px)"} %>
     <%= javascript_include_tag 'home' %>
 	
     <meta property="fb:app_id"             content="649498578495089" />
@@ -49,11 +50,15 @@
         <div id="profiles">
             <div id="friend">
 				<img id="friend-image"><br>
+				<div id="friend-name-div">
                 <a id="friend-name" target="_blank">Friend</a>
+				</div>
             </div>
             <div id="me">
 				<img id="me-image"><br>
+				<div id="me-name-div">
                 <a id="me-name" target="_blank">Me</a>
+				</div>
             </div>
         </div>
         <div id="description-wrapper">
