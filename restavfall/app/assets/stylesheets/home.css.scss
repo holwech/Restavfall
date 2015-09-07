@@ -350,6 +350,20 @@ img {
         @include transform(rotate(20deg));
     }
 }
+@include keyframes (rot) {
+    0% {
+        @include transform(rotate(0deg));
+    }
+    30% {
+        @include transform(rotate(360deg));
+    }
+    100% {
+        @include transform(rotate(360deg));
+    }
+}
+#replay-img {
+    @include animation('rot 3s ease infinite');
+}
 @include keyframes (blink) {
     0% {
         opacity: 0;
