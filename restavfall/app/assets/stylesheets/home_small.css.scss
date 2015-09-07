@@ -1,0 +1,522 @@
+/* Mixins */
+@mixin keyframes($animation-name) {
+    @-webkit-keyframes #{$animation-name} {
+        @content;
+    }
+    @-moz-keyframes #{$animation-name} {
+        @content;
+    }  
+    @-ms-keyframes #{$animation-name} {
+        @content;
+    }
+    @-o-keyframes #{$animation-name} {
+        @content;
+    }  
+    @keyframes #{$animation-name} {
+        @content;
+    }
+}
+
+@mixin animation($str) {
+    -webkit-animation: #{$str};
+    -moz-animation: #{$str};
+    -ms-animation: #{$str};
+    -o-animation: #{$str};
+    animation: #{$str};      
+}
+
+@mixin transition($args...) {
+    -webkit-transition: $args;
+    -moz-transition: $args;
+    -ms-transition: $args;
+    -o-transition: $args;
+    transition: $args;
+}
+
+@mixin transform($val) {
+    -webkit-transform: $val;
+    -moz-transform: $val;
+    -ms-transform: $val;
+    transform: $val;
+}
+
+@mixin transform-origin ($origin) {
+    -moz-transform-origin: $origin;
+    -o-transform-origin: $origin;
+    -ms-transform-origin: $origin;
+    -webkit-transform-origin: $origin;
+    transform-origin: $origin;
+}
+
+/* Variables */
+$width: 810px;
+$height: 1887px;
+$view_height: 600px;
+$offset1: 450px;
+$offset2: $height - $view_height;
+
+/* Fonts */
+@font-face {
+      font-family: 'Alpaca Solidify';
+      src: url('Alpaca_Solidify.otf');
+      src: url('Alpaca_Solidify.ttf') format('truetype');
+}
+
+@font-face {
+      font-family: 'Playfair Display';
+      src: url('PlayfairDisplay-Regular.ttf');
+}
+
+@font-face {
+      font-family: 'Raleway';
+      src: url('Raleway-Light.ttf');
+}
+
+/* View */
+body {
+    width: $width;
+    color: white;
+    font-family: "Raleway";
+    font-size: 1em;
+	margin: 0px;
+	line-height: 18px;
+}
+
+a:hover, a:visited, a:link, a:active {
+	text-decoration: none;
+	color: white;
+}
+
+#view {
+    width: 100%;
+    height: $view_height;
+    overflow: hidden;
+
+}
+
+#container {
+    width: 100%;
+    height: $height;
+    position: relative;
+    left: 0px;
+    @include transition(top 2s);
+    background-image: image-url("background.png");
+    text-align: center;
+}
+.up {
+    top: -$offset1;
+}
+.down {
+    top: -$offset2;
+}
+
+/* Content */
+.header {
+    font-size: 5em;
+}
+#h1 {
+    font-family: "Playfair Display";
+    position: relative;
+    top: $offset1+70px;
+}
+
+#cloud-1 {
+	position: absolute;
+	top: $offset1+150px;
+	left: $width * 3 / 4;
+	width: 150px;
+}
+#cloud-2 {
+	position: absolute;
+	top: $offset1+170px;
+	left: 40px;
+	width: 150px;
+}
+#cloud-3 {
+	position: absolute;
+	top: $offset1+150px;
+	left: -300px;
+	width: 150px;
+}
+
+/* Loading text */
+#text_wrap {
+    position: absolute;
+    top: $offset1 + $view_height - 50px;
+    width: 100%;
+}
+#text {
+    position: relative;
+    color: white;
+    font-size: 2em;
+    font-family: "Raleway"
+}
+.right {
+    left: $width / 4;
+    opacity: 0;
+}
+.center {
+    @include transition(left 0.5s, opacity 0.5s);
+    left: 0;
+    opacity: 1;
+}
+.left {
+    @include transition(left 0.5s, opacity 0.5s);
+    left: -$width / 4;
+    opacity: 0;
+}
+
+/* Wheel */
+$wheel_rad: 150px;
+img {
+    width: 100%;
+}
+#wheel {
+    position: relative;
+    top: $offset1+200px;
+    margin-right: auto;
+    margin-left: auto;
+    width: 200px;
+    z-index: 10;
+}
+
+#wheel_board {
+    position: relative;
+    top: -20px;
+    width: 100%;
+    z-index: -1;
+}
+
+@include keyframes (spin) {
+    100% {
+        @include transform(rotate(360deg));
+    }
+}
+
+.rotate {
+    @include animation('spin 1s 1.2s linear infinite');
+}
+
+#wheel_foot {
+    position: relative;
+    top: -40px;
+    width: 40%;
+    margin-right: auto;
+    margin-left: auto;
+    z-index: -2;
+}
+#wheel_pin {
+    margin-right: auto;
+    margin-left: auto;
+    width: 5%;
+    z-index: 1;
+}
+
+/* Button */
+#button {
+    position: absolute;
+    left: $width / 4 * 3 - 20px;
+    top: $offset1 + 345px;
+    width: 40px;
+}
+
+#button_click {
+	width: 80%;
+	margin-right: auto;
+	margin-left: auto;
+	cursor: pointer;
+}
+
+#button_arrow {
+    position: relative;
+    top: 0px;
+    left: 60px;
+}
+
+#button_foot {
+    position: relative;
+    top: -10px;
+}
+
+#button_text {
+    position: absolute;
+    top: -30px;
+    left: 60px;
+    font-family: "Alpaca Solidify";
+	transform: rotate(20deg);
+    font-size: 3em;
+}
+
+/* Rhino */
+#rhino {
+    position: absolute;
+    left: 170px;
+    top: $offset1 + 420px;
+    width: 150px;
+    z-index: 30;
+}
+
+#rhino_belly {
+    position: relative;
+    left: 10px;
+    top: -10px;
+    width: 80%;
+    z-index: 10;
+}
+
+#rhino_feet {
+    position: relative;
+    top: -47px;
+    left: -5px;
+    width: 60%;
+    margin-right: auto;
+    margin-left: auto;
+    z-index: 1;
+}
+
+#rhino_head {
+    position: absolute;
+    top: -50px;
+    left: 70px;
+    width: 75%;
+    z-index: 11;
+}
+
+#rhino_tail {
+    position: relative;
+    top: -130px;
+    left: -25px;
+    width: 40px;
+}
+
+@include keyframes (nod) {
+    50% {
+        @include transform(rotate(20deg));
+        @include transform-origin(0% 100%);
+    }
+    85% {
+        @include transform(rotate(-25deg));
+        @include transform-origin(0% 100%);
+    }
+    100% {
+        @include transform(rotate(0deg));
+        @include transform-origin(0% 100%);
+    }
+}
+@include keyframes (dig) {
+    0% {
+        @include transform(rotate(0deg));
+        @include transform-origin(-20% 120%);
+    }
+    50% {
+        @include transform(rotate(3deg));
+        @include transform-origin(-20% 120%);
+    }
+    100% {
+        @include transform(rotate(0deg));
+        @include transform-origin(-20% 120%);
+    }
+}
+@include keyframes (breathe) {
+    0% {
+        @include transform(scale(1, 1));
+        @include transform-origin(top left);
+    }
+    50% {
+        @include transform(scale(1.01, 1));
+        @include transform-origin(top left);
+    }
+    100% {
+        @include transform(scale(1, 1));
+        @include transform-origin(top left);
+    }
+}
+@include keyframes (wave) {
+    0% {
+        @include transform(rotate(0deg));
+        @include transform-origin(100% 0%);
+    }
+    50% {
+        @include transform(rotate(1deg));
+        @include transform-origin(100% 0%);
+    }
+    100% {
+        @include transform(rotate(0deg));
+        @include transform-origin(100% 0%);
+    }
+}
+@include keyframes (nudge) {
+    0% {
+        @include transform(rotate(20deg));
+    }
+    5% {
+        @include transform(rotate(24deg));
+    }
+    10% {
+        @include transform(rotate(16deg));
+    }
+    15% {
+        @include transform(rotate(20deg));
+    }
+    100% {
+        @include transform(rotate(20deg));
+    }
+}
+@include keyframes (blink) {
+    0% {
+        opacity: 0;
+    }
+    3% {
+        opacity: 1;
+    }
+    6% {
+        opacity: 0;
+    }
+    9% {
+        opacity: 1;
+    }
+    12% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+@include keyframes (cloud-motion) {
+    100% {
+        @include transform(translate(800px,10px));
+    }
+}
+
+.nod {
+    @include animation('nod 2s, dig 2s 2s infinite');
+}
+
+.dig_start {
+    @include animation('dig 2s infinite');
+}
+.breathe_start {
+    @include animation('breathe 2s infinite');
+}
+.wave {
+    @include animation('wave 1s infinite');
+}
+.nudge {
+    @include animation('nudge 2s infinite');
+}
+.cloud {
+	@include animation('cloud-motion 180s');
+}
+.rhino-blink {
+	@include animation('blink 4s 2s infinite');
+	opacity: 0;
+}
+.blink-nod {
+    @include animation('nod 2s, dig 2s 2s infinite, blink 4s 2s infinite');
+}
+
+/* Bottom page */
+/* temp */
+div, img {
+}
+#me-image, #friend-image {
+    width: 75px;
+    height: 75px;
+}
+$push: 120px;
+#me {
+    position: relative;
+    left: $push;
+}
+#friend {
+    position: relative;
+    left: -$push;
+}
+
+/* For realz */
+#uka {
+    position: absolute;
+    top: $offset2 + 30px;
+    left: $width - 230px;
+    width: 200px;
+}
+#event {
+    position: absolute;
+    top: $offset2 + 10px;
+    width: 100%;
+}
+#event-title {
+    font-family: "Alpaca Solidify";
+    font-size: 3em;
+    line-height: 1em;
+    margin-top: 0px;
+}
+#event-image-wrapper {
+	width: 100%;
+	height: 250px;
+    margin-right: auto;
+    margin-left: auto;
+}
+#event-image {
+	width: auto;
+	height: 100%;
+}
+#profiles {
+    position: absolute;
+    top: $offset2 + 330px;
+    width: 100%;
+	font-size: 1.5em;
+	line-height: 1em;
+}
+#friend {
+    width: 50%;
+    float: left;
+}
+#me {
+    width: 50%;
+    float: right;
+}
+#description-wrapper {
+    width: 100%;
+    position: absolute;
+    top: $offset2 + 320px;
+}
+#description {
+    width: 60%;
+	height: 115px;
+    margin-right: auto;
+    margin-left: auto;
+    font-size: 1.5em;
+    line-height: 1.2em;
+}
+#ticket {
+    width: 230px;
+    margin-right: auto;
+    margin-left: auto;
+    font-size: 30px;
+    border: solid 2px white;
+    margin-top: 30px;
+    padding: 10px;
+}
+#button-wrapper {
+    position: absolute;
+    top: $height - 60px;
+	left: 0px;
+    width: 100%;
+    height: 35px;
+}
+.button3 {
+    float: left;
+    width: 33.3%;
+    height: 100%;
+}
+.inner-button {
+    height: 100%;
+}
+.button-img {
+    height: 100%;
+    width: auto;
+	cursor: pointer;
+}
+
+
