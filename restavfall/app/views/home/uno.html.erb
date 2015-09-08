@@ -5,7 +5,10 @@
 
     <meta property="fb:app_id"             content="649498578495089" />
     <meta property="og:title"              content="Lychehjulet" />
-	<meta property="og:description"        content="<%= @ev.description %>" />
+	<meta property="og:description"        content="
+					<%= @selfName %> snurret Lychehjulet, og det viste at <%= @friendName %> 
+					er den utkårede til å være med på <%= @ev.title %>
+" />
 	<meta property="og:image"        		content="https://niivx.uka.no/<%= asset_path('UKElogo.png') %>" />
 <% end %>
 
@@ -71,8 +74,6 @@
 			</div>
 			<div id="description-wrapper">
 				<div id="description">
-					<%= @selfName %> snurret Lychehjulet, og det viste at <%= @friendName %> 
-					er den utkårede til å være med på <%= @ev.title %>
 				</div>
 				<div id="ticket">
 					<a id="ticket-link" target="_blank"><%= @ev.sold_out ? "SE INFO" : "KJØP BILLETT" %></a>
