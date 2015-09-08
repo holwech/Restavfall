@@ -79,11 +79,10 @@ class UkeeventController < ApplicationController
     end
 
     def save_data
+		title = params["title"]
+		UkeEventData.destroy_all({:uke_event_title => title})
+
         if not params["description"] == ""
-            title = params["title"]
-
-            UkeEventData.destroy_all({:uke_event_title => title})
-
             UkeEventData.new({:uke_event_title => title,
                             :description => params["description"]}).save()
         end
