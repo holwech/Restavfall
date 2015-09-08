@@ -93,7 +93,7 @@ class HomeController < ApplicationController
         when "Start"
             me = graph.get_object('me?fields=id,name');
 			picture = graph.get_picture("me", {:width => 100, :height => 100});
-            session[:eventIDs] = UkeShowing.find_by_sql("SELECT us.id FROM uke_showings as us, uke_event_data as ued, uke_events as ue WHERE us.uke_event_id = ue.id AND ue.title = ued.uke_event_title")
+            session[:eventIDs] = UkeEvent.find_by_sql("SELECT ue.id FROM uke_event_data as ued, uke_events as ue WHERE ue.title = ued.uke_event_title")
 				.map{|e| e["id"]}
 				.shuffle!
             session[:friend] = nil
@@ -145,16 +145,34 @@ class HomeController < ApplicationController
     end
 
     def getEventByShowingId(id)
-        UkeEvent.find_by_sql("SELECT * , us.id as id
-                              FROM uke_showings as us, uke_events as ue 
-                              LEFT OUTER JOIN uke_event_data as ued 
-                              ON ued.uke_event_title = ue.title
-                              WHERE us.id = #{id} AND us.uke_event_id = ue.id 
+        event = UkeEvent.find_by_sql("SELECT *
+                              FROM uke_events as ue 
+                              WHERE ue.id = #{id}
 			      ").first
+
+        sql = "SELECT *, ue.id as id
+               FROM uke_events as ue, uke_showings as us, uke_event_data as ued
+               WHERE ue.title = us.title
+               AND ue.id = #{id}
+               AND ue.title = ued.uke_event_title"
+
+        if not event.done
+            sql += " AND us.date > NOW()"
+        end
+
+        if not event.sold_out
+            sql += " AND us.sold_out = false"
+        end
+
+        sql += " ORDER BY us.date"
+
+        puts "Executing sql: #{sql}"
+        event = UkeEvent.find_by_sql(sql).first
+        puts event.to_json
+        return event
     end
 
     def uno
-		puts "In uno controller"
         @r = !params[:redir].nil?
         @rid = params[:rid]
 		@sr = params[:signed_request]

@@ -39,33 +39,20 @@ ActiveRecord::Schema.define(version: 20150824143638) do
   end
 
   create_table "uke_events", force: :cascade do |t|
-    t.string   "event_type", limit: 255
-    t.string   "title",      limit: 255
-    t.text     "text",       limit: 65535
-    t.string   "image",      limit: 255
-    t.string   "age_limit",  limit: 255
-    t.string   "slug",       limit: 255
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.string  "title",          limit: 255
+    t.string  "image",          limit: 255
+    t.boolean "sold_out",       limit: 1
+    t.boolean "done",           limit: 1
+    t.boolean "auto_generated", limit: 1
   end
 
   create_table "uke_showings", force: :cascade do |t|
-    t.integer  "uke_event_id",      limit: 4
-    t.string   "status",            limit: 255
-    t.boolean  "tickets_available", limit: 1
-    t.integer  "price",             limit: 4
-    t.boolean  "sale_open",         limit: 1
-    t.boolean  "free",              limit: 1
-    t.boolean  "canceled",          limit: 1
+    t.string   "title",          limit: 255
+    t.boolean  "sold_out",       limit: 1
     t.datetime "date"
-    t.datetime "sale_to"
-    t.datetime "sale_from"
-    t.string   "title",             limit: 255
-    t.string   "url",               limit: 255
-    t.boolean  "sale_over",         limit: 1
-    t.string   "place",             limit: 255
-    t.datetime "created_at",                    null: false
-    t.datetime "updated_at",                    null: false
+    t.string   "url",            limit: 255
+    t.string   "place",          limit: 255
+    t.boolean  "auto_generated", limit: 1
   end
 
 end
