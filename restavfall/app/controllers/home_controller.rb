@@ -93,7 +93,13 @@ class HomeController < ApplicationController
         when "Start"
             me = graph.get_object('me?fields=id,name');
 			picture = graph.get_picture("me", {:width => 100, :height => 100});
-            session[:eventIDs] = UkeEvent.find_by_sql("SELECT ue.id FROM uke_event_data as ued, uke_events as ue WHERE ue.title = ued.uke_event_title")
+            session[:eventIDs] = UkeEvent.find_by_sql("SELECT DISTINCT ue.id 
+                                                       FROM uke_event_data as ued, 
+                                                            uke_events as ue, 
+                                                            uke_showings as us
+                                                       WHERE ue.title = ued.uke_event_title
+                                                       AND ue.title = us.title
+                                                       AND us.date > NOW()")
 				.map{|e| e["id"]}
 				.shuffle!
             session[:friend] = nil
@@ -145,30 +151,25 @@ class HomeController < ApplicationController
     end
 
     def getEventByShowingId(id)
-        event = UkeEvent.find_by_sql("SELECT *
-                              FROM uke_events as ue 
+        events = UkeEvent.find_by_sql("SELECT *, ue.id as id
+                              FROM uke_events as ue
+                                   uke_showings as us
+                                   uke_event_data as ued 
                               WHERE ue.id = #{id}
-			      ").first
+                              AND ue.title = us.title
+                              AND ue.title = ued.uke_event_title
+			      ")
 
-        sql = "SELECT *, ue.id as id
-               FROM uke_events as ue, uke_showings as us, uke_event_data as ued
-               WHERE ue.title = us.title
-               AND ue.id = #{id}
-               AND ue.title = ued.uke_event_title"
-
-        if not event.done
-            sql += " AND us.date > NOW()"
-        end
-
-        if not event.sold_out
-            sql += " AND us.sold_out = false"
-        end
-
-        sql += " ORDER BY us.date"
-
-        puts "Executing sql: #{sql}"
-        event = UkeEvent.find_by_sql(sql).first
-        puts event.to_json
+        events.each{|event|
+            if Date.parse(event["date"]) < Date.today
+                next
+            end
+            if event["sold_out"]
+                next
+            end
+        }
+        event = events.first
+        event["sold_out"] = true
         return event
     end
 
@@ -206,7 +207,6 @@ class HomeController < ApplicationController
         @selfImage = result.userImg
         @friendName = result.friendName
         @friendImage = result.friendImg
-        @eventtime = l(@ev['date'], format: '%e. %B');
         @redirecturl = @@host
     end
 

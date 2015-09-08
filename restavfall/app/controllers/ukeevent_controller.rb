@@ -38,22 +38,10 @@ class UkeeventController < ApplicationController
             }
 
             proper_results.each{|title, event|
-                sold_out = true
-                done = true
-                event["showings"].each{|showing|
-                    if Date.parse(showing["date"]) > Date.today
-                        done = false
-                    end
-                    if showing["status"] != "Utsolgt"
-                        sold_out = false
-                    end
-                }
                 UkeEvent.new({
                             :id => event["id"],
                             :title => event["title"],
                             :image => event["image"],
-                            :sold_out => sold_out,
-                            :done => done,
                             :auto_generated => true}).save()
                 event["showings"].each{|showing|
                     UkeShowing.new({
