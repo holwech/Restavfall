@@ -37,6 +37,8 @@ var setEvent = function() {
     $("#ticket-link").attr("href","http://www.uka.no" + currentEvent['url']);
     if (currentEvent['sold_out'])
         $("#ticket-link").html("SE INFO");
+	else
+        $("#ticket-link").html("KJØP BILLETT");
     $("#event-title").html(currentEvent['title'].toUpperCase());
 	$("#description").html(currentEvent['description']);
 }
