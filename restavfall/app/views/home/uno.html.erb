@@ -20,7 +20,7 @@
  <% else %>
     <script type="text/javascript">
 		sr = '<%= @sr %>';
-		console.log("<%= asset_path('UKElogo.png') %>");
+		console.log("<%= @ev.to_json %>");
     </script>
 	<div id="view">
 		<div id="container" class="down">
@@ -57,6 +57,7 @@
 					<img id="event-image" src="<%= 'https://www.uka.no'+@ev.image %>">
 				</div>
 				<div id="event-title"><%= @ev.title.upcase %></div>
+				<div id="utsolgt" style="visibility: <%= @ev.sold_out == 1 ? "visible" : "hidden" %>">UTSOLGT</div>
 			</div>
 			<div id="profiles">
 				<div id="friend">
@@ -74,9 +75,11 @@
 			</div>
 			<div id="description-wrapper">
 				<div id="description">
+					<%= @selfName %> snurret Lychehjulet, og det viste at <%= @friendName %> 
+					er den utkårede til å være med på <%= @ev.title %>
 				</div>
 				<div id="ticket">
-					<a id="ticket-link" target="_blank"><%= @ev.sold_out ? "SE INFO" : "KJØP BILLETT" %></a>
+					<a id="ticket-link" target="_blank"><%= @ev.sold_out == 1 ? "SE INFO" : "KJØP BILLETT" %></a>
 				</div>
 				<div id="ticket" class="hide">
 					<a id="ticket-link" onClick="slideUp('<%= @token %>');">PRØV SELV</a>

@@ -8,7 +8,7 @@ class HomeController < ApplicationController
 
     @@host = "https://www.facebook.com/#{FACEBOOK_CONFIG["page_id"]}"+
              "?sk=app_#{FACEBOOK_CONFIG["app_id"]}";
-    @@permissions = ['user_friends', 'user_photos', 'user_events', 'read_stream'];
+    @@permissions = ['user_friends', 'user_photos', 'user_events'];
 
     def redirect
         reset_session
@@ -110,7 +110,7 @@ class HomeController < ApplicationController
                       "next": "Posts", 
                       "text": "Analysing your posts"}
         when "Posts"
-            FriendFinder.analyse_posts(graph, session[:fs])
+            #FriendFinder.analyse_posts(graph, session[:fs])
             output = {"status": "OK", "next": "Photos"}
         when "Photos"
             FriendFinder.analyse_photos(graph, session[:fs])
@@ -171,7 +171,7 @@ class HomeController < ApplicationController
 			return event
         }
         event = events.first
-        event["sold_out"] = true
+        event["sold_out"] = 1
         return event
     end
 
