@@ -8,7 +8,7 @@ class HomeController < ApplicationController
 
     @@host = "https://www.facebook.com/#{FACEBOOK_CONFIG["page_id"]}"+
              "?sk=app_#{FACEBOOK_CONFIG["app_id"]}";
-    @@permissions = ['user_friends', 'user_photos', 'user_events', 'read_stream'];
+    @@permissions = ['user_friends', 'user_photos', 'user_events'];
 
     def redirect
         reset_session
@@ -110,7 +110,7 @@ class HomeController < ApplicationController
                       "next": "Posts", 
                       "text": "Analysing your posts"}
         when "Posts"
-            FriendFinder.analyse_posts(graph, session[:fs])
+            #FriendFinder.analyse_posts(graph, session[:fs])
             output = {"status": "OK", "next": "Photos"}
         when "Photos"
             FriendFinder.analyse_photos(graph, session[:fs])
@@ -152,24 +152,26 @@ class HomeController < ApplicationController
 
     def getEventByShowingId(id)
         events = UkeEvent.find_by_sql("SELECT *, ue.id as id
-                              FROM uke_events as ue
-                                   uke_showings as us
+                              FROM uke_events as ue,
+                                   uke_showings as us,
                                    uke_event_data as ued 
                               WHERE ue.id = #{id}
                               AND ue.title = us.title
                               AND ue.title = ued.uke_event_title
+							  ORDER BY us.date
 			      ")
 
         events.each{|event|
-            if Date.parse(event["date"]) < Date.today
+            if event["date"] < Time.now
                 next
             end
-            if event["sold_out"]
+            if event["sold_out"] == 1
                 next
             end
+			return event
         }
         event = events.first
-        event["sold_out"] = true
+        event["sold_out"] = 1
         return event
     end
 

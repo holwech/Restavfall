@@ -3,8 +3,6 @@ var save = function(title, id) {
     var elem = $("#"+id);
     var telem = $("#"+id+"_p");
     var newv = elem.val();
-    if (newv === "")
-        return;
     $.ajax({
         type: "POST",
         url: '/ukeeventdata/',

@@ -1,11 +1,14 @@
 <% content_for :head do %>
-    <%= stylesheet_link_tag 'home', {:media => "(min-height: 800px)"} %>
-    <%= stylesheet_link_tag 'home_small', {:media => "(max-height: 800px)"} %>
+    <%= stylesheet_link_tag 'home', {:media => "(min-device-height: 900px)"} %>
+	<%= stylesheet_link_tag 'home_small', {:media => "not all and (min-device-height: 900px)"} %>
     <%= javascript_include_tag 'home' %>
 
     <meta property="fb:app_id"             content="649498578495089" />
     <meta property="og:title"              content="Lychehjulet" />
-	<meta property="og:description"        content="<%= @ev.description %>" />
+	<meta property="og:description"        content="
+					<%= @selfName %> snurret Lychehjulet, og det viste at <%= @friendName %> 
+					er den utkårede til å være med på <%= @ev.title %>
+" />
 	<meta property="og:image"        		content="https://niivx.uka.no/<%= asset_path('UKElogo.png') %>" />
 <% end %>
 
@@ -17,7 +20,7 @@
  <% else %>
     <script type="text/javascript">
 		sr = '<%= @sr %>';
-		console.log("<%= asset_path('UKElogo.png') %>");
+		console.log("<%= @ev.to_json %>");
     </script>
 	<div id="view">
 		<div id="container" class="down">
@@ -54,23 +57,29 @@
 					<img id="event-image" src="<%= 'https://www.uka.no'+@ev.image %>">
 				</div>
 				<div id="event-title"><%= @ev.title.upcase %></div>
+				<div id="utsolgt" style="visibility: <%= @ev.sold_out == 1 ? "visible" : "hidden" %>">UTSOLGT</div>
 			</div>
 			<div id="profiles">
 				<div id="friend">
 					<img id="friend-image" src="<%= @friendImage %>"><br>
+					<div id="friend-name-div">
 					<a id="friend-name" target="_blank"><%= @friendName %></a>
+					</div>
 				</div>
 				<div id="me">
 					<img id="me-image" src="<%= @selfImage %>"><br>
+					<div id="me-name-div">
 					<a id="me-name" target="_blank"><%= @selfName %></a>
+					</div>
 				</div>
 			</div>
 			<div id="description-wrapper">
 				<div id="description">
-					<%= @selfName %> snurret Lychehjulet, og det viste at <%= @friendName %> er den utkårede til å i med på <%= @ev.title %>
+					<%= @selfName %> snurret Lychehjulet, og det viste at <%= @friendName %> 
+					er den utkårede til å være med på <%= @ev.title %>
 				</div>
 				<div id="ticket">
-					<a id="ticket-link" target="_blank">KJØP BILLETT</a>
+					<a id="ticket-link" target="_blank"><%= @ev.sold_out == 1 ? "SE INFO" : "KJØP BILLETT" %></a>
 				</div>
 				<div id="ticket" class="hide">
 					<a id="ticket-link" onClick="slideUp('<%= @token %>');">PRØV SELV</a>

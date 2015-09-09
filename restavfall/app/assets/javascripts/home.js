@@ -34,8 +34,14 @@ var setFriend = function() {
 var setEvent = function() {
     $("#event-image").attr("src", "https://www.uka.no" + currentEvent['image']);
     $("#ticket-link").attr("href","http://www.uka.no" + currentEvent['url']);
-    if (currentEvent['sold_out'])
+    if (currentEvent['sold_out']){
         $("#ticket-link").html("SE INFO");
+		$("#utsolgt").css("visibility", "visible");
+	}
+	else {
+        $("#ticket-link").html("KJØP BILLETT");
+		$("#utsolgt").css("visibility", "hidden");
+	}
     $("#event-title").html(currentEvent['title'].toUpperCase());
 	$("#description").html(currentEvent['description']);
 }
