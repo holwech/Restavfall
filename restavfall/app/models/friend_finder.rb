@@ -45,9 +45,12 @@ class FriendFinder
         remaining_friends.each do |friend|
             counter += friend[:value]
             if counter > trigger
-                result = graph.get_object(friend[:id]+"?fields=name");
+                result = graph.get_object(friend[:id]+"?fields=name,first_name");
+				Rails.logger.warn "Result"
+				Rails.logger.warn result.to_json
 				friend_scores[friend[:id]] *= -1
                 friend[:name]= result["name"];
+                friend[:fname]= result["first_name"];
                 friend[:pic] = graph.get_picture(friend[:id], {:width => 100, :height => 100});
                 return friend
             end

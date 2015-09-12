@@ -91,7 +91,7 @@ class HomeController < ApplicationController
 
         case stage
         when "Start"
-            me = graph.get_object('me?fields=id,name');
+            me = graph.get_object('me?fields=id,name, first_name');
 			picture = graph.get_picture("me", {:width => 100, :height => 100});
             session[:eventIDs] = UkeEvent.find_by_sql("SELECT DISTINCT ue.id 
                                                        FROM uke_event_data as ued, 
@@ -104,7 +104,7 @@ class HomeController < ApplicationController
 				.shuffle!
             session[:friend] = nil
             session[:event] = nil
-            session[:user] = {:pic => picture, 
+            session[:user] = {:pic => picture, :fname => me['first_name'],
                               :id => me['id'], :name => me['name']};
             output = {"status": "OK", 
                       "next": "Posts", 
@@ -150,7 +150,7 @@ class HomeController < ApplicationController
         render json: output
     end
 
-    def getEventByShowingId(id)
+    def getEventByShowingId(id, friendName)
         events = UkeEvent.find_by_sql("SELECT *, ue.id as id
                               FROM uke_events as ue,
                                    uke_showings as us,
@@ -161,6 +161,7 @@ class HomeController < ApplicationController
 							  ORDER BY us.date
 			      ")
 
+		sel_event = nil
         events.each{|event|
             if event["date"] < Time.now
                 next
@@ -168,11 +169,15 @@ class HomeController < ApplicationController
             if event["sold_out"] == 1
                 next
             end
-			return event
+			sel_event = event
+			break
         }
-        event = events.first
-        event["sold_out"] = 1
-        return event
+		if not sel_event
+			sel_event = events.first
+			sel_event["sold_out"] = 1
+		end
+		sel_event["description"].sub! "%navn%", friendName
+        return sel_event
     end
 
     def uno
@@ -203,38 +208,43 @@ class HomeController < ApplicationController
 		end
 
         result = Result.find(@rid)
-        @ev = getEventByShowingId(result.eventId)
+        @ev = getEventByShowingId(result.eventId, result.friendFName)
 
         @selfName = result.userName
         @selfImage = result.userImg
         @friendName = result.friendName
+        @friendFName = result.friendFName
+		@selfFName = result.userFName
         @friendImage = result.friendImg
         @redirecturl = @@host
     end
 
-    def close
+    def closFe
     end
 
     def getFriendAndEvent(graph)
         friend = FriendFinder.get_one_friend(graph, session[:fs])
-        id = session[:eventIDs].first
-        event = getEventByShowingId(id)
-        session[:eventIDs].rotate!
-
 		if friend
 			session[:friend] = friend
 		else
 			session[:friend] = session[:user]
 		end
+
+        id = session[:eventIDs].first
+        event = getEventByShowingId(id, session[:friend][:fname])
+        session[:eventIDs].rotate!
+
         session[:event] = event
         session[:link] = saveResult
     end
 
     def saveResult
         res = Result.new
+        res.userFName = session[:user][:fname]
         res.userName = session[:user][:name]
         res.userImg = session[:user][:pic]
         res.friendName = session[:friend][:name]
+        res.friendFName = session[:friend][:fname]
         res.friendImg = session[:friend][:pic]
         res.eventId = session[:event]["id"]
         res.save!
