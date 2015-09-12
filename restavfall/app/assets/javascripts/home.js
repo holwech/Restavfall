@@ -2,7 +2,6 @@ var lines = [
 	'Genererer magi',
 	'Søker lykke',
    	'Ser inn i fremtiden',
-	'Prøver og feiler',
 	'Mater Nesevisehornet',
 	'Skaper UKEmagi',
 	'Roter i arkivene',
