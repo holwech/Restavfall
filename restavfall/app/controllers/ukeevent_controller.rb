@@ -17,6 +17,7 @@ class UkeeventController < ApplicationController
 
             excluded_categories = ["Dagens bedrift", "Inngang på huset"]
             event_titles = []
+            added_events = []
             proper_results = {}
 
             UkeEvent.destroy_all({:auto_generated => true})
@@ -38,19 +39,26 @@ class UkeeventController < ApplicationController
             }
 
             proper_results.each{|title, event|
-                UkeEvent.new({
-                            :title => event["title"],
-                            :image => event["image"],
-                            :auto_generated => true}).save()
-                event["showings"].each{|showing|
-                    UkeShowing.new({
-                        :title => showing["title"],
-                        :sold_out => showing["status"] == "Utsolgt",
-                        :date => showing["date"],
-                        :url => showing["url"],
-                        :place => showing["place"],
-                        :auto_generated => true}      ).save()
-                }
+
+                if added_events.include? event['id']
+
+                else
+                    UkeEvent.new({
+                                :title => event["title"],
+                                :image => event["image"],
+                                :auto_generated => true}).save()
+                    event["showings"].each{|showing|
+                        UkeShowing.new({
+                            :title => showing["title"],
+                            :sold_out => showing["status"] == "Utsolgt",
+                            :date => showing["date"],
+                            :url => showing["url"],
+                            :place => showing["place"],
+                            :auto_generated => true}      ).save()
+                    }
+                    added_events.push(event['id'])
+                end
+                
             }
 
         end
