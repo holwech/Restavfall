@@ -206,7 +206,7 @@ var spin = function() {
 
 var slideUp = function(token) {
 	if (token == ''){
-		top.location.href='https://www.facebook.com/prosjektrestavfall?sk=app_649498578495089';
+		top.location.href='https://www.facebook.com/pages/UKA/24216860753?sk=app_649498578495089';
 		return;
 	}
 
