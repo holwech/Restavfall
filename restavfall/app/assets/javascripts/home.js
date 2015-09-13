@@ -184,7 +184,7 @@ var spin = function() {
         var elem = $('#text');
         var cl = elem.attr('class');
         if (cl == 'right') {
-            elem.html(lines[i++ % lines.length]);
+            elem.html(lines[Math.floor(lines.length * Math.random())]);
             elem.attr('class', 'center');
         }
         else if (cl == 'center') {
