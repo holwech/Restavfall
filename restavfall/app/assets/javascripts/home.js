@@ -163,7 +163,7 @@ var error = function() {
     $('#container').attr("class", "down");
     $('#event-title').html("OOPS");
     $('#description').html("Dette er pinlig, noe gikk galt! Heldigvis er det allerede noen som jobber med å fikse det. Prøv å laste inn siden på nytt!");
-    $('#ticket').css("display", "none");
+    //$('#ticket').css("display", "none");
 	$('#profiles').css("display", "none");
 	$('#event-image').css("display", "none");
 	$('#button-wrapper').css("display", "none");
