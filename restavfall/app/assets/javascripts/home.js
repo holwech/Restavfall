@@ -163,7 +163,8 @@ var error = function() {
     $('#container').attr("class", "down");
     $('#event-title').html("OOPS");
     $('#description').html("Dette er pinlig, noe gikk galt! Heldigvis er det allerede noen som jobber med å fikse det. Kom tilbake og prøv igjen litt senere!");
-	$('#ticket').css("display", "none");
+	//$('#ticket').html("<a id="ticket-link" onClick="slideUp('<%= @token %>');">PRØV SELV</a>");
+    //$('#ticket').css("display", "none");
 	$('#profiles').css("display", "none");
 	$('#event-image').css("display", "none");
 	$('#button-wrapper').css("display", "none");
