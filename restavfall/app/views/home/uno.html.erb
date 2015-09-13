@@ -79,7 +79,7 @@
 					er den utkårede til å være med på <%= @ev.title %>
 				</div>
 				<div id="ticket">
-					<a id="ticket-link" target="_blank"><%= @ev.sold_out == 1 ? "SE INFO" : "KJØP BILLETT" %></a>
+					<a id="ticket-link" href=<%= "https://www.uka.no" + @ev.url %> target="_blank"><%= @ev.sold_out == 1 ? "SE INFO" : "KJØP BILLETT" %></a>
 				</div>
 				<div id="ticket" class="hide">
 					<a id="ticket-link" onClick="slideUp('<%= @token %>');">PRØV SELV</a>
