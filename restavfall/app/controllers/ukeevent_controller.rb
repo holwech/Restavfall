@@ -39,7 +39,6 @@ class UkeeventController < ApplicationController
 
             proper_results.each{|title, event|
                 UkeEvent.new({
-                            :id => event["id"],
                             :title => event["title"],
                             :image => event["image"],
                             :auto_generated => true}).save()
