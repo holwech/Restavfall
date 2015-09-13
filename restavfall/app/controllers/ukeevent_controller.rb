@@ -15,17 +15,11 @@ class UkeeventController < ApplicationController
 
 			puts "Updating..."
 
-<<<<<<< HEAD
-			excluded_categories = ["Dagens bedrift", "Inngang på huset"]
-			event_titles = []
-			showing_ids = []
-			proper_results = {}
-=======
+
             excluded_categories = ["Dagens bedrift", "Inngang på huset"]
             event_titles = []
             added_events = []
             proper_results = {}
->>>>>>> 0f66b6f27ee4cf6019e66d695b4cb4d27573340b
 
 			UkeEvent.destroy_all({:auto_generated => true})
 			UkeShowing.destroy_all({:auto_generated => true})
@@ -48,23 +42,7 @@ class UkeeventController < ApplicationController
 				}
 			}
 
-<<<<<<< HEAD
-			proper_results.each{|title, event|
-				UkeEvent.new({
-					:title => event["title"],
-					:image => event["image"],
-					:auto_generated => true}).save()
-				event["showings"].each{|showing|
-					UkeShowing.new({
-						:title => showing["title"],
-						:sold_out => showing["status"] == "Utsolgt",
-						:date => showing["date"],
-						:url => showing["url"],
-						:place => showing["place"],
-						:auto_generated => true}      ).save()
-				}
-			}
-=======
+
             proper_results.each{|title, event|
 
                 if added_events.include? event['id']
@@ -87,7 +65,6 @@ class UkeeventController < ApplicationController
                 end
                 
             }
->>>>>>> 0f66b6f27ee4cf6019e66d695b4cb4d27573340b
 
 		end
 
