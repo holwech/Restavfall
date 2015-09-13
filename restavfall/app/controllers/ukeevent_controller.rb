@@ -20,34 +20,28 @@ class UkeeventController < ApplicationController
             event_titles = []
             added_events = []
             proper_results = {}
-
-			UkeEvent.destroy_all({:auto_generated => true})
-			UkeShowing.destroy_all({:auto_generated => true})
-			result = JSON.parse(open("https://www.uka.no/program/?format=json").read)
-			result.each{|event|
-				if excluded_categories.include? event["event_type"]
-					next
-				end
-				showings = event.delete("showings");
-				if not event_titles.include? event["title"]
-					proper_results[event["title"]] = event;
-					proper_results[event["title"]]["showings"] = [];
-					event_titles << event["title"]
-				end
-				showings.each{|showing|
-					if not showing_ids.include? showing["id"]
-						proper_results[event["title"]]["showings"] << showing;
-						showing_ids << showing["id"]
-					end
-				}
-			}
-
+ 
+            UkeEvent.destroy_all({:auto_generated => true})
+            UkeShowing.destroy_all({:auto_generated => true})
+            result = JSON.parse(open("https://www.uka.no/program/?format=json").read)
+            result.each{|event|
+                if excluded_categories.include? event["event_type"]
+                    next
+                end
+                showings = event.delete("showings");
+                if not event_titles.include? event["title"]
+                    proper_results[event["title"]] = event;
+                    proper_results[event["title"]]["showings"] = [];
+                    event_titles << event["title"]
+                end
+                showings.each{|showing|
+                    proper_results[event["title"]]["showings"] << showing;
+                }
+            }
 
             proper_results.each{|title, event|
 
-                if added_events.include? event['id']
-
-                else
+                if not added_events.include? event['id']
                     UkeEvent.new({
                                 :title => event["title"],
                                 :image => event["image"],
