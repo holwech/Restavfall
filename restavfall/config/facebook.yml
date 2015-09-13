@@ -5,4 +5,4 @@ development:
 production:
   app_id: 649498578495089
   secret: 845a0ce1a5a8be107cfc5b29bf94f634
-  page_id: 674497779316710
+  page_id: 24216860753
